@@ -7,6 +7,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   output: 'server', // Wajib 'server' karena kamu pakai prerender = false
   adapter: vercel(), // Menghubungkan langsung ke server Vercel
+  trailingSlash: 'never',
   devToolbar: {
     enabled: false
   },
