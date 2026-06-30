@@ -1,0 +1,417 @@
+---
+// src/components/home/BukuGerbang.astro
+---
+
+<div
+    class="w-full max-w-5xl mx-auto my-24 px-4 font-sans selection:bg-[#c5a059]/30"
+>
+    <div class="text-center mb-14 space-y-3">
+        <div
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#c5a059]/10 border border-[#c5a059]/20"
+        >
+            <span class="w-1.5 h-1.5 rounded-full bg-[#c5a059] animate-ping"
+            ></span>
+            <span
+                class="text-[10px] font-mono uppercase tracking-widest text-[#c5a059] font-medium"
+                >Interactive Knowledge Quest</span
+            >
+        </div>
+        <h3
+            class="text-2xl md:text-4xl font-serif text-[#f0f0f0] tracking-wide"
+        >
+            Gerbang Integrasi <span class="italic font-normal text-[#c5a059]"
+                >Multimodal Core AI</span
+            >
+        </h3>
+        <p class="text-xs text-gray-500 max-w-md mx-auto leading-relaxed">
+            Pahami metodologi kecerdasan buatan kelompok kami sebelum menguji
+            coba mesin laboratorium enkripsi data.
+        </p>
+    </div>
+
+    <div
+        class="relative bg-[#0d0d0d] border border-white/5 rounded-3xl p-6 md:p-12 shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-hidden group"
+    >
+        <div
+            class="absolute inset-0 bg-[linear-gradient(to_right,#1f1f1f_1px,transparent_1px),linear-gradient(to_bottom,#1f1f1f_1px,transparent_1px)] bg-[size:2.5rem_2.5rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30 pointer-events-none"
+        >
+        </div>
+
+        <div
+            id="buku-tertutup"
+            class="relative z-10 flex flex-col items-center justify-center py-14 cursor-pointer select-none transition-all duration-700 ease-out"
+        >
+            <div
+                class="relative w-36 h-48 bg-gradient-to-br from-[#1c1c1c] to-[#111111] border-2 border-[#c5a059]/30 rounded-r-2xl rounded-l-md shadow-[5px_20px_50px_rgba(0,0,0,0.9)] flex items-center justify-center transform group-hover:scale-105 group-hover:border-[#c5a059] group-hover:-rotate-2 transition-all duration-500"
+            >
+                <div
+                    class="absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-r from-black via-black/80 to-transparent border-r border-white/5 rounded-l-sm"
+                >
+                </div>
+                <div
+                    class="absolute inset-2 border border-[#c5a059]/10 rounded-r-xl opacity-40 group-hover:opacity-100 transition-opacity"
+                >
+                </div>
+                <div
+                    class="w-12 h-12 rounded-full bg-black/50 border border-[#c5a059]/20 flex items-center justify-center text-[#c5a059] shadow-inner group-hover:shadow-[0_0_20px_rgba(197,160,89,0.4)] transition-all"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="animate-[spin_10s_linear_infinite]"
+                        ><path
+                            d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                        ></path></svg
+                    >
+                </div>
+            </div>
+            <div class="text-center mt-8 space-y-2">
+                <h5
+                    class="text-xs font-mono uppercase tracking-widest text-gray-300 group-hover:text-[#c5a059] transition-colors"
+                >
+                    Dekripsi Dokumen Riset
+                </h5>
+                <p class="text-[11px] text-gray-600 max-w-xs font-sans">
+                    Klik cover berkas untuk melacak alur kerja Vision
+                    Transformer & Database Cross-Check.
+                </p>
+            </div>
+        </div>
+
+        <div
+            id="buku-terbuka"
+            class="hidden opacity-0 transition-all duration-700 space-y-8 relative z-10"
+        >
+            <div
+                class="max-w-md mx-auto flex items-center justify-between relative px-2 mb-4"
+            >
+                <div
+                    class="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-[1px] bg-white/5 z-0"
+                >
+                </div>
+                <div
+                    id="line-progress-bar"
+                    class="absolute left-0 top-1/2 -translate-y-1/2 h-[1px] bg-[#c5a059]/50 z-0 transition-all duration-500"
+                    style="width: 0%;"
+                >
+                </div>
+                <div class="relative z-10 flex flex-col items-center">
+                    <div
+                        id="dot-step-1"
+                        class="w-6 h-6 rounded-full bg-[#c5a059] text-black font-mono text-[9px] font-bold flex items-center justify-center border border-[#c5a059]"
+                    >
+                        1
+                    </div>
+                </div>
+                <div class="relative z-10 flex flex-col items-center">
+                    <div
+                        id="dot-step-2"
+                        class="w-6 h-6 rounded-full bg-[#111] text-gray-500 font-mono text-[9px] flex items-center justify-center border border-white/10"
+                    >
+                        2
+                    </div>
+                </div>
+                <div class="relative z-10 flex flex-col items-center">
+                    <div
+                        id="dot-step-3"
+                        class="w-6 h-6 rounded-full bg-[#111] text-gray-500 font-mono text-[9px] flex items-center justify-center border border-white/10"
+                    >
+                        3
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                <div
+                    class="lg:col-span-5 bg-[#050505] border border-white/5 rounded-2xl p-6 flex flex-col items-center justify-center relative min-h-[300px] shadow-inner overflow-hidden"
+                >
+                    <div
+                        class="absolute left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#c5a059]/40 to-transparent top-0 animate-[bounce_4s_infinite] pointer-events-none z-20"
+                    >
+                    </div>
+
+                    <div
+                        id="frame-visual-1"
+                        class="w-full flex flex-col items-center space-y-4 transition-all duration-500"
+                    >
+                        <div
+                            class="relative px-8 py-6 bg-white/5 border border-white/10 rounded-xl"
+                        >
+                            <span
+                                class="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-[#c5a059]"
+                            ></span>
+                            <span
+                                class="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-[#c5a059]"
+                            ></span>
+                            <span
+                                class="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-[#c5a059]"
+                            ></span>
+                            <span
+                                class="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-[#c5a059]"
+                            ></span>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="36"
+                                height="36"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#c5a059"
+                                stroke-width="1.2"
+                                class="animate-pulse"
+                                ><path
+                                    d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
+                                ></path><circle cx="12" cy="13" r="4"
+                                ></circle></svg
+                            >
+                        </div>
+                        <span
+                            class="text-[9px] font-mono text-gray-500 bg-white/5 px-2 py-0.5 rounded tracking-widest"
+                            >PROP: IMAGE_MATRIX_TRANSFORM</span
+                        >
+                    </div>
+
+                    <div
+                        id="frame-visual-2"
+                        class="w-full hidden flex flex-col items-center space-y-4 transition-all duration-500"
+                    >
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="px-3 py-2 bg-[#c5a059]/5 border border-[#c5a059]/20 rounded-lg font-mono text-[11px] text-[#c5a059]"
+                            >
+                                metada_batik.json
+                            </div>
+                            <div class="text-gray-600 font-mono text-xs">↔</div>
+                            <div
+                                class="px-3 py-2 bg-[#c5a059]/5 border border-[#c5a059]/20 rounded-lg font-mono text-[11px] text-[#c5a059]"
+                            >
+                                sumatra.json
+                            </div>
+                        </div>
+                        <span
+                            class="text-[9px] font-mono text-gray-500 bg-white/5 px-2 py-0.5 rounded tracking-widest"
+                            >QUERY: LOCAL_JSON_CROSS_VALIDATION</span
+                        >
+                    </div>
+
+                    <div
+                        id="frame-visual-3"
+                        class="w-full hidden flex flex-col items-center space-y-3 transition-all duration-500"
+                    >
+                        <div
+                            class="w-full max-w-[240px] bg-black/60 p-3 rounded-lg border border-emerald-500/10 font-mono text-[9px] text-emerald-400 space-y-1"
+                        >
+                            <p class="text-gray-600">// Output Validated</p>
+                            <p>&#123;"status": "SUCCESS",</p>
+                            <p>"nama_motif": "Alas-alasan",</p>
+                            <p>"provinsi": "Jawa Tengah"&#125;</p>
+                        </div>
+                        <span
+                            class="text-[9px] font-mono text-emerald-500/60 bg-emerald-500/5 px-2 py-0.5 rounded tracking-widest"
+                            >STREAM: STRUCTURING_METADATA_OBJECT</span
+                        >
+                    </div>
+                </div>
+
+                <div
+                    class="lg:col-span-7 flex flex-col justify-between space-y-6 bg-white/[0.02] border border-white/5 rounded-2xl p-6"
+                >
+                    <div class="space-y-3">
+                        <div
+                            class="inline-block text-[10px] font-mono text-[#c5a059] uppercase tracking-wider"
+                            id="label-halaman"
+                        >
+                            STEP 01 // COMPUTER VISION
+                        </div>
+                        <h4
+                            class="text-xl font-serif text-white tracking-wide"
+                            id="judul-halaman"
+                        >
+                            Multimodal Vision Engine
+                        </h4>
+                        <p
+                            class="text-xs text-gray-400 leading-relaxed font-sans text-justify"
+                            id="deskripsi-halaman"
+                        >
+                            Langkah awal dimulai dari komputer vision yang
+                            membedah berkas gambar kain batik. AI menganalisis
+                            setiap detail visual mulai dari lengkungan canting,
+                            guratan ornamen flora/fauna, hingga ekstraksi kode
+                            palet warna dominan kain secara real-time.
+                        </p>
+                    </div>
+
+                    <div
+                        class="bg-black/40 border border-white/5 rounded-xl p-4 min-h-[110px] flex items-center justify-center relative overflow-hidden"
+                        id="area-interactive-micro"
+                    >
+                        <div
+                            id="micro-anim-1"
+                            class="w-full flex items-center gap-4 transition-all duration-300"
+                        >
+                            <div
+                                class="relative w-12 h-12 rounded-full border border-[#c5a059]/30 flex items-center justify-center shrink-0"
+                            >
+                                <div
+                                    class="absolute inset-1 rounded-full border border-dashed border-[#c5a059]/50 animate-[spin_4s_linear_infinite]"
+                                >
+                                </div>
+                                <div
+                                    class="w-2 h-2 rounded-full bg-[#c5a059] animate-ping"
+                                >
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <span
+                                    class="block text-[10px] font-mono text-gray-400 uppercase tracking-wider"
+                                    >Sub-Process: Geometric Feature Extraction</span
+                                >
+                                <p class="text-[11px] text-gray-500 font-sans">
+                                    Mendeteksi koordinat pixel matriks $\Delta
+                                    x, \Delta y$ dari guratan canting kain
+                                    otomatis.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            id="micro-anim-2"
+                            class="w-full hidden items-center gap-4 transition-all duration-300"
+                        >
+                            <div
+                                class="relative w-12 h-12 rounded-xl bg-cyan-500/5 border border-cyan-500/20 flex items-center justify-center shrink-0"
+                            >
+                                <span
+                                    class="text-cyan-400 font-mono text-xs animate-pulse"
+                                    >DB</span
+                                >
+                            </div>
+                            <div class="space-y-1">
+                                <span
+                                    class="block text-[10px] font-mono text-cyan-400 uppercase tracking-wider"
+                                    >Sub-Process: Vector Distance Evaluation</span
+                                >
+                                <p class="text-[11px] text-gray-500 font-sans">
+                                    Menghitung jarak kedekatan data gambar
+                                    dengan klaster metadata lokal kelompok.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            id="micro-anim-3"
+                            class="w-full hidden items-center gap-4 transition-all duration-300"
+                        >
+                            <div
+                                class="relative w-12 h-12 bg-emerald-500/5 border border-emerald-500/20 rounded-full flex items-center justify-center shrink-0"
+                            >
+                                <div
+                                    class="w-3 h-3 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"
+                                >
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <span
+                                    class="block text-[10px] font-mono text-emerald-400 uppercase tracking-wider"
+                                    >Sub-Process: Prompt Serialization</span
+                                >
+                                <p class="text-[11px] text-gray-500 font-sans">
+                                    Menyusun tumpukan string token menjadi objek
+                                    teks kode rapi siap unduh.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="grid grid-cols-3 gap-2 border-t border-white/5 pt-4"
+                    >
+                        <button
+                            id="btn-page-1"
+                            class="group/btn text-left p-3 rounded-xl bg-white/5 border border-[#c5a059]/40 transition-all duration-300"
+                        >
+                            <span
+                                class="block text-[8px] font-mono text-[#c5a059]"
+                                >PAGE 01</span
+                            >
+                            <span
+                                class="block text-[11px] font-medium text-gray-200 group-hover/btn:text-[#c5a059]"
+                                >Vision Scan</span
+                            >
+                        </button>
+                        <button
+                            id="btn-page-2"
+                            class="group/btn text-left p-3 rounded-xl bg-transparent border border-white/5 hover:border-white/10 transition-all duration-300"
+                        >
+                            <span
+                                class="block text-[8px] font-mono text-gray-500"
+                                >PAGE 02</span
+                            >
+                            <span
+                                class="block text-[11px] font-medium text-gray-400 group-hover/btn:text-white"
+                                >Cross Match</span
+                            >
+                        </button>
+                        <button
+                            id="btn-page-3"
+                            class="group/btn text-left p-3 rounded-xl bg-transparent border border-white/5 hover:border-white/10 transition-all duration-300"
+                        >
+                            <span
+                                class="block text-[8px] font-mono text-gray-500"
+                                >PAGE 03</span
+                            >
+                            <span
+                                class="block text-[11px] font-medium text-gray-400 group-hover/btn:text-white"
+                                >JSON Output</span
+                            >
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4"
+            >
+                <div class="flex items-center gap-2">
+                    <svg
+                        id="icon-warning-quest"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#eab308"
+                        stroke-width="2"
+                    >
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                        ></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                    <p
+                        id="teks-info-quest"
+                        class="text-[10px] font-mono text-yellow-500/90 tracking-wide"
+                    >
+                        Harap selesaikan membaca Page 01, 02, dan 03 untuk
+                        membuka gerbang uji coba simulator...
+                    </p>
+                </div>
+
+                <a
+                    href={`${import.meta.env.BASE_URL}/proses`}
+                    id="btn-link-laboratorium"
+                    class="w-full sm:w-auto bg-[#141414] text-gray-600 border border-white/5 px-6 py-3.5 rounded-xl text-xs font-mono uppercase tracking-widest text-center pointer-events-none transition-all duration-500"
+                >
+                    Laboratorium Simulator Terkunci 🔒
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

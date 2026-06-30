@@ -1,0 +1,22 @@
+{
+    "dc:identifier": "limaran",
+    "url_gambar_web": "/assets/motif/jawa-tengah/limaran.jpeg",
+    "dc:title": "Limaran",
+    "dc:subject": {
+        "Kategori Budaya": "Seni Kriya Tradisional / Batik Klasik",
+        "Status Simbolik": "Motif Klasik Khusus"
+    },
+    "dc:description": {
+        "Fungsi Tradisional": "Digunakan untuk pakaian harian kaum bangsawan wanita atau kain kemben pada upacara adat.",
+        "Makna Filosofis": "Melambangkan kehalusan budi pekerti wanita, kerapian pikiran, serta lambang kemewahan karena meniru keindahan kain tenun sutra impor.",
+        "Elemen Visual": "Pola geometris kecil, jalinan titik (titik-titik), atau garis pendek yang berulang secara rapat, menciptakan ilusi tekstur seperti kain tenun.",
+        "Warna Dominan": "Hitam Kelam (#171E27), Cokelat Tanah (#6B3227), Hitam Kelam (#271F1F), Krem Soga (#D9B39C)",
+        "Fakta Unik": "Pola batik ini sengaja dirancang oleh seniman masa lalu untuk meniru penampakan visual dari kain tenun sutra Patola asal Gujarat, India, yang saat itu merupakan barang mewah di Nusantara."
+    },
+    "dc:coverage": "Jawa Tengah, Indonesia",
+    "dc:format": "image/jpeg",
+    "dc:source": "National Museum of World Cultures Foundation, Netherlands",
+    "dc:rights": "CC0 (Public Domain)",
+    "dc:type": "Image; Physical Object",
+    "dc:language": "id, jv"
+}

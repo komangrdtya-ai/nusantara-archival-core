@@ -1,0 +1,426 @@
+/* src/styles/koleksi.css */
+
+/* Animasi Tombol Interaktif (Hover Alive) */
+@keyframes pop-wiggle {
+
+    0%,
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    25% {
+        transform: scale(1.15) rotate(-8deg);
+    }
+
+    50% {
+        transform: scale(1.15) rotate(8deg);
+    }
+
+    75% {
+        transform: scale(1.15) rotate(-8deg);
+    }
+}
+
+.hover-alive:hover .icon-alive {
+    animation: pop-wiggle 1.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+/* Animasi Teks Float Hidup */
+@keyframes text-float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+        filter: drop-shadow(0px 0px 0px transparent);
+    }
+
+    50% {
+        transform: translateY(-2px);
+        filter: drop-shadow(0px 4px 8px currentColor);
+    }
+}
+
+.hover-text-alive {
+    will-change: transform, filter;
+}
+
+.hover-text-alive:hover {
+    animation: text-float 2.5s ease-in-out infinite;
+}
+
+/* Animasi Badge & Bulatan Warna Hidup */
+@keyframes badge-float {
+
+    0%,
+    100% {
+        transform: translateY(0px) scale(1);
+        box-shadow: 0 0 0px transparent;
+    }
+
+    50% {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 4px 15px currentColor;
+    }
+}
+
+.hover-badge-alive {
+    will-change: transform, box-shadow;
+}
+
+.hover-badge-alive:hover {
+    animation: badge-float 3s ease-in-out infinite;
+}
+
+@keyframes circle-pulse {
+
+    0%,
+    100% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0px transparent;
+    }
+
+    50% {
+        transform: scale(1.15);
+        box-shadow: 0 0 20px currentColor;
+        border-color: rgba(255, 255, 255, 0.8);
+    }
+}
+
+.hover-circle-alive {
+    will-change: transform, box-shadow;
+}
+
+.hover-circle-alive:hover {
+    animation: circle-pulse 2.5s ease-in-out infinite;
+    position: relative;
+    z-index: 10;
+}
+
+@keyframes fadeUpMotif {
+    0% {
+        opacity: 0;
+        transform: translateY(2rem);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-up-motif {
+    animation: fadeUpMotif 0.7s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* Animasi Halus Kartu Galeri */
+.kartu-motif-test {
+    transition:
+        border-color 0.3s ease-in-out,
+        box-shadow 0.3s ease-in-out;
+}
+
+.kartu-motif-test:hover {
+    border-color: #c5a059 !important;
+    box-shadow: 0 0 25px rgba(197, 160, 89, 0.4), 0 0 0 1px #c5a059 !important;
+}
+
+.kartu-hilang {
+    opacity: 0 !important;
+    transform: scale(0.9) !important;
+    pointer-events: none;
+}
+
+/* Animasi Tameng Info */
+.grup-info-tameng:hover .wadah-balon-info {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Dropdown Styles */
+.custom-select-trigger {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background-color: #1a1a1a;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.custom-select-trigger:hover {
+    border-color: #c5a059;
+    background-color: #222;
+}
+
+.panah-icon {
+    color: #c5a059;
+    transition: transform 0.3s ease;
+}
+
+.custom-options-box {
+    position: absolute;
+    top: 105%;
+    left: 0;
+    width: 100%;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 4px;
+    z-index: 100;
+    max-height: 250px;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    padding: 0.4rem;
+}
+
+.custom-options-box::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-options-box::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 10px;
+}
+
+.baris-opsi {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.7rem 0.8rem;
+    background: transparent;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    color: #999;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.baris-opsi:hover {
+    background-color: rgba(197, 160, 89, 0.1);
+    color: #fff;
+    transform: translateX(4px);
+}
+
+.baris-opsi.aktif {
+    color: #c5a059;
+    background-color: rgba(197, 160, 89, 0.05);
+}
+
+.angka-opsi {
+    font-family: monospace;
+    opacity: 0.5;
+    font-size: 0.75rem;
+}
+
+.aktif .angka-opsi {
+    opacity: 1;
+    color: #c5a059;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* State Filter Warna (Titik Swatch) */
+.swatch-titik-warna {
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.swatch-aktif {
+    opacity: 1;
+    filter: grayscale(0%);
+    transform: scale(1.4);
+    box-shadow: 0 0 12px 3px rgba(197, 160, 89, 0.4);
+    border: 2px solid #c5a059 !important;
+    z-index: 10;
+}
+
+.swatch-redup {
+    opacity: 0.15;
+    filter: grayscale(100%) blur(1px);
+    transform: scale(0.7);
+    box-shadow: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    z-index: 1;
+}
+
+/* ========================================================
+   ADAPTASI LIGHT MODE UNTUK GALLERY GRID & SIDEBAR
+   ======================================================== */
+/* Latar Belakang Utama Halaman */
+html.light-mode body {
+    background-color: #f5f2ec !important;
+    color: #1a1a1a !important;
+}
+
+html.light-mode main {
+    background-color: transparent !important;
+    color: #1a1a1a !important;
+}
+
+/* Toolbar Pencarian & Filter atas */
+html.light-mode .bg-\[\#111\] {
+    background-color: #ebe4d8 !important;
+}
+
+html.light-mode .border-gray-900 {
+    border-color: #d1c8b4 !important;
+}
+
+html.light-mode .text-gray-200 {
+    color: #2d2a26 !important;
+}
+
+html.light-mode .text-gray-300 {
+    color: #4a4539 !important;
+}
+
+/* Bayangan hitam saat di-hover KHUSUS di Light Mode */
+html.light-mode .kartu-motif-test:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+html.light-mode .bg-\[\#161616\] {
+    background-color: #e3dccf !important;
+}
+
+html.light-mode .border-gray-800 {
+    border-color: #d1c8b4 !important;
+}
+
+html.light-mode .text-gray-500 {
+    color: #6b6353 !important;
+}
+
+html.light-mode .text-gray-400 {
+    color: #5a5345 !important;
+}
+
+html.light-mode .bg-gray-800 {
+    background-color: #dfd8c8 !important;
+}
+
+html.light-mode .border-gray-700 {
+    border-color: #c9bfab !important;
+}
+
+/* Adaptasi Sidebar Filter */
+html.light-mode #wrapper-sidebar {
+    background-color: #ebe4d8 !important;
+    border-color: #d1c8b4 !important;
+}
+
+html.light-mode .custom-select-trigger {
+    background-color: #c2bcaf !important;
+    border-color: #a8a296 !important;
+}
+
+html.light-mode .custom-select-trigger span {
+    color: #2d2a26 !important;
+    font-weight: 500;
+}
+
+html.light-mode .custom-select-trigger:hover {
+    background-color: #b0aa9e !important;
+    border-color: #c5a059 !important;
+}
+
+html.light-mode .custom-options-box {
+    background-color: #ebe4d8 !important;
+    border-color: #d1c8b4 !important;
+}
+
+html.light-mode .baris-opsi {
+    color: #4a4539 !important;
+}
+
+html.light-mode .baris-opsi:hover {
+    background-color: rgba(197, 160, 89, 0.2) !important;
+    color: #1a1a1a !important;
+}
+
+html.light-mode .baris-opsi.aktif {
+    color: #c5a059 !important;
+    background-color: rgba(197, 160, 89, 0.1) !important;
+    font-weight: bold;
+}
+
+html.light-mode .wadah-balon-info {
+    background-color: #ebe4d8 !important;
+    border-color: #c5a059 !important;
+}
+
+html.light-mode .wadah-balon-info p {
+    color: #4a4539 !important;
+}
+
+/* Pill Filter Aktif */
+html.light-mode .bg-\[\#1e1e1e\] {
+    background-color: #c2bcaf !important;
+    border-color: #a8a296 !important;
+}
+
+html.light-mode .btn-hapus-pill {
+    color: #6b6353 !important;
+}
+
+/* Tombol Buka/Tutup Filter Spesifik */
+/* Adaptasi Titik Warna (Swatch) */
+.hover-circle-alive:hover {
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(197, 160, 89, 0.6), 0 0 0 2px #111, 0 0 0 4px #c5a059 !important;
+    border-color: transparent !important;
+}
+
+html.light-mode .swatch-redup {
+    border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Transisi Halus Perubahan Tema Keseluruhan */
+html,
+body,
+main,
+#main-layout-container,
+#wrapper-sidebar,
+.kartu-motif-test,
+.bg-\[\#111\],
+.bg-\[\#161616\],
+.bg-\[\#050505\] {
+    transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out, color 0.4s ease-in-out, box-shadow 0.4s ease-in-out !important;
+}
+
+/* Kartu Motif */
+html.light-mode .kartu-motif-test {
+    background-color: #ebe4d8 !important;
+    border: 1px solid #d1c8b4 !important;
+}
+
+html.light-mode .kartu-motif-test:hover {
+    border-color: #b08d4b !important;
+    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.15), 0 5px 15px -3px rgba(0, 0, 0, 0.1) !important;
+    transform: none !important;
+}
+
+/* Wadah Gambar di dalam Kartu */
+html.light-mode .bg-\[\#050505\] {
+    background-color: transparent !important;
+}
+
+html.light-mode .img-kain-batik {
+    opacity: 1 !important;
+}

@@ -1,0 +1,68 @@
+---
+// src/components/shared/Navbar.astro
+// @ts-nocheck
+
+// 👑 1. IMPORT TOMBOL SAKELAR DARI FOLDER YANG SAMA
+import ThemeToggle from "./ThemeToggle.astro";
+---
+
+<button
+  id="menu-btn"
+  class="fixed top-8 left-8 flex flex-col justify-center items-center w-12 h-12 group cursor-pointer border-none bg-transparent outline-none focus:outline-none"
+  style="z-index: 100;"
+  aria-label="Menu"
+>
+  <span
+    id="line-1"
+    class="w-8 h-[2px] bg-white transition-all duration-300 ease-in-out block mb-2 group-hover:bg-[#a67c00]"
+  ></span>
+  <span
+    id="line-2"
+    class="w-8 h-[2px] bg-white transition-all duration-300 ease-in-out block group-hover:bg-[#a67c00]"
+  ></span>
+</button>
+
+<div class="fixed top-8 left-1/2 -translate-x-1/2" style="z-index: 100;">
+  <a href={`${import.meta.env.BASE_URL}/`} class="flex flex-col items-center group no-underline">
+    <span
+      class="logo-text text-white tracking-widest text-lg md:text-xl font-bold uppercase transition-colors group-hover:text-[#a67c00]"
+    >
+      Nusantara
+    </span>
+    <span
+      class="logo-subtext text-[#a67c00] text-[8px] md:text-[10px] tracking-[0.3em] uppercase mt-1 font-light opacity-80 group-hover:opacity-100 transition-colors"
+    >
+      Archival
+    </span>
+  </a>
+</div>
+
+<!-- Render Tombol Ganti Tema -->
+<ThemeToggle />
+
+<style is:global>
+  /* ========================================================
+     ADAPTASI LIGHT MODE UNTUK NAVBAR (Berlaku Global)
+     ======================================================== */
+  
+  /* 1. Teks Logo Utama & Hover */
+  html.light-mode .logo-text {
+      color: #2d2a26 !important;
+  }
+  html.light-mode .group:hover .logo-text {
+      color: #8f6700 !important;
+  }
+
+  /* 2. Teks Sub-Logo 'Archival' */
+  html.light-mode .logo-subtext {
+      color: #8f6700 !important;
+  }
+
+  /* 3. Ikon Garis Menu Hamburger */
+  html.light-mode #menu-btn span {
+      background-color: #2d2a26 !important;
+  }
+  html.light-mode #menu-btn:hover span {
+      background-color: #8f6700 !important;
+  }
+</style>

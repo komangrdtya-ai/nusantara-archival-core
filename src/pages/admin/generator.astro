@@ -1,0 +1,854 @@
+---
+import MainLayout from "../../layouts/MainLayout.astro";
+---
+
+<MainLayout title="AI Metadata Generator - Studio Admin">
+  <section
+    class="min-h-screen relative overflow-hidden"
+    style="background: linear-gradient(135deg, #0a0a0a 0%, #1a1207 50%, #0a0a0a 100%);"
+  >
+    <div
+      class="absolute inset-0 opacity-5"
+      style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22><path d=%22M30 0L60 30L30 60L0 30Z%22 fill=%22none%22 stroke=%22%23a67c00%22 stroke-width=%220.5%22/></svg>'); background-size: 60px 60px;"
+    >
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <div class="text-center mb-14">
+        <div
+          class="inline-flex items-center gap-2 bg-[#a67c00]/10 border border-[#a67c00]/30 rounded-full px-5 py-1.5 mb-5"
+        >
+          <span class="w-2 h-2 rounded-full bg-[#a67c00] animate-pulse"></span>
+          <span
+            class="text-[#c5a059] text-xs font-semibold tracking-widest uppercase"
+            >Admin Studio • AI Powered</span
+          >
+        </div>
+        <h1
+          class="text-4xl md:text-5xl font-serif text-white mb-4"
+          style="font-family: 'Playfair Display', serif;"
+        >
+          Metadata <span class="text-[#c5a059]">Generator</span>
+        </h1>
+        <p class="text-gray-400 max-w-xl mx-auto text-sm md:text-base">
+          Unggah foto batik & biarkan AI Google Gemini menganalisis filosofi,
+          sejarah, dan elemen visualnya secara otomatis.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-4">
+          <div
+            class="rounded-2xl border border-white/10 p-6 h-full"
+            style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px);"
+          >
+            <h2
+              class="text-lg font-bold text-white mb-5 flex items-center gap-2"
+            >
+              <span
+                class="w-8 h-8 rounded-lg bg-[#a67c00]/20 flex items-center justify-center"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-4 w-4 text-[#c5a059]"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  ><path
+                    d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                  ></path></svg
+                >
+              </span>
+              Data Input
+            </h2>
+
+            <div class="space-y-4">
+              <div>
+                <label
+                  class="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider"
+                  >Nama Motif</label
+                >
+                <input
+                  type="text"
+                  id="motifName"
+                  class="w-full px-3 py-2.5 bg-black/40 border border-white/10 rounded-lg text-white text-sm focus:border-[#a67c00] focus:ring-1 focus:ring-[#a67c00]/50 outline-none transition-all placeholder-gray-600"
+                  placeholder="Misal: Mega Mendung"
+                />
+              </div>
+
+              <div>
+                <label
+                  class="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider"
+                  >Foto Batik</label
+                >
+                <label
+                  id="dropZone"
+                  class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/10 rounded-xl cursor-pointer hover:border-[#a67c00]/50 hover:bg-[#a67c00]/5 transition-all"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-8 w-8 text-gray-600 mb-2"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    ><path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.5"
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    ></path></svg
+                  >
+                  <span class="text-xs text-gray-500"
+                    >Klik atau seret gambar ke sini</span
+                  >
+                  <input
+                    type="file"
+                    id="motifImage"
+                    accept="image/*"
+                    class="hidden"
+                  />
+                </label>
+              </div>
+
+              <div id="imagePreviewContainer" class="hidden">
+                <div
+                  class="relative group rounded-xl overflow-hidden border border-white/10"
+                >
+                  <img id="imagePreview" class="w-full h-44 object-cover" />
+                  <div
+                    class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                  >
+                    <span class="text-white text-xs">Klik untuk mengganti</span>
+                  </div>
+                </div>
+              </div>
+
+              <div id="colorPickerSection" class="hidden">
+                <label
+                  class="block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wider"
+                  >Warna Dominan (EyeDropper)</label
+                >
+                <p class="text-[10px] text-gray-600 mb-2">
+                  Klik tombol di bawah, lalu klik warna pada gambar di layar
+                  Anda.
+                </p>
+                <div class="flex gap-2 mb-2">
+                  <button
+                    id="btnPickColor"
+                    class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-black/40 border border-white/10 rounded-lg text-gray-300 text-xs hover:border-[#a67c00]/50 hover:text-[#c5a059] transition-all"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      ><path
+                        fill-rule="evenodd"
+                        d="M4 2a2 2 0 00-2 2v11a3 3 0 106 0V4a2 2 0 00-2-2H4zm1 14a1 1 0 100-2 1 1 0 000 2zm5-1.757l4.9-4.9a2 2 0 000-2.828L13.485 5.1a2 2 0 00-2.828 0L10 5.757v8.486zM16 18H9.071l6-6H16a2 2 0 012 2v2a2 2 0 01-2 2z"
+                        clip-rule="evenodd"></path></svg
+                    >
+                    Pilih Warna
+                  </button>
+                  <button
+                    id="btnClearColors"
+                    class="px-3 py-2 bg-black/40 border border-white/10 rounded-lg text-gray-500 text-xs hover:border-red-500/50 hover:text-red-400 transition-all"
+                    title="Hapus semua warna"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div
+                  id="colorSwatches"
+                  class="flex flex-wrap gap-2 min-h-[36px]"
+                >
+                  <span class="text-[10px] text-gray-600 italic"
+                    >Belum ada warna dipilih...</span
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div class="flex gap-2 mt-6">
+              <button
+                id="btnGenerate"
+                class="flex-1 py-3 rounded-xl font-semibold text-sm text-white transition-all duration-300 flex items-center justify-center gap-2"
+                style="background: linear-gradient(135deg, #a67c00, #c5a059); box-shadow: 0 4px 20px rgba(166,124,0,0.3);"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  ><path
+                    fill-rule="evenodd"
+                    d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+                    clip-rule="evenodd"></path></svg
+                >
+                <span id="btnGenerateText">Generate Metadata</span>
+              </button>
+              <button
+                id="btnReset"
+                class="py-3 px-4 rounded-xl font-semibold text-sm text-gray-400 bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-300 flex items-center justify-center"
+                title="Isi Metadata Baru"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
+            </div>
+            <p
+              id="statusMsg"
+              class="text-xs text-center text-[#c5a059] hidden mt-3 animate-pulse"
+            >
+              ⚡ AI sedang menganalisis gambar...
+            </p>
+
+            <button
+              id="btnSaveImage"
+              class="w-full mt-3 py-2.5 rounded-xl font-semibold text-xs text-[#c5a059] border border-[#a67c00]/30 hover:bg-[#a67c00]/20 transition-all duration-300 items-center justify-center gap-2 hidden"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4 inline mr-1"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                ><path
+                  d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"
+                ></path></svg
+              >
+              Simpan Otomatis ke Proyek
+            </button>
+            <button
+              id="btnDownloadJson"
+              class="w-full mt-3 py-2.5 rounded-xl font-semibold text-xs text-white border border-white/20 hover:bg-white/10 transition-all duration-300 items-center justify-center gap-2 hidden"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Download JSON
+            </button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5">
+          <div
+            class="rounded-2xl border border-white/10 h-full flex flex-col"
+            style="background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);"
+          >
+            <div
+              class="flex justify-between items-center px-5 py-4 border-b border-white/5"
+            >
+              <div class="flex items-center gap-2">
+                <div class="flex gap-1.5">
+                  <span class="w-3 h-3 rounded-full bg-red-500/70"></span>
+                  <span class="w-3 h-3 rounded-full bg-yellow-500/70"></span>
+                  <span class="w-3 h-3 rounded-full bg-green-500/70"></span>
+                </div>
+                <span class="text-xs text-gray-500 ml-2 font-mono"
+                  >output.json</span
+                >
+              </div>
+              <button
+                id="btnCopy"
+                class="text-[10px] bg-[#a67c00]/20 hover:bg-[#a67c00]/40 text-[#c5a059] px-3 py-1 rounded-full transition-all hidden font-semibold uppercase tracking-wider"
+              >
+                Copy JSON
+              </button>
+            </div>
+            <pre
+              id="jsonOutput"
+              class="flex-1 px-5 py-4 text-[#4ec9b0] font-mono text-xs overflow-auto break-all whitespace-pre-wrap"
+              style="min-height: 400px;"><span class="text-gray-600 italic">// Hasil generasi AI akan muncul di sini...
+// 
+// Masukkan nama motif & unggah gambar,
+// lalu klik "Generate Metadata".</span></pre>
+          </div>
+        </div>
+
+        <div class="lg:col-span-3">
+          <div class="space-y-5 h-full flex flex-col">
+            <div
+              class="rounded-2xl border border-white/10 overflow-hidden flex-1"
+              style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px);"
+            >
+              <div class="px-4 py-3 border-b border-white/5">
+                <span
+                  class="text-xs text-gray-400 font-semibold uppercase tracking-wider"
+                  >Preview Motif</span
+                >
+              </div>
+              <div id="previewLargeContainer" class="p-3">
+                <div
+                  class="rounded-xl overflow-hidden border border-white/5 bg-black/30 flex items-center justify-center"
+                  style="min-height: 200px;"
+                >
+                  <img
+                    id="previewLarge"
+                    class="w-full object-cover hidden"
+                    style="max-height: 260px;"
+                  />
+                  <span
+                    id="previewPlaceholder"
+                    class="text-gray-600 text-xs italic">Belum ada gambar</span
+                  >
+                </div>
+              </div>
+              <div id="parsedInfo" class="px-4 pb-4 hidden">
+                <div class="space-y-2">
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="text-[10px] text-gray-500 uppercase tracking-wider w-16 shrink-0"
+                      >Judul</span
+                    >
+                    <span
+                      id="infoTitle"
+                      class="text-xs text-white font-semibold truncate">-</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="text-[10px] text-gray-500 uppercase tracking-wider w-16 shrink-0"
+                      >Asal</span
+                    >
+                    <span
+                      id="infoCoverage"
+                      class="text-xs text-[#c5a059] truncate">-</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="text-[10px] text-gray-500 uppercase tracking-wider w-16 shrink-0"
+                      >Path</span
+                    >
+                    <span
+                      id="infoPath"
+                      class="text-[10px] text-gray-400 font-mono truncate"
+                      >-</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="rounded-2xl border border-white/10 p-4"
+              style="background: rgba(255,255,255,0.03); backdrop-filter: blur(10px);"
+            >
+              <span
+                class="text-xs text-gray-400 font-semibold uppercase tracking-wider"
+                >Panduan</span
+              >
+              <ol class="mt-3 space-y-2 text-[11px] text-gray-500">
+                <li class="flex gap-2">
+                  <span class="text-[#c5a059] font-bold">1.</span> Ketik nama motif
+                  & unggah foto
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-[#c5a059] font-bold">2.</span> Klik "Generate
+                  Metadata"
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-[#c5a059] font-bold">3.</span> Pilih warna dominan
+                  (EyeDropper)
+                </li>
+                <li class="flex gap-2">
+                  <span class="text-[#c5a059] font-bold">4.</span> Copy JSON & download
+                  gambar
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // ---- Elemen DOM ----
+      const motifNameInput = document.getElementById("motifName");
+      const motifImageInput = document.getElementById("motifImage");
+      const dropZone = document.getElementById("dropZone");
+      const imagePreview = document.getElementById("imagePreview");
+      const imagePreviewContainer = document.getElementById(
+        "imagePreviewContainer",
+      );
+      const colorPickerSection = document.getElementById("colorPickerSection");
+      const btnPickColor = document.getElementById("btnPickColor");
+      const btnClearColors = document.getElementById("btnClearColors");
+      const colorSwatches = document.getElementById("colorSwatches");
+      const btnGenerate = document.getElementById("btnGenerate");
+      const btnGenerateText = document.getElementById("btnGenerateText");
+      const statusMsg = document.getElementById("statusMsg");
+      const jsonOutput = document.getElementById("jsonOutput");
+      const btnCopy = document.getElementById("btnCopy");
+      const btnSaveImage = document.getElementById("btnSaveImage");
+      const btnDownloadJson = document.getElementById("btnDownloadJson");
+      const previewLarge = document.getElementById("previewLarge");
+      const previewPlaceholder = document.getElementById("previewPlaceholder");
+      const parsedInfo = document.getElementById("parsedInfo");
+      const infoTitle = document.getElementById("infoTitle");
+      const infoCoverage = document.getElementById("infoCoverage");
+      const infoPath = document.getElementById("infoPath");
+
+      // ---- State ----
+      let base64Image = "";
+      let mimeType = "";
+      let originalFileName = "";
+      let pickedColors = [];
+      let lastGeneratedJson = null;
+
+      // ---- Restore State ----
+      const savedState = sessionStorage.getItem("aiGeneratorStateAdmin");
+      if (savedState) {
+        try {
+          const state = JSON.parse(savedState);
+          motifNameInput.value = state.motifName || "";
+          base64Image = state.base64Image || "";
+          mimeType = state.mimeType || "";
+          pickedColors = state.pickedColors || [];
+          lastGeneratedJson = state.lastGeneratedJson;
+          
+          if (base64Image) {
+            const resultStr = `data:${mimeType};base64,${base64Image}`;
+            imagePreview.src = resultStr;
+            imagePreviewContainer.classList.remove("hidden");
+            dropZone.classList.add("hidden");
+            colorPickerSection.classList.remove("hidden");
+            previewLarge.src = resultStr;
+            previewLarge.classList.remove("hidden");
+            previewPlaceholder.classList.add("hidden");
+            renderColorSwatches();
+          }
+
+          if (lastGeneratedJson && state.generatedText) {
+            const highlighted = state.generatedText
+              .replace(/"([^"]+)":/g, '<span style="color:#9cdcfe">"$1"</span>:')
+              .replace(/: "([^"]*)"/g, ': <span style="color:#ce9178">"$1"</span>')
+              .replace(/\{/g, '<span style="color:#ffd700">{</span>')
+              .replace(/\}/g, '<span style="color:#ffd700">}</span>');
+            jsonOutput.innerHTML = highlighted;
+
+            infoTitle.textContent = lastGeneratedJson["dc:title"] || "-";
+            infoCoverage.textContent = lastGeneratedJson["dc:coverage"] || "-";
+            infoPath.textContent = lastGeneratedJson["url_gambar_web"] || "-";
+            
+            parsedInfo.classList.remove("hidden");
+            btnSaveImage.classList.remove("hidden");
+            btnSaveImage.style.display = "flex";
+            btnDownloadJson.classList.remove("hidden");
+            btnDownloadJson.style.display = "flex";
+            btnCopy.classList.remove("hidden");
+          }
+        } catch(e) {
+          console.error("Failed to restore state", e);
+        }
+      }
+
+      // ---- Reset Button ----
+      const btnReset = document.getElementById("btnReset");
+      if (btnReset) {
+        btnReset.addEventListener("click", () => {
+          sessionStorage.removeItem("aiGeneratorStateAdmin");
+          window.location.reload();
+        });
+      }
+
+      // ---- Image Upload & Preview ----
+      function handleImageFile(file) {
+        if (!file) return;
+        mimeType = file.type;
+        originalFileName = file.name;
+        const reader = new FileReader();
+        reader.onload = (re) => {
+          if (re.target && re.target.result) {
+            const resultStr = re.target.result;
+            imagePreview.src = resultStr;
+            imagePreviewContainer.classList.remove("hidden");
+            dropZone.classList.add("hidden");
+            colorPickerSection.classList.remove("hidden");
+            previewLarge.src = resultStr;
+            previewLarge.classList.remove("hidden");
+            previewPlaceholder.classList.add("hidden");
+            base64Image = resultStr.split(",")[1];
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+
+      motifImageInput.addEventListener("change", (e) => {
+        handleImageFile(e.target.files?.[0]);
+      });
+
+      // Klik preview untuk ganti gambar
+      imagePreviewContainer.addEventListener("click", () => {
+        motifImageInput.click();
+      });
+
+      // ---- EyeDropper API ----
+      btnPickColor.addEventListener("click", async () => {
+        if (!("EyeDropper" in window)) {
+          alert(
+            "Browser Anda tidak mendukung EyeDropper API. Silakan gunakan Google Chrome versi terbaru.",
+          );
+          return;
+        }
+        try {
+          const eyeDropper = new EyeDropper();
+          const result = await eyeDropper.open();
+          const hex = result.sRGBHex;
+          pickedColors.push(hex);
+          renderColorSwatches();
+        } catch (err) {
+          // User cancelled
+        }
+      });
+
+      btnClearColors.addEventListener("click", () => {
+        pickedColors = [];
+        renderColorSwatches();
+      });
+
+      function renderColorSwatches() {
+        if (pickedColors.length === 0) {
+          colorSwatches.innerHTML =
+            '<span class="text-[10px] text-gray-600 italic">Belum ada warna dipilih...</span>';
+          return;
+        }
+        colorSwatches.innerHTML = pickedColors
+          .map(
+            (c, i) => `
+          <div class="flex items-center gap-1.5 bg-black/40 border border-white/10 rounded-lg px-2 py-1 group">
+            <span class="w-5 h-5 rounded-md border border-white/20 shrink-0" style="background:${c}"></span>
+            <span class="text-[10px] font-mono text-gray-300">${c}</span>
+            <button data-idx="${i}" class="remove-color text-gray-600 hover:text-red-400 text-xs ml-1 opacity-0 group-hover:opacity-100 transition-opacity">✕</button>
+          </div>
+        `,
+          )
+          .join("");
+
+        colorSwatches.querySelectorAll(".remove-color").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const idx = parseInt(e.target.dataset.idx);
+            pickedColors.splice(idx, 1);
+            renderColorSwatches();
+          });
+        });
+      }
+
+      // ---- Format warna untuk prompt ----
+      function getColorString() {
+        if (pickedColors.length === 0) return "";
+        return `\nPERHATIAN: User telah memilih warna dominan secara manual menggunakan EyeDropper.\nGunakan warna-warna berikut untuk field "Warna Dominan" (sertakan kode hex-nya): ${pickedColors.join(", ")}.\nKamu boleh menambahkan nama warnanya di sebelah kode hex.`;
+      }
+
+      // ---- GENERATE METADATA ----
+      btnGenerate.addEventListener("click", async () => {
+        const motifName = motifNameInput.value.trim();
+
+        if (!motifName) {
+          alert("Mohon masukkan Nama Motif!");
+          return;
+        }
+        if (!base64Image) {
+          alert("Mohon unggah foto batik!");
+          return;
+        }
+
+        btnGenerate.setAttribute("disabled", "true");
+        btnGenerate.style.opacity = "0.5";
+        btnGenerate.style.cursor = "not-allowed";
+        btnGenerateText.textContent = "Memproses...";
+        statusMsg.classList.remove("hidden");
+        jsonOutput.innerHTML =
+          '<span class="text-yellow-400 animate-pulse">⚡ Menghubungi Google Gemini Vision AI...\n   Memproses gambar dan menganalisis filosofi...</span>';
+        btnCopy.classList.add("hidden");
+        btnSaveImage.classList.add("hidden");
+        btnDownloadJson.classList.add("hidden");
+
+        try {
+          const colorInfo = getColorString();
+          const prompt = `Kamu adalah asisten kurator ahli Batik Nusantara.\nBerikut adalah gambar motif batik bernama: ${motifName}.\nTugasmu adalah menghasilkan metadata JSON yang mendeskripsikan batik tersebut.\nOUTPUT HARUS 100% BERFORMAT JSON YANG VALID, TANPA MARKDOWN BACKTICKS (\`\`\`json) DAN TANPA TEKS LAINNYA.\nGunakan persis struktur berikut:\n{\n    "dc:identifier": "{nama_motif_format_snake_case}",\n    "url_gambar_web": "/assets/motif/{provinsi_singkat_lowercase_pakai_strip}/{nama_motif_format_snake_case}.jpeg",\n    "dc:title": "${motifName}",\n    "dc:subject": {\n        "Kategori Budaya": "Seni Kriya Tradisional / Batik Keraton (atau sesuaikan)",\n        "Status Simbolik": "..."\n    },\n    "dc:description": {\n        "Fungsi Tradisional": "...",\n        "Makna Filosofis": "...",\n        "Elemen Visual": "...",\n        "Warna Dominan": "Nama Warna (#HEX), Nama Warna (#HEX), ...",\n        "Fakta Unik": "..."\n    },\n    "dc:coverage": "{Provinsi Lengkap}, Indonesia",\n    "dc:format": "${mimeType || "image/jpeg"}",\n    "dc:source": "Nusantara Archival",\n    "dc:rights": "CC0 (Public Domain)",\n    "dc:type": "Image; Physical Object",\n    "dc:language": "id, jv"\n}\nPENTING untuk field "url_gambar_web": gunakan format provinsi singkat pakai strip (contoh: diy, jawa-tengah, jawa-barat, sumut, dll).\nIsi seluruh field string dengan pengetahuan sejarah dan budaya memukau berdasarkan analisis visual gambar dan namanya.\nPrediksi provinsi asal secara akurat.${colorInfo}`;
+
+          const response = await fetch("/api/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [
+                {
+                  parts: [
+                    { text: prompt },
+                    { inline_data: { mime_type: mimeType, data: base64Image } },
+                  ],
+                },
+              ],
+              generationConfig: {
+                temperature: 0.4,
+                topK: 32,
+                topP: 1,
+                maxOutputTokens: 2048,
+              },
+            }),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Gagal menghubungi server");
+          }
+
+          const data = await response.json();
+          let generatedText = data.candidates[0].content.parts[0].text;
+          generatedText = generatedText
+            .replace(/```json/gi, "")
+            .replace(/```/g, "")
+            .trim();
+
+          try {
+            const parsed = JSON.parse(generatedText);
+            lastGeneratedJson = parsed;
+            generatedText = JSON.stringify(parsed, null, 4);
+
+            // Update info panel
+            infoTitle.textContent = parsed["dc:title"] || "-";
+            infoCoverage.textContent = parsed["dc:coverage"] || "-";
+            infoPath.textContent = parsed["url_gambar_web"] || "-";
+            parsedInfo.classList.remove("hidden");
+            btnSaveImage.classList.remove("hidden");
+            btnSaveImage.style.display = "flex";
+            btnDownloadJson.classList.remove("hidden");
+            btnDownloadJson.style.display = "flex";
+          } catch (e) {
+            console.warn("Respons AI bukan JSON valid murni");
+            lastGeneratedJson = null;
+          }
+
+          // Syntax highlighting sederhana
+          const highlighted = generatedText
+            .replace(/"([^"]+)":/g, '<span style="color:#9cdcfe">"$1"</span>:')
+            .replace(
+              /: "([^"]*)"/g,
+              ': <span style="color:#ce9178">"$1"</span>',
+            )
+            .replace(/\{/g, '<span style="color:#ffd700">{</span>')
+            .replace(/\}/g, '<span style="color:#ffd700">}</span>');
+          jsonOutput.innerHTML = highlighted;
+          btnCopy.classList.remove("hidden");
+
+          // Save to sessionStorage
+          sessionStorage.setItem("aiGeneratorStateAdmin", JSON.stringify({
+            motifName: motifName,
+            base64Image: base64Image,
+            mimeType: mimeType,
+            pickedColors: pickedColors,
+            lastGeneratedJson: lastGeneratedJson,
+            generatedText: generatedText
+          }));
+        } catch (error) {
+          console.error(error);
+          jsonOutput.innerHTML = `<span class="text-red-400">❌ Error: ${error.message}</span>`;
+        } finally {
+          btnGenerate.removeAttribute("disabled");
+          btnGenerate.style.opacity = "1";
+          btnGenerate.style.cursor = "pointer";
+          btnGenerateText.textContent = "Generate Metadata";
+          statusMsg.classList.add("hidden");
+        }
+      });
+
+      // ---- COPY JSON ----
+      btnCopy.addEventListener("click", () => {
+        const textToCopy = lastGeneratedJson
+          ? JSON.stringify(lastGeneratedJson, null, 4)
+          : jsonOutput.innerText;
+        navigator.clipboard
+          .writeText(textToCopy)
+          .then(() => {
+            const originalText = btnCopy.innerText;
+            btnCopy.innerText = "✓ Tersalin!";
+            setTimeout(() => {
+              btnCopy.innerText = originalText;
+            }, 2000);
+          })
+          .catch((err) => alert("Gagal menyalin: " + err));
+      });
+
+      // ---- SIMPAN OTOMATIS KE PROYEK ----
+      btnSaveImage.addEventListener("click", async () => {
+        if (!lastGeneratedJson || !base64Image) return;
+
+        // Ubah tampilan tombol saat proses menyimpan
+        const originalHTML = btnSaveImage.innerHTML;
+        btnSaveImage.innerHTML = "Menyimpan ke folder... ⏳";
+        btnSaveImage.disabled = true;
+
+        // Ambil nama file dan nama folder daerah dari JSON AI
+        const urlPath = lastGeneratedJson["url_gambar_web"] || "";
+        const parts = urlPath.split("/");
+
+        let rawFileName = parts[parts.length - 1] || "batik.jpeg";
+        const fileNameWithoutExt = rawFileName.replace(/\.[^/.]+$/, ""); // Membuang .jpeg untuk nama JSON
+        const folderName = parts[parts.length - 2] || "unknown";
+
+        try {
+          // Kirim perintah ke backend save.js
+          const response = await fetch("/api/save", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              jsonContent: lastGeneratedJson,
+              base64Image: base64Image,
+              fileName: fileNameWithoutExt,
+              folderName: folderName,
+            }),
+          });
+
+          if (!response.ok) throw new Error("Gagal menyimpan file ke sistem");
+
+          // Notifikasi sukses
+          btnSaveImage.innerHTML = `✓ Tersimpan di folder ${folderName}!`;
+          btnSaveImage.classList.replace("text-[#c5a059]", "text-green-400");
+          btnSaveImage.classList.replace(
+            "border-[#a67c00]/30",
+            "border-green-500/30",
+          );
+          btnSaveImage.style.backgroundColor = "rgba(34, 197, 94, 0.1)";
+        } catch (error) {
+          console.error(error);
+          btnSaveImage.innerHTML = `❌ Error: ${error.message}`;
+        } finally {
+          // Kembalikan tombol ke keadaan semula setelah 4 detik
+          setTimeout(() => {
+            btnSaveImage.innerHTML = originalHTML;
+            btnSaveImage.disabled = false;
+            btnSaveImage.classList.replace("text-green-400", "text-[#c5a059]");
+            btnSaveImage.classList.replace(
+              "border-green-500/30",
+              "border-[#a67c00]/30",
+            );
+            btnSaveImage.style.backgroundColor = "transparent";
+          }, 4000);
+        }
+      });
+
+      // ---- DOWNLOAD JSON ----
+      btnDownloadJson.addEventListener("click", () => {
+        if (!lastGeneratedJson) return;
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(lastGeneratedJson, null, 4));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        
+        let filename = lastGeneratedJson["dc:identifier"] || "metadata";
+        downloadAnchorNode.setAttribute("download", filename + ".json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+      });
+    }); // <-- INI PENUTUP DOCUMENT LISTENER YANG SEMPAT HILANG
+  </script>
+
+  <style is:global>
+    /* ========================================================
+       ADAPTASI LIGHT MODE UNTUK GENERATOR ADMIN
+       ======================================================== */
+    html.light-mode section { 
+        background: #f5f2ec !important; 
+    }
+    
+    html.light-mode h1, html.light-mode h2, html.light-mode h3 {
+        color: #2d2a26 !important;
+    }
+    
+    html.light-mode p.text-gray-400 {
+        color: #5a5345 !important;
+    }
+    
+    html.light-mode .border-white\/10 {
+        border-color: #d1c8b4 !important;
+    }
+    html.light-mode .border-white\/5 {
+        border-color: #e6dfd1 !important;
+    }
+    
+    html.light-mode div[style*="background: rgba(255,255,255,0.03)"],
+    html.light-mode div[style*="background: rgba(0,0,0,0.5)"] {
+        background: #ebe4d8 !important;
+        box-shadow: 0 10px 40px -10px rgba(92, 85, 77, 0.15) !important;
+    }
+    
+    html.light-mode label.text-gray-400 {
+        color: #6b6353 !important;
+    }
+    
+    html.light-mode input.bg-black\/40 {
+        background: #f5f2ec !important;
+        color: #2d2a26 !important;
+        border-color: #c2bcaf !important;
+    }
+    
+    html.light-mode input.bg-black\/40::placeholder {
+        color: #a8a296 !important;
+    }
+    
+    html.light-mode #dropZone {
+        background: #f5f2ec !important;
+        border-color: #c2bcaf !important;
+    }
+    html.light-mode #dropZone:hover {
+        border-color: #a67c00 !important;
+        background: rgba(166, 124, 0, 0.05) !important;
+    }
+    
+    html.light-mode #dropZone span,
+    html.light-mode #dropZone svg {
+        color: #6b6353 !important;
+    }
+
+    html.light-mode button.bg-black\/40 {
+        background: #e3dccf !important;
+        color: #4a4539 !important;
+        border-color: #d1c8b4 !important;
+    }
+    html.light-mode button.bg-black\/40:hover {
+        background: #ebe4d8 !important;
+    }
+
+    /* Fix Download JSON Button styling in light mode */
+    html.light-mode #btnDownloadJson {
+        color: #4a4539 !important;
+        border-color: #d1c8b4 !important;
+    }
+    html.light-mode #btnDownloadJson:hover {
+        background: #ebe4d8 !important;
+    }
+    html.light-mode #btnDownloadJson svg {
+        stroke: #4a4539 !important;
+    }
+    
+    html.light-mode pre#jsonOutput {
+        background: #faf9f6 !important;
+        color: #1a1a1a !important;
+        border: 1px solid #d1c8b4 !important;
+        border-radius: 0.5rem;
+    }
+    
+    html.light-mode .bg-black\/30 {
+        background: #e3dccf !important;
+    }
+    
+    html.light-mode #parsedInfo span.text-white {
+        color: #2d2a26 !important;
+    }
+    html.light-mode #parsedInfo span.text-gray-500 {
+        color: #6b6353 !important;
+    }
+    
+    html.light-mode .text-gray-500,
+    html.light-mode .text-gray-600 {
+        color: #6b6353 !important;
+    }
+    
+    /* Fix JSON colors in light mode */
+    html.light-mode #jsonOutput span[style*="color:#9cdcfe"] { color: #005cc5 !important; }
+    html.light-mode #jsonOutput span[style*="color:#ce9178"] { color: #032f62 !important; }
+    html.light-mode #jsonOutput span[style*="color:#ffd700"] { color: #d73a49 !important; }
+  </style>
+</MainLayout>

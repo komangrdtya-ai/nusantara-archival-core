@@ -1,0 +1,98 @@
+---
+// src/components/shared/MenuOverlay.astro
+// @ts-nocheck
+---
+
+<script src="../../scripts/menuBehavior.js"></script>
+<nav
+  id="menu-overlay"
+  class="fixed inset-0 bg-[#050505]/95 backdrop-blur-md flex flex-col items-center justify-center opacity-0 pointer-events-none transition-all duration-500 ease-in-out"
+  style="z-index: 90;"
+>
+  <div class="flex flex-col items-center gap-8 text-center">
+    <a
+      href={`${import.meta.env.BASE_URL}/`}
+      class="js-menu-link menu-item text-3xl md:text-5xl font-bold text-white/90 hover:text-[#a67c00] transition-colors duration-300 tracking-tight no-underline block relative px-10"
+    >
+      Halaman Utama
+    </a>
+
+    <a
+      href={`${import.meta.env.BASE_URL}/koleksi`}
+      class="js-menu-link menu-item text-3xl md:text-5xl font-bold text-white/90 hover:text-[#a67c00] transition-colors duration-300 tracking-tight no-underline block relative px-10"
+    >
+      Katalog Motif
+    </a>
+
+
+  </div>
+  <div
+    class="absolute bottom-12 text-gray-500 text-sm tracking-widest uppercase font-light"
+  >
+    Museum Gallery Digital
+  </div>
+</nav>
+
+<style is:global>
+  .menu-item::before {
+    content: "> ";
+    position: absolute;
+    left: 0;
+    opacity: 0;
+    color: #a67c00;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  .menu-item::after {
+    content: " <";
+    position: absolute;
+    right: 0;
+    opacity: 0;
+    color: #a67c00;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  .menu-item:hover::before {
+    opacity: 1;
+  }
+
+  .menu-item:hover::after {
+    opacity: 1;
+  }
+
+  /* ========================================================
+     ADAPTASI DARK MODE UNTUK MENU OVERLAY (Efek Glow Emas)
+     ======================================================== */
+  html:not(.light-mode) #menu-overlay .menu-item {
+    transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out !important;
+  }
+  
+  html:not(.light-mode) #menu-overlay .menu-item:hover {
+    color: #ffd700 !important;
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 215, 0, 0.2) !important;
+  }
+
+  /* ========================================================
+     ADAPTASI LIGHT MODE UNTUK MENU OVERLAY
+     ======================================================== */
+  html.light-mode #menu-overlay {
+    background-color: rgba(235, 228, 216, 0.95) !important; /* Krem Medium #ebe4d8 */
+  }
+
+  html.light-mode #menu-overlay .menu-item {
+    color: #2d2a26 !important; /* Teks gelap */
+  }
+
+  html.light-mode #menu-overlay .menu-item:hover {
+    color: #8f6700 !important; /* Aksen emas lebih gelap (Dark Copper) */
+  }
+
+  html.light-mode #menu-overlay .menu-item::before,
+  html.light-mode #menu-overlay .menu-item::after {
+    color: #8f6700 !important;
+  }
+
+  html.light-mode #menu-overlay .text-gray-500 {
+    color: #6b6353 !important;
+  }
+</style>

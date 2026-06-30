@@ -1,0 +1,328 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import { getCollection } from 'astro:content';
+
+const semuaKoleksi = await getCollection('koleksi');
+
+// Persiapkan data untuk dikirim ke client
+const motifs = semuaKoleksi.map(m => ({
+    id: m.data['dc:identifier'],
+    title: m.data['dc:title'],
+    image: m.data.url_gambar_web,
+    existingColors: m.data.warna_dominan || []
+}));
+---
+
+<MainLayout title="Kurator Warna Manual">
+    <div class="min-h-screen bg-[#0a0a0a] text-white p-6 pb-24">
+        <div class="max-w-7xl mx-auto space-y-8">
+            <header class="text-center space-y-4">
+                <h1 class="text-3xl font-serif text-[#a67c00]">Studio Kurator Warna</h1>
+                <p class="text-gray-400">Pilih warna secara presisi menggunakan insting kurator Anda. Data akan otomatis tersimpan di peramban.</p>
+            </header>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                {/* Bagian Kiri: Penampil Gambar */}
+                <div class="lg:col-span-2 bg-[#111] border border-white/10 rounded-xl overflow-hidden shadow-2xl flex flex-col">
+                    <div class="flex items-center justify-between p-4 bg-black/50 border-b border-white/5">
+                        <button id="btn-prev" class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-md transition-colors text-sm">
+                            &larr; Sebelumnya
+                        </button>
+                        <div class="text-center">
+                            <h2 id="motif-title" class="font-bold text-lg text-white">Judul Motif</h2>
+                            <p id="motif-counter" class="text-xs text-gray-500">1 / {motifs.length}</p>
+                        </div>
+                        <button id="btn-next" class="px-4 py-2 bg-[#a67c00] hover:bg-[#cfa11d] text-black font-bold rounded-md transition-colors text-sm">
+                            Selanjutnya &rarr;
+                        </button>
+                    </div>
+                    
+                    <div id="image-container" class="p-6 bg-[#0a0a0a] flex-1 flex items-center justify-center relative overflow-hidden group select-none">
+                        <img id="motif-image" src="" alt="Motif" class="max-h-[600px] w-auto object-contain drop-shadow-2xl cursor-crosshair transition-transform duration-75 origin-center" crossorigin="anonymous" draggable="false" />
+                        
+                        {/* Instruksi Mengambang */}
+                        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/80 text-white px-4 py-2 rounded-full text-xs font-mono tracking-widest backdrop-blur-sm pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity flex flex-col items-center gap-1">
+                            <span>GUNAKAN EYEDROPPER UNTUK MEMILIH WARNA</span>
+                            <span class="text-gray-400 text-[10px]">SCROLL UNTUK ZOOM &bull; DRAG UNTUK GESER</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Bagian Kanan: Kontrol Kurasi */}
+                <div class="space-y-6">
+                    
+                    {/* Panel Latar Belakang */}
+                    <div class="bg-[#111] border border-white/10 rounded-xl p-6 shadow-xl space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-lg border-b-2 border-[#a67c00] pb-1 inline-block">Warna Latar Belakang</h3>
+                        </div>
+                        
+                        <div id="latar-list" class="space-y-3 min-h-[50px]">
+                            {/* Diisi oleh JS */}
+                        </div>
+
+                        <button onclick="pickColor('latar')" class="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/20 border-dashed rounded-lg flex items-center justify-center gap-2 text-sm transition-colors text-gray-300 hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M13.354.646a1.207 1.207 0 0 0-1.708 0L8.5 3.793l-.646-.647a.5.5 0 1 0-.708.708L8.293 4.99l-7.147 7.146A.5.5 0 0 0 1 12.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .354-.146l7.146-7.147 1.146 1.147a.5.5 0 0 0 .708-.708l-.647-.646 3.147-3.146a1.207 1.207 0 0 0 0-1.708l-2-2zM2 12.707l7-7L10.293 7l-7 7H2v-1.293z"/></svg>
+                            Ambil Warna Latar Belakang
+                        </button>
+                    </div>
+
+                    {/* Panel Corak */}
+                    <div class="bg-[#111] border border-white/10 rounded-xl p-6 shadow-xl space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-lg border-b-2 border-green-600 pb-1 inline-block">Warna Corak (Motif)</h3>
+                        </div>
+                        
+                        <div id="corak-list" class="space-y-3 min-h-[50px]">
+                            {/* Diisi oleh JS */}
+                        </div>
+
+                        <button onclick="pickColor('corak')" class="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/20 border-dashed rounded-lg flex items-center justify-center gap-2 text-sm transition-colors text-gray-300 hover:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M13.354.646a1.207 1.207 0 0 0-1.708 0L8.5 3.793l-.646-.647a.5.5 0 1 0-.708.708L8.293 4.99l-7.147 7.146A.5.5 0 0 0 1 12.5v2a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .354-.146l7.146-7.147 1.146 1.147a.5.5 0 0 0 .708-.708l-.647-.646 3.147-3.146a1.207 1.207 0 0 0 0-1.708l-2-2zM2 12.707l7-7L10.293 7l-7 7H2v-1.293z"/></svg>
+                            Ambil Warna Corak
+                        </button>
+                    </div>
+
+                    <div class="flex gap-4 pt-4 border-t border-white/10">
+                        <button onclick="resetCurrent()" class="flex-1 py-3 bg-red-900/50 hover:bg-red-900/80 text-white rounded-lg text-sm transition-colors font-semibold">
+                            Reset Motif Ini
+                        </button>
+                        <button onclick="exportData()" class="flex-1 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm transition-colors font-bold shadow-[0_0_15px_rgba(37,99,235,0.5)]">
+                            Ekspor & Kirim ke AI
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {/* Modal Export */}
+    <div id="export-modal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-6 hidden">
+        <div class="bg-[#111] border border-white/10 rounded-xl p-8 max-w-2xl w-full space-y-6 shadow-2xl relative">
+            <button onclick="closeExport()" class="absolute top-4 right-4 text-gray-500 hover:text-white text-xl">&times;</button>
+            
+            <h2 class="text-2xl font-bold text-white text-center">Data Kurasi Selesai!</h2>
+            <p class="text-gray-400 text-center">Tugas Anda selesai! Salin teks di bawah ini dan paste ke dalam jendela obrolan AI (Chat). AI akan menerjemahkan Hex ini menjadi nama warna dan menyimpannya.</p>
+            
+            <textarea id="export-text" readonly class="w-full h-64 bg-black border border-white/20 rounded-lg p-4 font-mono text-sm text-[#deff9a] focus:outline-none focus:border-[#a67c00] resize-none"></textarea>
+            
+            <button onclick="copyExport()" id="copy-btn" class="w-full py-4 bg-[#a67c00] hover:bg-[#cfa11d] text-black font-bold rounded-lg transition-colors text-lg">
+                Salin Data ke Clipboard
+            </button>
+        </div>
+    </div>
+
+    <script define:vars={{ motifs, baseUrl: import.meta.env.BASE_URL }}>
+        const DB_KEY = 'warna_kurasi_manual_v1';
+        let kurasiData = JSON.parse(localStorage.getItem(DB_KEY) || '{}');
+        let currentIndex = 0;
+
+        const imgEl = document.getElementById('motif-image');
+        const titleEl = document.getElementById('motif-title');
+        const counterEl = document.getElementById('motif-counter');
+        const latarList = document.getElementById('latar-list');
+        const corakList = document.getElementById('corak-list');
+
+        function render() {
+            const motif = motifs[currentIndex];
+            titleEl.innerText = motif.title;
+            counterEl.innerText = `${currentIndex + 1} / ${motifs.length}`;
+            imgEl.src = baseUrl + motif.image;
+
+            // Reset Zoom
+            scale = 1;
+            translateX = 0;
+            translateY = 0;
+            imgEl.style.transform = `translate(0px, 0px) scale(1)`;
+            imgContainer.style.cursor = 'crosshair';
+
+            const data = kurasiData[motif.id] || { latar: [], corak: [] };
+            
+            renderColorList(latarList, data.latar, 'latar');
+            renderColorList(corakList, data.corak, 'corak');
+        }
+
+        function renderColorList(container, colors, type) {
+            if (!colors || colors.length === 0) {
+                container.innerHTML = '<p class="text-gray-600 text-sm italic text-center py-4">Belum ada warna yang dipilih.</p>';
+                return;
+            }
+
+            container.innerHTML = colors.map((hex, i) => `
+                <div class="flex items-center justify-between bg-black/40 border border-white/10 p-2 rounded-lg group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded border border-white/20 shadow-inner" style="background-color: ${hex}"></div>
+                        <span class="font-mono text-sm font-bold text-white tracking-wider">${hex}</span>
+                    </div>
+                    <button onclick="removeColor('${type}', ${i})" class="text-red-500/50 hover:text-red-500 px-2 transition-colors opacity-0 group-hover:opacity-100" title="Hapus Warna">
+                        &times;
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        window.pickColor = async function(type) {
+            if (!window.EyeDropper) {
+                alert("Browser Anda tidak mendukung EyeDropper API. Gunakan Chrome atau Edge versi terbaru di Desktop.");
+                return;
+            }
+
+            const eyeDropper = new EyeDropper();
+            try {
+                const result = await eyeDropper.open();
+                const hex = result.sRGBHex;
+                
+                const motif = motifs[currentIndex];
+                if (!kurasiData[motif.id]) {
+                    kurasiData[motif.id] = { latar: [], corak: [] };
+                }
+                
+                kurasiData[motif.id][type].push(hex);
+                saveData();
+                render();
+            } catch(e) {
+                // User membatalkan pemilihan warna, abaikan
+            }
+        };
+
+        window.removeColor = function(type, idx) {
+            const motif = motifs[currentIndex];
+            if(kurasiData[motif.id]) {
+                kurasiData[motif.id][type].splice(idx, 1);
+                saveData();
+                render();
+            }
+        };
+
+        window.resetCurrent = function() {
+            if(confirm('Yakin ingin mereset warna untuk batik ini?')) {
+                const motif = motifs[currentIndex];
+                delete kurasiData[motif.id];
+                saveData();
+                render();
+            }
+        };
+
+        function saveData() {
+            localStorage.setItem(DB_KEY, JSON.stringify(kurasiData));
+        }
+
+        window.exportData = function() {
+            // Hanya mengekspor motif yang sudah dikurasi (memiliki setidaknya 1 warna)
+            const exportReady = {};
+            for (const id in kurasiData) {
+                const data = kurasiData[id];
+                if (data.latar.length > 0 || data.corak.length > 0) {
+                    exportReady[id] = data;
+                }
+            }
+
+            if(Object.keys(exportReady).length === 0) {
+                alert("Anda belum mengkurasi warna batik apa pun.");
+                return;
+            }
+
+            const exportStr = JSON.stringify(exportReady, null, 2);
+            document.getElementById('export-text').value = exportStr;
+            document.getElementById('export-modal').classList.remove('hidden');
+        };
+
+        window.closeExport = function() {
+            document.getElementById('export-modal').classList.add('hidden');
+            const btn = document.getElementById('copy-btn');
+            btn.innerText = "Salin Data ke Clipboard";
+            btn.classList.replace('bg-green-600', 'bg-[#a67c00]');
+        };
+
+        window.copyExport = function() {
+            const text = document.getElementById('export-text');
+            text.select();
+            navigator.clipboard.writeText(text.value).then(() => {
+                const btn = document.getElementById('copy-btn');
+                btn.innerText = "Tersalin! Silakan Paste ke Chat AI";
+                btn.classList.replace('bg-[#a67c00]', 'bg-green-600');
+            });
+        };
+
+        // Event Listener Navigasi
+        document.getElementById('btn-prev').addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                render();
+            }
+        });
+
+        document.getElementById('btn-next').addEventListener('click', () => {
+            if (currentIndex < motifs.length - 1) {
+                currentIndex++;
+                render();
+            }
+        });
+
+        // Dukungan Keyboard
+        document.addEventListener('keydown', (e) => {
+            if (document.getElementById('export-modal').classList.contains('hidden')) {
+                if (e.key === 'ArrowRight') document.getElementById('btn-next').click();
+                if (e.key === 'ArrowLeft') document.getElementById('btn-prev').click();
+            }
+        });
+
+        // Fitur Zoom dan Pan (Geser)
+        const imgContainer = document.getElementById('image-container');
+        let scale = 1;
+        let isDragging = false;
+        let startX, startY, translateX = 0, translateY = 0;
+
+        imgContainer.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoomSpeed = 0.2;
+            if (e.deltaY < 0) scale += zoomSpeed;
+            else scale -= zoomSpeed;
+            
+            // Batas Zoom 1x hingga 8x
+            scale = Math.min(Math.max(1, scale), 8); 
+            
+            if (scale === 1) {
+                translateX = 0;
+                translateY = 0;
+                imgContainer.style.cursor = 'crosshair';
+            } else {
+                imgContainer.style.cursor = 'grab';
+            }
+            imgEl.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        });
+
+        imgContainer.addEventListener('mousedown', (e) => {
+            if (scale > 1) {
+                isDragging = true;
+                startX = e.clientX - translateX;
+                startY = e.clientY - translateY;
+                imgContainer.style.cursor = 'grabbing';
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+            imgEl.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            imgContainer.style.cursor = scale > 1 ? 'grab' : 'crosshair';
+        });
+        
+        imgContainer.addEventListener('mouseleave', () => {
+            if(isDragging) {
+                isDragging = false;
+                imgContainer.style.cursor = scale > 1 ? 'grab' : 'crosshair';
+            }
+        });
+
+        // Render awal
+        render();
+    </script>
+</MainLayout>

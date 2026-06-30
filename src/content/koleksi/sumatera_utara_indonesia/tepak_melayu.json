@@ -1,0 +1,22 @@
+{
+    "dc:identifier": "tepak_melayu",
+    "url_gambar_web": "/assets/motif/sumut/tepak_melayu.jpg",
+    "dc:title": "Tepak Melayu",
+    "dc:subject": {
+        "Kategori Budaya": "Batik Pesisiran",
+        "Status Simbolik": "Umum / Bebas"
+    },
+    "dc:description": {
+        "Fungsi Tradisional": "Kain pakaian resmi acara penyambutan delegasi, baju kurung festival, and seragam kebudayaan.",
+        "Makna Filosofis": "Melambangkan adat kesopanan, tata krama menyambut kerabat, serta simbol persatuan sosial masyarakat Melayu Deli yang rukun dan damai.",
+        "Elemen Visual": "Stilasi kotak sirih (tepak), helai daun sirih, and ukiran khas Melayu.",
+        "Warna Dominan": "Kuning Emas (#B88C29), Hijau Botol (#0D371C), Abu-abu Perak (#C2C1C6)",
+        "Fakta Unik": "Tepak merupakan perkakas kuno penyimpan sirih yang menjadi barang wajib dalam setiap prosesi adat melamar kekasih atau menyambut raja."
+    },
+    "dc:coverage": "Sumatera Utara, Indonesia",
+    "dc:format": "image/jpeg",
+    "dc:source": "Repositori Komunitas",
+    "dc:rights": "Repositori Komunitas / Penggunaan Bebas",
+    "dc:type": "Image; Physical Object",
+    "dc:language": "id, ms"
+}

@@ -1,0 +1,199 @@
+---
+// src/pages/test-koleksi.astro
+// @ts-nocheck
+import MainLayout from "../layouts/MainLayout.astro";
+import SearchHeader from "../components/katalog/SearchHeader.astro";
+import GalleryGrid from "../components/katalog/GalleryGrid.astro";
+import FilterSidebar from "../components/katalog/FilterSidebar.astro";
+
+// Import CSS khusus koleksi
+import "../styles/koleksi.css";
+
+import { getCollection } from 'astro:content';
+
+// Gabungkan data
+const koleksi = await getCollection('koleksi');
+const semuaMotif = koleksi.map(k => k.data);
+const sampelMotif = semuaMotif.filter(motif => motif && motif['dc:identifier'] && motif['dc:title']);
+
+// Urutkan sampelMotif secara default sesuai dc:identifier agar sama persis dengan urutan awal JS
+sampelMotif.sort((a, b) => {
+    const idA = a['dc:identifier'] || '';
+    const idB = b['dc:identifier'] || '';
+    return idA.localeCompare(idB);
+});
+
+const totalSemua = sampelMotif.length;
+
+// 2. Siapkan Variabel Penghitung Filter (8 Metadata)
+const provinsiCounts = sampelMotif.reduce((acc, motif) => {
+  const val = motif['dc:coverage'] || "Lainnya";
+  acc[val] = (acc[val] || 0) + 1;
+  return acc;
+}, {});
+
+const budayaCounts = sampelMotif.reduce((acc, motif) => {
+  const val = motif['dc:subject'] ? (motif['dc:subject']["Kategori Budaya"] || "Lainnya") : "Lainnya";
+  acc[val] = (acc[val] || 0) + 1;
+  return acc;
+}, {});
+
+const simbolikCounts = sampelMotif.reduce((acc, motif) => {
+  const val = motif['dc:subject'] ? (motif['dc:subject']["Status Simbolik"] || "Umum / Bebas") : "Umum / Bebas";
+  acc[val] = (acc[val] || 0) + 1;
+  return acc;
+}, {});
+
+const formatCounts = sampelMotif.reduce((acc, motif) => {
+  const val = motif['dc:format'] || "Lainnya";
+  acc[val] = (acc[val] || 0) + 1;
+  return acc;
+}, {});
+
+const rightsCounts = sampelMotif.reduce((acc, motif) => {
+  const val = motif['dc:rights'] || "Lainnya";
+  acc[val] = (acc[val] || 0) + 1;
+  return acc;
+}, {});
+
+const sourceCounts = sampelMotif.reduce((acc, motif) => {
+  const val = motif['dc:source'] || "Lainnya";
+  acc[val] = (acc[val] || 0) + 1;
+  return acc;
+}, {});
+
+const languageCounts = sampelMotif.reduce((acc, motif) => {
+  const valRaw = motif['dc:language'] || "";
+  if(valRaw) {
+      valRaw.split(',').forEach(lang => {
+          const l = lang.trim();
+          if(l && l.toLowerCase() !== 'id') acc[l] = (acc[l] || 0) + 1;
+      });
+  }
+  return acc;
+}, {});
+
+const pemetaWarna = sampelMotif.reduce((acc, motif) => {
+  const teksWarnaRaw = motif['dc:description'] ? (motif['dc:description']["Warna Dominan"] || "") : "";
+  const bagianWarna = teksWarnaRaw.split(",");
+  bagianWarna.forEach((bagian) => {
+    const matchNama = bagian.match(/^([^(]+)/);
+    const matchHex = bagian.match(/\((#[a-fA-F0-9]{6})\)/);
+    if (matchNama) {
+      const namaBersih = matchNama[1].trim();
+      const hexCode = matchHex ? matchHex[1] : "#c5a059";
+      if (namaBersih && namaBersih !== "Lainnya" && !acc[namaBersih])
+        acc[namaBersih] = hexCode;
+    }
+  });
+  return acc;
+}, {});
+---
+
+<html lang="id">
+  <MainLayout title="Katalog Koleksi Motif | Nusantara Archival">
+    <main
+      class="bg-[#0a0a0a] min-h-screen text-white pt-24 pb-24 overflow-x-hidden font-sans"
+    >
+      <div class="text-center max-w-2xl mx-auto px-4 mb-8">
+        <span
+          class="text-[#c5a059] text-[10px] uppercase tracking-[0.3em] block mb-2 font-medium"
+          >Eksplorasi Arsip</span
+        >
+      </div>
+
+      <SearchHeader />
+
+      <div
+        id="main-layout-container"
+        class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-start relative transition-all duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] mt-8 gap-8"
+      >
+        <div id="wrapper-galeri" class="w-full md:w-3/4 transition-all duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)]">
+          <GalleryGrid sampelMotif={sampelMotif} totalSemua={totalSemua} />
+        </div>
+
+        <FilterSidebar
+          provinsiCounts={provinsiCounts}
+          budayaCounts={budayaCounts}
+          simbolikCounts={simbolikCounts}
+          pemetaWarna={pemetaWarna}
+          formatCounts={formatCounts}
+          rightsCounts={rightsCounts}
+          languageCounts={languageCounts}
+          sourceCounts={sourceCounts}
+        />
+      </div>
+    </main>
+  </MainLayout>
+</html>
+
+<style is:global>
+    /* ========================================================
+       ADAPTASI LIGHT MODE UNTUK GALLERY GRID (Diisolasi khusus testing)
+       ======================================================== */
+    /* Latar Belakang Utama Halaman */
+    html.light-mode body { background-color: #f5f2ec !important; color: #1a1a1a !important; }
+    html.light-mode main { background-color: transparent !important; color: #1a1a1a !important; }
+    
+    /* Toolbar Pencarian & Filter atas */
+    html.light-mode .bg-\[\#111\] { background-color: #ebe4d8 !important; }
+    html.light-mode .border-gray-900 { border-color: #d1c8b4 !important; }
+    html.light-mode .text-gray-200 { color: #2d2a26 !important; }
+    html.light-mode .text-gray-300 { color: #4a4539 !important; } /* Fix untuk opsi dropdown native */
+    html.light-mode .bg-\[\#161616\] { background-color: #e3dccf !important; }
+    html.light-mode .border-gray-800 { border-color: #d1c8b4 !important; }
+    html.light-mode .text-gray-500 { color: #6b6353 !important; }
+    html.light-mode .text-gray-400 { color: #5a5345 !important; }
+    html.light-mode .bg-gray-800 { background-color: #dfd8c8 !important; }
+    html.light-mode .border-gray-700 { border-color: #c9bfab !important; }
+    
+    /* Adaptasi Sidebar Filter */
+    html.light-mode #wrapper-sidebar { background-color: #ebe4d8 !important; border-color: #d1c8b4 !important; }
+    html.light-mode .custom-select-trigger { background-color: #c2bcaf !important; border-color: #a8a296 !important; }
+    html.light-mode .custom-select-trigger span { color: #2d2a26 !important; font-weight: 500; }
+    html.light-mode .custom-select-trigger:hover { background-color: #b0aa9e !important; border-color: #c5a059 !important; }
+    html.light-mode .custom-options-box { background-color: #ebe4d8 !important; border-color: #d1c8b4 !important; }
+    html.light-mode .baris-opsi { color: #4a4539 !important; }
+    html.light-mode .baris-opsi:hover { background-color: rgba(197, 160, 89, 0.2) !important; color: #1a1a1a !important; }
+    html.light-mode .baris-opsi.aktif { color: #c5a059 !important; background-color: rgba(197, 160, 89, 0.1) !important; font-weight: bold; }
+    html.light-mode .wadah-balon-info { background-color: #ebe4d8 !important; border-color: #c5a059 !important; }
+    html.light-mode .wadah-balon-info p { color: #4a4539 !important; }
+    
+    /* Pill Filter Aktif */
+    html.light-mode .bg-\[\#1e1e1e\] { background-color: #c2bcaf !important; border-color: #a8a296 !important; }
+    html.light-mode .btn-hapus-pill { color: #6b6353 !important; }
+    
+    /* Adaptasi Titik Warna (Swatch) */
+    html.light-mode .swatch-aktif {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 0 2px #ebe4d8, 0 0 0 4px #c5a059 !important;
+        border: none !important;
+    }
+    
+    html.light-mode .hover-circle-alive:hover {
+        box-shadow: 0 4px 12px rgba(197, 160, 89, 0.4), 0 0 0 2px #ebe4d8, 0 0 0 4px rgba(197, 160, 89, 0.9) !important;
+    }
+    
+    html.light-mode .swatch-redup {
+        border-color: rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    /* Transisi Halus Perubahan Tema Keseluruhan */
+    html, body, main, #main-layout-container, #wrapper-sidebar, .bg-\[\#111\], .bg-\[\#161616\], .bg-\[\#050505\] {
+        transition: background-color 1.2s ease-in-out, border-color 1.2s ease-in-out, color 1.2s ease-in-out, box-shadow 1.2s ease-in-out !important;
+    }
+    
+    .kartu-motif-test {
+        transition: background-color 1.2s ease-in-out, border-color 0.2s ease-out, box-shadow 0.2s ease-out, transform 0.2s ease-out !important;
+    }
+    
+    /* Kartu Motif */
+html.light-mode .kartu-motif-test {
+    background-color: #ebe4d8 !important;
+    border: 1px solid #d1c8b4 !important;
+}
+
+/* Wadah Gambar di dalam Kartu */
+    html.light-mode .bg-\[\#050505\] { background-color: #c2bcaf !important; }
+</style>
+
+<script src="../scripts/koleksi.js"></script>

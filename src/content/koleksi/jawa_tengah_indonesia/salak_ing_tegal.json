@@ -1,0 +1,22 @@
+{
+    "dc:identifier": "salak_ing_tegal",
+    "url_gambar_web": "/assets/motif/jawa-tengah/salak_ing_tegal.jpeg",
+    "dc:title": "Salak ing Tegal",
+    "dc:subject": {
+        "Kategori Budaya": "Seni Kriya Tradisional / Batik Klasik",
+        "Status Simbolik": "Motif Klasik Geometris"
+    },
+    "dc:description": {
+        "Fungsi Tradisional": "Kain panjang (jarik) harian atau semi-formal untuk masyarakat agraris di wilayah Jawa Tengah bagian barat.",
+        "Makna Filosofis": "\"Salak ing Tegal\" berarti buah salak di kebun/ladang. Melambangkan perlindungan diri (diwakili kulit salak yang berduri), ketajaman pikiran, serta hasil panen bumi yang melimpah ruah.",
+        "Elemen Visual": "Susunan pola belah ketupat kecil berulang yang menyerupai sisik buah salak, dengan isian berupa titik atau garis silang di bagian tengah bidangnya.",
+        "Warna Dominan": "Krem Keemasan (#DDCBB1), Cokelat Tanah (#663427), Biru Indigo / Wedelan (#0F1A2D)",
+        "Fakta Unik": "Motif ini mengabstraksikan struktur geometris dari susunan sisik kulit buah salak menjadi pola batik ceplok yang sangat rapi, menunjukkan kepekaan pembatik desa terhadap geometri alam."
+    },
+    "dc:coverage": "Jawa Tengah, Indonesia",
+    "dc:format": "image/jpeg",
+    "dc:source": "National Museum of World Cultures Foundation, Netherlands",
+    "dc:rights": "CC0 (Public Domain)",
+    "dc:type": "Image; Physical Object",
+    "dc:language": "id, jv"
+}

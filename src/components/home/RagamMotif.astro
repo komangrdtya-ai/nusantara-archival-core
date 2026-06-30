@@ -1,0 +1,162 @@
+---
+// src/components/home/RagamMotif.astro
+// @ts-nocheck
+import { getCollection } from 'astro:content';
+import '/src/styles/ragamMotif.css';
+
+const koleksi = await getCollection('koleksi');
+const semuaMotif = koleksi.map(k => ({
+  ID: k.data['dc:identifier'],
+  Nama: k.data['dc:title'],
+  Provinsi: k.data['dc:coverage'] ? k.data['dc:coverage'].replace(', Indonesia', '') : '-',
+  "Makna Filosofis": k.data['dc:description'] ? k.data['dc:description']['Makna Filosofis'] : '',
+  Gambar: k.data['url_gambar_web']
+}));
+
+// 2. Saring data murni per provinsi pilihan (Misal: 5 dari Yogyakarta & 5 dari Jawa Tengah)
+const limaYogyakarta = semuaMotif
+  .filter((m) => m.Provinsi === "DI Yogyakarta")
+  .slice(0, 5);
+const limaJateng = semuaMotif
+  .filter((m) => m.Provinsi === "Jawa Tengah")
+  .slice(0, 5);
+
+// 3. Gabungkan keduanya secara selang-seling (Yogya, Jateng, Yogya, Jateng, ...)
+const sepuluhMotifPilihan = [];
+for (let i = 0; i < Math.max(limaYogyakarta.length, limaJateng.length); i++) {
+  if (i < limaYogyakarta.length) sepuluhMotifPilihan.push(limaYogyakarta[i]);
+  if (i < limaJateng.length) sepuluhMotifPilihan.push(limaJateng[i]);
+}
+
+// Setel data awal untuk tampilan teks pertama kali di sebelah kanan
+const motifAwal = sepuluhMotifPilihan[0] || {
+  ID: "kosong",
+  Nama: "Data Kosong",
+  Provinsi: "-",
+  "Makna Filosofis": "Belum ada data metadata yang terbaca.",
+};
+
+const jumlahPerProvinsi = semuaMotif.reduce((acc, motif) => {
+  const prov = motif.Provinsi !== '-' ? motif.Provinsi : 'Lainnya';
+  acc[prov] = (acc[prov] || 0) + 1;
+  return acc;
+}, {});
+---
+
+<script src="../../scripts/motifRotator.js"></script>
+
+
+<div class="w-full max-w-4xl mx-auto px-4 py-8">
+  {
+    sepuluhMotifPilihan.length > 0 ? (
+      <div
+        style="background-color: rgba(18, 18, 18, 0.4); border: 1px solid rgba(197, 160, 89, 0.1);"
+        class="museum-deck-wrapper group relative flex flex-col md:flex-row items-center gap-12 p-8 rounded-xs bg-[#121212]/30 shadow-2xl"
+      >
+        <div
+          class="relative w-full md:w-[45%] flex items-center justify-center select-none"
+          style="aspect-ratio: 1/1;"
+        >
+          <div
+            id="deck-container"
+            class="relative w-full h-full cursor-pointer"
+            data-counts={JSON.stringify(jumlahPerProvinsi)}
+          >
+            {sepuluhMotifPilihan.map((motif) => (
+              <div
+                class="museum-card absolute inset-0 w-full h-full group/card"
+                data-id={motif.ID}
+                data-nama={motif.Nama}
+                data-provinsi={motif.Provinsi}
+                data-makna={motif["Makna Filosofis"]}
+              >
+                <div class="w-full h-full relative overflow-hidden rounded-xs internal-card-container">
+                  <div class="absolute inset-[11%] overflow-hidden z-10 flex items-center justify-center bg-black wadah-kain-dalam">
+                    <img
+                      src={motif.Gambar ? `${import.meta.env.BASE_URL}${motif.Gambar}` : `${import.meta.env.BASE_URL}/assets/motif/default.jpg`}
+                      alt={motif.Nama}
+                      class="w-full h-full object-cover opacity-85 img-kain-batik"
+                      loading="lazy"
+                      decoding="async"
+                      transition:name={`img-${motif.ID.replace(/[^a-zA-Z0-9-]/g, '')}`}
+                    />
+                  </div>
+
+                  <div class="absolute inset-0 pointer-events-none z-20 w-full h-full flex items-center justify-center">
+                    <img
+                      src={`${import.meta.env.BASE_URL}/assets/border/border1.png`}
+                      alt="Frame Overlay"
+                      class="w-full h-full object-contain style-bingkai-ragam scale-140"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div
+          id="motif-info-zone"
+          class="w-full md:w-[55%] flex flex-col justify-center text-left"
+        >
+          <span class="hidden">
+            ID: <span id="motif-id">{motifAwal.ID}</span>
+          </span>
+
+          <h3
+            id="motif-name"
+            class="font-serif text-2xl md:text-4xl text-[#e0e0e0] tracking-wide transition-all duration-300"
+            transition:name={`title-${motifAwal.ID.replace(/[^a-zA-Z0-9-]/g, '')}`}
+          >
+            {motifAwal.Nama}
+          </h3>
+
+          <div
+            class="w-16 my-4"
+            style="height: 1px; background-color: #a67c00;"
+          />
+
+          <div class="space-y-4 font-sans">
+            <div class="relative group/region inline-block cursor-pointer" id="region-hover-area">
+              <span
+                class="text-[10px] md:text-xs uppercase tracking-widest block ragam-label-redup transition-all duration-500 group-hover/region:-translate-y-1 group-hover/region:text-[#c5a059]"
+              >
+                Provinsi Asal
+              </span>
+              <p
+                id="motif-region"
+                class="text-sm md:text-base text-[#e0e0e0] font-light mt-0.5 transition-all duration-500 transform origin-left group-hover/region:scale-110 group-hover/region:translate-x-1 group-hover/region:text-white group-hover/region:drop-shadow-[0_0_8px_rgba(197,160,89,0.8)]"
+              >
+                {motifAwal.Provinsi}
+              </p>
+              
+              <!-- Tooltip Interaktif -->
+              <div class="region-tooltip-box absolute top-1/2 -translate-y-1/2 left-full ml-4 w-max opacity-0 group-hover/region:opacity-100 transition-all duration-300 pointer-events-none z-50 px-4 py-2.5 rounded-md -translate-x-2 group-hover/region:translate-x-0 flex flex-col gap-1">
+                <p class="text-xs region-tooltip-text font-sans"><span id="region-count" class="font-bold text-[#c5a059] text-sm">{jumlahPerProvinsi[motifAwal.Provinsi] || 0}</span> Motif dari wilayah ini.</p>
+                <p class="text-[10px] text-[#c5a059] uppercase tracking-widest font-semibold flex items-center gap-1">Klik untuk menjelajahi <span class="animate-pulse">→</span></p>
+              </div>
+            </div>
+
+            <div>
+              <span
+                class="text-[10px] md:text-xs uppercase tracking-widest block ragam-label-redup"
+              >
+                Makna Filosofis
+              </span>
+              <p
+                id="motif-symbolic"
+                class="text-sm md:text-base text-[#c5a059] font-serif italic mt-0.5 font-light leading-relaxed"
+              >
+                {motifAwal["Makna Filosofis"]}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    ) : (
+      <p class="text-center text-gray-500 font-sans text-sm">
+        Gagal memuat arsip pameran.
+      </p>
+    )
+  }
+</div>

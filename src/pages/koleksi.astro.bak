@@ -1,0 +1,96 @@
+---
+// src/pages/koleksi.astro
+// @ts-nocheck
+import MainLayout from "../layouts/MainLayout.astro";
+import SearchHeader from "../components/katalog/SearchHeader.astro";
+import GalleryGrid from "../components/katalog/GalleryGrid.astro";
+import FilterSidebar from "../components/katalog/FilterSidebar.astro";
+
+// Import CSS khusus koleksi
+import "../styles/koleksi.css";
+
+// 1. Ekstrak Data (Kombinasi Data Lama + Data Baru Sumatra)
+import batikDataLama from "../data/metada_batik.json";
+import batikSumatra from "../data/metadata_batik_sumatra.json";
+
+// Gabungkan data bersarang dari file lama dan file baru Sumatra
+const semuaBatikLama = Object.values(batikDataLama).flat();
+const semuaBatikSumatra = Object.values(batikSumatra).flat();
+
+// Satukan ke dalam satu array master agar filter sidebar mendeteksi secara otomatis
+const semuaMotif = [...semuaBatikLama, ...semuaBatikSumatra].filter(
+  (motif) => motif && motif.ID && motif.Nama,
+);
+
+const sampelMotif = semuaMotif;
+const totalSemua = sampelMotif.length;
+
+// 2. Siapkan Variabel Penghitung Filter
+const provinsiCounts = sampelMotif.reduce((acc, motif) => {
+  const prov = motif.Provinsi || "Lainnya";
+  acc[prov] = (acc[prov] || 0) + 1;
+  return acc;
+}, {});
+
+const budayaCounts = sampelMotif.reduce((acc, motif) => {
+  const bud = motif["Kategori Budaya"] || "Lainnya";
+  acc[bud] = (acc[bud] || 0) + 1;
+  return acc;
+}, {});
+
+const simbolikCounts = sampelMotif.reduce((acc, motif) => {
+  const simb = motif["Status Simbolik"] || "Umum / Bebas";
+  acc[simb] = (acc[simb] || 0) + 1;
+  return acc;
+}, {});
+
+const pemetaWarna = sampelMotif.reduce((acc, motif) => {
+  const teksWarnaRaw = motif["Warna Dominan"] || "";
+  const bagianWarna = teksWarnaRaw.split(",");
+  bagianWarna.forEach((bagian) => {
+    const matchNama = bagian.match(/^([^(]+)/);
+    const matchHex = bagian.match(/\((#[a-fA-F0-9]{6})\)/);
+    if (matchNama) {
+      const namaBersih = matchNama[1].trim();
+      const hexCode = matchHex ? matchHex[1] : "#c5a059";
+      // 👑 FIX: namaSehris diganti menjadi namaBersih agar tidak memicu crash runtime!
+      if (namaBersih && namaBersih !== "Lainnya" && !acc[namaBersih])
+        acc[namaBersih] = hexCode;
+    }
+  });
+  return acc;
+}, {});
+---
+
+<html lang="id">
+  <MainLayout title="Koleksi Arsip Batik Nusantara">
+    <main
+      class="bg-[#0a0a0a] min-h-screen text-white pt-24 pb-24 overflow-x-hidden font-sans"
+    >
+      <div class="text-center max-w-2xl mx-auto px-4 mb-8">
+        <span
+          class="text-[#c5a059] text-[10px] uppercase tracking-[0.3em] block mb-2 font-medium"
+          >Eksplorasi Arsip</span
+        >
+      </div>
+
+      <SearchHeader />
+
+      <div
+        id="main-layout-container"
+        class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-start relative min-h-[100vh] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+      >
+        <GalleryGrid sampelMotif={sampelMotif} totalSemua={totalSemua} />
+
+        <FilterSidebar
+          provinsiCounts={provinsiCounts}
+          budayaCounts={budayaCounts}
+          simbolikCounts={simbolikCounts}
+          pemetaWarna={pemetaWarna}
+        />
+      </div>
+    </main>
+  </MainLayout>
+</html>
+
+<script src="../scripts/koleksi.js"></script>

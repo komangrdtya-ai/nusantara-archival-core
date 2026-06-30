@@ -1,0 +1,22 @@
+{
+    "dc:identifier": "semut_beriring_melayu",
+    "url_gambar_web": "/assets/motif/sumut/semut_beriring_melayu.jpg",
+    "dc:title": "Semut Beriring Melayu",
+    "dc:subject": {
+        "Kategori Budaya": "Batik Pesisiran",
+        "Status Simbolik": "Umum / Bebas"
+    },
+    "dc:description": {
+        "Fungsi Tradisional": "Bahan kain kain sarung songket batik harian, kemeja kantor, and busana sekolah kebudayaan.",
+        "Makna Filosofis": "Petuah luhur tentang ketertiban sosial, kepatuhan terhadap aturan, serta kekuatan kerja sama kolektif dalam menyelesaikan tugas seberat apa pun.",
+        "Elemen Visual": "Garis pembatas geometris berjejer horizontal diisi bintik titik stilasi semut berjalan teratur.",
+        "Warna Dominan": "Ungu Gelap (#321F3E), Biru Laut Kelam (#536389), Krem / Putih Tulang (#EDEEE8)",
+        "Fakta Unik": "Motif ini mengajarkan disiplin organisasi; semut selalu berjalan lurus mengikuti komando barisan di depannya."
+    },
+    "dc:coverage": "Sumatera Utara, Indonesia",
+    "dc:format": "image/jpeg",
+    "dc:source": "Repositori Komunitas",
+    "dc:rights": "Repositori Komunitas / Penggunaan Bebas",
+    "dc:type": "Image; Physical Object",
+    "dc:language": "id, ms"
+}

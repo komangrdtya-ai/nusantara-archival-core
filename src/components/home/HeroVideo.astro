@@ -1,0 +1,170 @@
+---
+// src/components/HeroSection.astro
+// @ts-nocheck
+---
+
+<section
+  class="relative w-full h-screen bg-[#0a0a0a] flex items-center justify-center overflow-hidden"
+>
+  <div class="absolute inset-0 w-full h-full z-10" style="background-color: #000000 !important;">
+    <!-- Video Dark Mode -->
+    <video
+      autoplay
+      loop
+      muted
+      playsinline
+      class="video-dark absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+    >
+      <source src={`${import.meta.env.BASE_URL}/assets/video/intro.mp4`} type="video/mp4" />
+    </video>
+    
+    <!-- Video Light Mode -->
+    <video
+      autoplay
+      loop
+      muted
+      playsinline
+      class="video-light absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+    >
+      <source src={`${import.meta.env.BASE_URL}/assets/video/intro2.mp4`} type="video/mp4" />
+    </video>
+
+    <div class="absolute inset-0 v-museum-overlay transition-colors duration-1000"></div>
+  </div>
+
+  <div class="relative z-20 text-center px-4 max-w-4xl interactive-hero-text">
+    <span
+      style="color: #c5a059;"
+      class="text-xs uppercase tracking-widest block mb-4 font-medium animate-cinematic-1 cursor-default"
+      >Digital Exhibition</span
+    >
+    <h1
+      class="text-4xl md:text-6xl lg:text-7xl font-serif !text-[#e0e0e0] tracking-wide leading-tight animate-cinematic-2 hover:scale-[1.03] transition-transform duration-700 cursor-default"
+    >
+      Jejak Karya Nusantara
+    </h1>
+    <p
+      style="color: rgba(224, 224, 224, 0.6);"
+      class="mt-6 text-sm md:text-base font-sans tracking-widest uppercase max-w-xl mx-auto leading-relaxed animate-cinematic-3"
+    >
+      Eksplorasi Kedalaman Filosofi dan Artefak Batik Klasik
+    </p>
+  </div>
+
+  <a
+    href="#gallery-teaser"
+    id="scroll-btn"
+    class="v-scroll-indicator opacity-60 hover:opacity-100 transition-opacity duration-500 cursor-pointer animate-float-down flex justify-center"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="40"
+      height="40"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#e0e0e0"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M19 9l-7 7-7-7"></path>
+    </svg>
+  </a>
+</section>
+
+<script is:inline>
+  document.addEventListener("astro:page-load", () => {
+    const scrollBtn = document.getElementById("scroll-btn");
+    const targetSection = document.getElementById("gallery-teaser");
+
+    if (scrollBtn && targetSection) {
+      scrollBtn.onclick = (e) => {
+        e.preventDefault();
+        targetSection.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      };
+    }
+  });
+</script>
+
+<style>
+  /* PERUBAHAN UTAMA: Membuat efek gradasi hitam atas dan bawah jauh lebih tebal dan luas */
+  .v-museum-overlay {
+    background: linear-gradient(
+      to bottom,
+      #0a0a0a 0%,
+      transparent 15%,
+      transparent 75%,
+      #0a0a0a 92%,
+      #0a0a0a 100%
+    ) !important;
+  }
+
+  /* Hilangkan gradasi hitam atas/bawah khusus di Light Mode */
+  html.light-mode .v-museum-overlay {
+      background: transparent !important;
+  }
+
+  /* LOGIKA TRANSISI VIDEO DUAL-MODE (Hero Beranda) */
+  .video-dark, .video-light {
+      transition: opacity 1.5s ease-in-out !important;
+  }
+  
+  /* State Default (Light Mode) */
+  html.light-mode .video-dark { opacity: 0 !important; pointer-events: none; }
+  html.light-mode .video-light { opacity: 0.6 !important; }
+
+  /* State Dark Mode */
+  html:not(.light-mode) .video-dark { opacity: 0.4 !important; }
+  html:not(.light-mode) .video-light { opacity: 0 !important; pointer-events: none; }
+
+  .v-scroll-indicator {
+    position: absolute;
+    left: 50%;
+    bottom: 30px;
+    z-index: 30;
+  }
+  @media (min-width: 768px) {
+    .v-scroll-indicator {
+      bottom: 50px;
+    }
+  }
+
+  @keyframes floatDown {
+    0% {
+      transform: translateX(-50%) translateY(0);
+    }
+    50% {
+      transform: translateX(-50%) translateY(12px);
+    }
+    100% {
+      transform: translateX(-50%) translateY(0);
+    }
+  }
+
+  /* Animasi Masuk Sinematik (Blur + Scale + Translate) */
+  @keyframes cinematicReveal {
+    0% { opacity: 0; transform: scale(0.85) translateY(40px); filter: blur(12px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+  }
+  
+  .animate-cinematic-1 { opacity: 0; animation: cinematicReveal 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s forwards; }
+  .animate-cinematic-2 { opacity: 0; animation: cinematicReveal 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s forwards; }
+  .animate-cinematic-3 { opacity: 0; animation: cinematicReveal 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) 1.1s forwards; }
+
+  /* Mengambang Halus Secara Terus Menerus Setelah Teks Masuk */
+  @keyframes breathFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .interactive-hero-text {
+    animation: breathFloat 6s ease-in-out infinite;
+    animation-delay: 2s; /* Baru mulai mengambang setelah animasi masuk selesai */
+  }
+
+  .animate-float-down {
+    animation: floatDown 2.5s ease-in-out infinite;
+  }
+</style>

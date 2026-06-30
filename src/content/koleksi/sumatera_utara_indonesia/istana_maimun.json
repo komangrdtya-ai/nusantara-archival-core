@@ -1,0 +1,22 @@
+{
+    "dc:identifier": "istana_maimun",
+    "url_gambar_web": "/assets/motif/sumut/istana_maimun.jpg",
+    "dc:title": "Istana Maimun",
+    "dc:subject": {
+        "Kategori Budaya": "Batik Kontemporer",
+        "Status Simbolik": "Umum / Bebas"
+    },
+    "dc:description": {
+        "Fungsi Tradisional": "Kemeja oleh-oleh ikonik khas Medan, seragam dinas pariwisata kota, and busana semi-formal.",
+        "Makna Filosofis": "Kebanggaan sejarah peradaban kota Medan, kemegahan asimilasi budaya Melayu, Islam, India, dan Eropa yang hidup rukun berdampingan.",
+        "Elemen Visual": "Siluet kubah dan lengkungan megah arsitektur Istana Maimun warisan Deli.",
+        "Warna Dominan": "Biru Langit (#688EB9), Merah Delima (#C84F78), Abu-abu Arang (#27342E), Ungu Terong (#5A4783), Kuning Kunyit (#EA8948), Hijau Zaitun (#818B28)",
+        "Fakta Unik": "Ini merupakan batik kreatif modern komersial (city-branding) yang ditujukan untuk melestarikan cagar budaya kota Medan."
+    },
+    "dc:coverage": "Sumatera Utara, Indonesia",
+    "dc:format": "image/jpeg",
+    "dc:source": "Repositori Komunitas",
+    "dc:rights": "Repositori Komunitas / Penggunaan Bebas",
+    "dc:type": "Image; Physical Object",
+    "dc:language": "id, ms"
+}

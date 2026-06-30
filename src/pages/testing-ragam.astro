@@ -1,0 +1,341 @@
+---
+// src/pages/testing-ragam.astro
+// @ts-nocheck
+import MainLayout from "../layouts/MainLayout.astro";
+
+// 1. AMBIL DATABASE METADATA LANGSUNG DI SINI
+import batikData from "../data/metada_batik.json";
+const semuaMotif = Object.values(batikData).flat();
+const sepuluhMotifPilihan = semuaMotif.slice(0, 10);
+
+const motifAwal = sepuluhMotifPilihan[0] || {
+    ID: "kosong",
+    Nama: "Data Kosong",
+    Provinsi: "-",
+    "Makna Filosofis": "Belum ada data metadata yang terbaca.",
+};
+---
+
+<html lang="id">
+    <MainLayout title="Eksperimen Rotator Kotak 1:1 Sempurna">
+        <main
+            class="bg-[#0a0a0a] min-h-screen text-white pt-24 pb-24 overflow-x-hidden font-sans"
+        >
+            <div class="text-center max-w-2xl mx-auto px-4 mb-16">
+                <span
+                    class="text-[#c5a059] text-[10px] uppercase tracking-[0.3em] block mb-2 font-medium"
+                    >Laboratorium Visual v6</span
+                >
+                <h1
+                    class="font-serif text-3xl md:text-4xl text-[#e0e0e0] tracking-wide"
+                >
+                    Sandbox Rotator Kotak 1:1
+                </h1>
+                <p class="text-xs text-gray-400 mt-2">
+                    Seluruh ekosistem kartu diubah menjadi <code
+                        class="text-[#c5a059]">aspect-square</code
+                    >. Bingkai dan kain mengunci pas secara proporsional.
+                </p>
+            </div>
+
+            <div class="w-full max-w-4xl mx-auto px-4 py-8">
+                {
+                    sepuluhMotifPilihan.length > 0 ? (
+                        <div
+                            style="background-color: rgba(18, 18, 18, 0.4); border: 1px solid rgba(197, 160, 89, 0.1);"
+                            class="museum-deck-wrapper group relative flex flex-col md:flex-row items-center gap-12 p-8 rounded-xs bg-[#121212]/30 shadow-2xl"
+                        >
+                            <div
+                                class="relative w-full md:w-[45%] flex items-center justify-center select-none"
+                                style="aspect-ratio: 1/1;"
+                            >
+                                <div
+                                    id="deck-container"
+                                    class="relative w-full h-full cursor-pointer"
+                                >
+                                    {sepuluhMotifPilihan.map((motif) => (
+                                        <div
+                                            class="museum-card absolute inset-0 w-full h-full group/card"
+                                            data-id={motif.ID}
+                                            data-nama={motif.Nama}
+                                            data-provinsi={motif.Provinsi}
+                                            data-makna={
+                                                motif["Makna Filosofis"]
+                                            }
+                                        >
+                                            <div class="w-full h-full relative overflow-hidden rounded-xs internal-card-container">
+                                                <div class="absolute inset-[11%] overflow-hidden z-10 flex items-center justify-center bg-black wadah-kain-dalam">
+                                                    <img
+                                                        src={
+                                                            motif.Gambar ||
+                                                            "/assets/motif/default.jpg"
+                                                        }
+                                                        alt={motif.Nama}
+                                                        class="w-full h-full object-cover opacity-85 img-kain-batik"
+                                                    />
+                                                </div>
+
+                                                <div class="absolute inset-0 pointer-events-none z-20 w-full h-full flex items-center justify-center">
+                                                    <img
+                                                        src="/assets/border/border1.png"
+                                                        alt="Frame Overlay"
+                                                        class="w-full h-full object-contain style-bingkai-ragam scale-140"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div
+                                id="motif-info-zone"
+                                class="w-full md:w-[55%] flex flex-col justify-center text-left"
+                            >
+                                <span class="hidden">
+                                    ID:{" "}
+                                    <span id="motif-id">{motifAwal.ID}</span>
+                                </span>
+
+                                <h3
+                                    id="motif-name"
+                                    class="font-serif text-2xl md:text-4xl text-[#e0e0e0] tracking-wide"
+                                >
+                                    {motifAwal.Nama}
+                                </h3>
+
+                                <div
+                                    class="w-16 my-4"
+                                    style="height: 1px; background-color: #a67c00;"
+                                />
+
+                                <div class="space-y-4 font-sans">
+                                    <div>
+                                        <span
+                                            style="color: rgba(224, 224, 224, 0.4);"
+                                            class="text-[10px] md:text-xs uppercase tracking-widest block"
+                                        >
+                                            Provinsi Asal
+                                        </span>
+                                        <p
+                                            id="motif-region"
+                                            class="text-sm md:text-base text-[#e0e0e0] font-light mt-0.5"
+                                        >
+                                            {motifAwal.Provinsi}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <span
+                                            style="color: rgba(224, 224, 224, 0.4);"
+                                            class="text-[10px] md:text-xs uppercase tracking-widest block"
+                                        >
+                                            Makna Filosofis
+                                        </span>
+                                        <p
+                                            id="motif-symbolic"
+                                            class="text-sm md:text-base text-[#c5a059] font-serif italic mt-0.5 font-light leading-relaxed"
+                                        >
+                                            {motifAwal["Makna Filosofis"]}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <p class="text-center text-gray-500 font-sans text-sm">
+                            Gagal memuat arsip pameran.
+                        </p>
+                    )
+                }
+            </div>
+        </main>
+    </MainLayout>
+</html>
+
+<style>
+    .museum-deck-wrapper {
+        min-height: 480px;
+    }
+
+    #motif-info-zone {
+        transition:
+            opacity 0.4s ease-in-out,
+            transform 0.4s ease-in-out;
+    }
+
+    .style-bingkai-ragam {
+        mix-blend-mode: screen;
+    }
+
+    .group\/card:hover .img-kain-batik {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    .img-kain-batik {
+        transition:
+            transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+            opacity 0.5s ease;
+    }
+
+    .museum-card {
+        transition:
+            transform 1s cubic-bezier(0.2, 0.8, 0.2, 1),
+            opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1),
+            z-index 1s step-end;
+        will-change: transform, opacity;
+    }
+
+    /* 🛠️ PERBAIKAN: Jarak geser tumpukan (translate) disesuaikan biar seimbang dengan bentuk kotak 1:1 */
+    .card-pos-0 {
+        transform: translate(0, 0) scale(1);
+        z-index: 10;
+        opacity: 1;
+    }
+    .card-pos-1 {
+        transform: translate(16px, -16px) scale(0.95);
+        z-index: 9;
+        opacity: 0.8;
+    }
+    .card-pos-2 {
+        transform: translate(32px, -32px) scale(0.9);
+        z-index: 8;
+        opacity: 0.5;
+    }
+    .card-pos-3 {
+        transform: translate(48px, -48px) scale(0.85);
+        z-index: 7;
+        opacity: 0.2;
+    }
+    .card-pos-4 {
+        transform: translate(64px, -64px) scale(0.8);
+        z-index: 6;
+        opacity: 0.05;
+    }
+    .card-pos-5,
+    .card-pos-6,
+    .card-pos-7,
+    .card-pos-8,
+    .card-pos-9 {
+        transform: translate(64px, -64px) scale(0.8);
+        z-index: 1;
+        opacity: 0;
+    }
+
+    .card-slide-down {
+        animation: slideOutAndBack 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    /* Animasi meluncur disesuaikan agar jatuhnya proporsional lurus ke bawah boks kotak */
+    @keyframes slideOutAndBack {
+        0% {
+            transform: translate(0, 0) scale(1);
+            z-index: 20;
+            opacity: 1;
+        }
+        45% {
+            transform: translate(0, 115%) scale(0.95);
+            z-index: 20;
+            opacity: 0.85;
+        }
+        50% {
+            transform: translate(0, 115%) scale(0.8);
+            z-index: 1;
+            opacity: 0.4;
+        }
+        100% {
+            transform: translate(64px, -64px) scale(0.8);
+            z-index: 1;
+            opacity: 0;
+        }
+    }
+</style>
+
+<script>
+    function initBySquareRotator() {
+        const container = document.getElementById("deck-container");
+        const infoZone = document.getElementById("motif-info-zone");
+
+        if (!container || !infoZone) return;
+
+        const cards = Array.from(container.querySelectorAll(".museum-card"));
+        const idEl = document.getElementById("motif-id");
+        const nameEl = document.getElementById("motif-name");
+        const regionEl = document.getElementById("motif-region");
+        const symbolicEl = document.getElementById("motif-symbolic");
+
+        if (cards.length === 0 || !idEl || !nameEl || !regionEl || !symbolicEl)
+            return;
+
+        let isAnimating = false;
+
+        function updateTextContent(activeCard) {
+            idEl.innerText = activeCard.getAttribute("data-id");
+            nameEl.innerText = activeCard.getAttribute("data-nama");
+            regionEl.innerText = activeCard.getAttribute("data-provinsi");
+            symbolicEl.innerText = activeCard.getAttribute("data-makna");
+        }
+
+        function updateDeckVisuals() {
+            cards.forEach((card, index) => {
+                card.classList.remove(
+                    "card-pos-0",
+                    "card-pos-1",
+                    "card-pos-2",
+                    "card-pos-3",
+                    "card-pos-4",
+                    "card-pos-5",
+                    "card-pos-6",
+                    "card-pos-7",
+                    "card-pos-8",
+                    "card-pos-9",
+                );
+
+                if (index < 10) {
+                    card.classList.add(`card-pos-${index}`);
+                }
+
+                if (index === 0) {
+                    card.style.pointerEvents = "auto";
+                } else {
+                    card.style.pointerEvents = "none";
+                }
+            });
+        }
+
+        updateDeckVisuals();
+        container.onclick = null;
+
+        container.onclick = () => {
+            if (isAnimating || cards.length <= 1) return;
+            isAnimating = true;
+
+            const topCard = cards[0];
+            topCard.classList.add("card-slide-down");
+
+            setTimeout(() => {
+                infoZone.style.opacity = "0";
+                infoZone.style.transform = "translateY(6px)";
+            }, 250);
+
+            setTimeout(() => {
+                topCard.classList.remove("card-slide-down");
+
+                cards.shift();
+                cards.push(topCard);
+
+                updateDeckVisuals();
+                updateTextContent(cards[0]);
+
+                infoZone.style.opacity = "1";
+                infoZone.style.transform = "translateY(0)";
+
+                isAnimating = false;
+            }, 1000);
+        };
+    }
+
+    document.addEventListener("DOMContentLoaded", initBySquareRotator);
+    document.addEventListener("astro:page-load", initBySquareRotator);
+</script>

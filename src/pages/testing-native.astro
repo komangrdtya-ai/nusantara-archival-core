@@ -1,0 +1,996 @@
+---
+// src/pages/testing-native.astro
+// @ts-nocheck
+import MainLayout from "../layouts/MainLayout.astro";
+import batikData from "../data/metada_batik.json";
+
+// 1. Gabungkan data
+const semuaMotif = Object.values(batikData).flat();
+const sampelMotif = semuaMotif.slice(0, 50);
+
+const totalSemua = sampelMotif.length;
+
+// 2. COUNTER AWAL (DEFAULT)
+const provinsiCounts = sampelMotif.reduce((acc, motif) => {
+    const prov = motif.Provinsi || "Lainnya";
+    acc[prov] = (acc[prov] || 0) + 1;
+    return acc;
+}, {});
+
+const budayaCounts = sampelMotif.reduce((acc, motif) => {
+    const bud = motif["Kategori Budaya"] || "Lainnya";
+    acc[bud] = (acc[bud] || 0) + 1;
+    return acc;
+}, {});
+
+const simbolikCounts = sampelMotif.reduce((acc, motif) => {
+    const simb = motif["Status Simbolik"] || "Umum / Bebas";
+    acc[simb] = (acc[simb] || 0) + 1;
+    return acc;
+}, {});
+
+// 3. PEMETA WARNA DINAMIS
+const pemetaWarna = sampelMotif.reduce((acc, motif) => {
+    const teksWarnaRaw = motif["Warna Dominan"] || "";
+    const bagianWarna = teksWarnaRaw.split(",");
+    bagianWarna.forEach((bagian) => {
+        const matchNama = bagian.match(/^([^(]+)/);
+        const matchHex = bagian.match(/\((#[a-fA-F0-9]{6})\)/);
+        if (matchNama) {
+            const namaBersih = matchNama[1].trim();
+            const hexCode = matchHex ? matchHex[1] : "#c5a059";
+            if (namaBersih && namaBersih !== "Lainnya" && !acc[namaBersih])
+                acc[namaBersih] = hexCode;
+        }
+    });
+    return acc;
+}, {});
+---
+
+<html lang="id">
+    <MainLayout title="Minimalist Search & Hybrid Filter">
+        <main
+            class="bg-[#0a0a0a] min-h-screen text-white pt-24 pb-24 overflow-x-hidden font-sans"
+        >
+            <div class="text-center max-w-2xl mx-auto px-4 mb-8">
+                <span
+                    class="text-[#c5a059] text-[10px] uppercase tracking-[0.3em] block mb-2 font-medium"
+                    >Eksplorasi Arsip</span
+                >
+            </div>
+
+            <div
+                id="search-filter-container"
+                class="max-w-2xl mx-auto px-4 mb-16 relative flex flex-col items-center"
+            >
+                <div class="relative w-full z-20">
+                    <input
+                        type="text"
+                        id="input-pencarian-batik"
+                        placeholder="Cari motif batik (cth: Kawung, Grompol)..."
+                        class="w-full bg-transparent border-b border-gray-800 focus:border-[#c5a059] text-center text-xl md:text-3xl font-serif text-gray-200 py-3 outline-none transition-colors duration-500 placeholder-gray-800"
+                        autocomplete="off"
+                    />
+                    <svg
+                        class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-700 pointer-events-none"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        ><circle cx="11" cy="11" r="8"></circle><line
+                            x1="21"
+                            y1="21"
+                            x2="16.65"
+                            y2="16.65"></line></svg
+                    >
+                </div>
+
+                <div
+                    id="wrapper-toggle-btn"
+                    class="absolute top-[110%] z-10 opacity-0 -translate-y-3 pointer-events-none transition-all duration-300 ease-out flex justify-center w-full"
+                >
+                    <button
+                        id="btn-toggle-sidebar"
+                        class="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-medium text-gray-500 hover:text-[#c5a059] transition-colors cursor-pointer px-4 py-2 bg-[#0a0a0a]"
+                    >
+                        <svg
+                            id="icon-toggle-filter"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <polygon
+                                points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"
+                            ></polygon>
+                        </svg>
+                        <span id="teks-toggle-filter"
+                            >Jelajahi Lebih Spesifik</span
+                        >
+                    </button>
+                </div>
+            </div>
+
+            <div
+                id="main-layout-container"
+                class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-start relative transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+            >
+                <div
+                    id="wrapper-galeri"
+                    class="w-full transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col gap-6"
+                >
+                    <div
+                        class="w-full bg-[#111] border border-gray-900 rounded-xs px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-xl relative transition-all duration-500"
+                    >
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-2.5 h-2.5 rounded-full bg-[#c5a059] shadow-[0_0_10px_#c5a059]"
+                            >
+                            </div>
+                            <h3
+                                class="text-base tracking-wide text-gray-200 flex items-center flex-wrap gap-1.5"
+                            >
+                                Ditemukan:
+                                <span
+                                    id="dashboard-total-motif"
+                                    class="text-[#c5a059] font-serif text-2xl font-bold px-1"
+                                    >{totalSemua}</span
+                                >
+                                Motif Batik
+
+                                <div
+                                    class="relative inline-block grup-info-tameng ml-1"
+                                >
+                                    <button
+                                        type="button"
+                                        class="w-5 h-5 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-xs text-gray-400 hover:bg-[#c5a059]/20 hover:text-[#c5a059] hover:border-[#c5a059]/40 transition-colors cursor-help font-mono font-bold z-10 relative"
+                                        >i</button
+                                    >
+                                    <div
+                                        class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-[290px] p-4 bg-[#161616] border border-[#c5a059]/30 rounded-lg shadow-2xl opacity-0 pointer-events-none transition-all duration-300 transform translate-y-3 wadah-balon-info group-hover:opacity-100 z-[60]"
+                                    >
+                                        <div class="flex flex-col gap-2">
+                                            <span
+                                                class="text-xs font-bold text-[#c5a059] tracking-wider uppercase font-sans"
+                                                >💡 Informasi Pencarian</span
+                                            >
+                                            <p
+                                                class="text-[11px] text-gray-300 leading-relaxed font-sans normal-case text-left"
+                                            >
+                                                Total hasil murni menghitung <b
+                                                    >jumlah fisik lembar kain</b
+                                                > di layar.
+                                            </p>
+                                            <p
+                                                class="text-[11px] text-gray-400 leading-relaxed font-sans normal-case text-left"
+                                            >
+                                                Pencarian kombinasi warna dan
+                                                kata kunci dapat memicu irisan
+                                                data. Objek fisik tetap dirender
+                                                sebagai 1 data tunggal guna
+                                                mencegah duplikasi visual.
+                                            </p>
+                                        </div>
+                                        <div
+                                            class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#c5a059]/30"
+                                        >
+                                        </div>
+                                    </div>
+                                </div>
+                            </h3>
+                        </div>
+                        <p
+                            id="teks-status-filter"
+                            class="text-xs text-gray-500 italic transition-opacity duration-300"
+                        >
+                            Menampilkan seluruh database
+                        </p>
+                    </div>
+
+                    <div
+                        id="area-galeri-testing"
+                        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                    >
+                        {
+                            sampelMotif.map((motif) => (
+                                <div
+                                    class="kartu-motif-test bg-[#111] border border-gray-900 rounded-xs overflow-hidden hover:border-[#c5a059]/30 hover:shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+                                    data-nama={motif.Nama.toLowerCase()}
+                                    data-provinsi={motif.Provinsi}
+                                    data-budaya={motif["Kategori Budaya"]}
+                                    data-simbolik={
+                                        motif["Status Simbolik"] ||
+                                        "Umum / Bebas"
+                                    }
+                                    data-warna={motif["Warna Dominan"] || ""}
+                                >
+                                    <div class="w-full bg-[#050505] p-4 flex items-center justify-center aspect-square overflow-hidden">
+                                        <img
+                                            src={
+                                                motif.Gambar ||
+                                                "/assets/motif/default.jpg"
+                                            }
+                                            alt={motif.Nama}
+                                            class="w-full h-full object-contain opacity-90 hover:opacity-100 hover:scale-105 transition-all duration-500 ease-out"
+                                        />
+                                    </div>
+                                    <div class="p-5 border-t border-gray-900">
+                                        <span class="text-[10px] text-[#c5a059] uppercase tracking-[0.2em] block mb-2 font-semibold">
+                                            {motif.Provinsi}
+                                        </span>
+                                        <h4 class="text-base text-gray-200 font-serif mb-3 leading-tight">
+                                            {motif.Nama}
+                                        </h4>
+                                        <div class="space-y-1">
+                                            <p class="text-[11px] text-gray-500 truncate italic">
+                                                &bull;{" "}
+                                                {motif["Kategori Budaya"]}
+                                            </p>
+                                            <p class="text-[11px] text-gray-600 truncate">
+                                                &bull; {motif["Warna Dominan"]}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
+
+                <div
+                    id="wrapper-sidebar"
+                    class="w-0 opacity-0 overflow-hidden border-0 p-0 m-0 bg-[#121212] border-[#c5a059]/10 rounded-xs md:sticky md:top-28 flex flex-col gap-8 shadow-xl transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                >
+                    <div
+                        class="relative filter-group shrink-0 w-full min-w-[240px]"
+                    >
+                        <label
+                            class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3"
+                            >Wilayah</label
+                        >
+                        <div
+                            id="pills-provinsi"
+                            class="flex flex-wrap gap-2 mb-3 empty:hidden"
+                        >
+                        </div>
+                        <button
+                            id="btn-select-provinsi"
+                            class="custom-select-trigger"
+                        >
+                            <span class="text-gray-400">Pilih Wilayah</span>
+                            <svg
+                                class="panah-icon"
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="3"
+                                ><path d="m6 9 6 6 6-6"></path></svg
+                            >
+                        </button>
+                        <div
+                            id="opsi-provinsi"
+                            class="custom-options-box hidden"
+                        >
+                            <button
+                                class="baris-opsi"
+                                data-kategori="provinsi"
+                                data-target="semua"
+                            >
+                                <span class="teks-opsi text-[#c5a059]"
+                                    >Bersihkan Wilayah</span
+                                >
+                            </button>
+                            {
+                                Object.keys(provinsiCounts).map((name) => (
+                                    <button
+                                        class="baris-opsi"
+                                        data-kategori="provinsi"
+                                        data-target={name}
+                                    >
+                                        <span class="teks-opsi">{name}</span>
+                                        <span class="angka-opsi">
+                                            {provinsiCounts[name]}
+                                        </span>
+                                    </button>
+                                ))
+                            }
+                        </div>
+                    </div>
+
+                    <div
+                        class="relative filter-group shrink-0 w-full min-w-[240px]"
+                    >
+                        <label
+                            class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3"
+                            >Kategori Budaya</label
+                        >
+                        <div
+                            id="pills-budaya"
+                            class="flex flex-wrap gap-2 mb-3 empty:hidden"
+                        >
+                        </div>
+                        <button
+                            id="btn-select-budaya"
+                            class="custom-select-trigger"
+                        >
+                            <span class="text-gray-400">Pilih Kategori</span>
+                            <svg
+                                class="panah-icon"
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="3"
+                                ><path d="m6 9 6 6 6-6"></path></svg
+                            >
+                        </button>
+                        <div id="opsi-budaya" class="custom-options-box hidden">
+                            <button
+                                class="baris-opsi"
+                                data-kategori="budaya"
+                                data-target="semua"
+                            >
+                                <span class="teks-opsi text-[#c5a059]"
+                                    >Bersihkan Kategori</span
+                                >
+                            </button>
+                            {
+                                Object.keys(budayaCounts).map((name) => (
+                                    <button
+                                        class="baris-opsi"
+                                        data-kategori="budaya"
+                                        data-target={name}
+                                    >
+                                        <span class="teks-opsi">{name}</span>
+                                        <span class="angka-opsi">
+                                            {budayaCounts[name]}
+                                        </span>
+                                    </button>
+                                ))
+                            }
+                        </div>
+                    </div>
+
+                    <div
+                        class="relative filter-group shrink-0 w-full min-w-[240px]"
+                    >
+                        <label
+                            class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3"
+                            >Status Simbolik</label
+                        >
+                        <div
+                            id="pills-simbolik"
+                            class="flex flex-wrap gap-2 mb-3 empty:hidden"
+                        >
+                        </div>
+                        <button
+                            id="btn-select-simbolik"
+                            class="custom-select-trigger"
+                        >
+                            <span class="text-gray-400">Pilih Status</span>
+                            <svg
+                                class="panah-icon"
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="3"
+                                ><path d="m6 9 6 6 6-6"></path></svg
+                            >
+                        </button>
+                        <div
+                            id="opsi-simbolik"
+                            class="custom-options-box hidden"
+                        >
+                            <button
+                                class="baris-opsi"
+                                data-kategori="simbolik"
+                                data-target="semua"
+                            >
+                                <span class="teks-opsi text-[#c5a059]"
+                                    >Bersihkan Status</span
+                                >
+                            </button>
+                            {
+                                Object.keys(simbolikCounts).map((name) => (
+                                    <button
+                                        class="baris-opsi"
+                                        data-kategori="simbolik"
+                                        data-target={name}
+                                    >
+                                        <span class="teks-opsi">{name}</span>
+                                        <span class="angka-opsi">
+                                            {simbolikCounts[name]}
+                                        </span>
+                                    </button>
+                                ))
+                            }
+                        </div>
+                    </div>
+
+                    <div
+                        class="relative filter-group shrink-0 w-full min-w-[240px]"
+                    >
+                        <label
+                            class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3"
+                            >Palet Warna</label
+                        >
+                        <div
+                            id="pills-warna"
+                            class="flex flex-wrap gap-2 mb-3 empty:hidden"
+                        >
+                        </div>
+                        <button
+                            id="btn-select-warna"
+                            class="custom-select-trigger"
+                        >
+                            <span class="text-gray-400">Pilih Warna</span>
+                            <svg
+                                class="panah-icon"
+                                width="12"
+                                height="12"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="3"
+                                ><path d="m6 9 6 6 6-6"></path></svg
+                            >
+                        </button>
+                        <div id="opsi-warna" class="custom-options-box hidden">
+                            <button
+                                class="baris-opsi"
+                                data-kategori="warna"
+                                data-target="semua"
+                            >
+                                <span class="teks-opsi text-[#c5a059]"
+                                    >Bersihkan Warna</span
+                                >
+                            </button>
+                            {
+                                Object.keys(pemetaWarna).map((warna) => (
+                                    <button
+                                        class="baris-opsi"
+                                        data-kategori="warna"
+                                        data-target={warna}
+                                        data-hex={pemetaWarna[warna]}
+                                    >
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="w-3.5 h-3.5 rounded-full border border-white/10"
+                                                style={`background-color: ${pemetaWarna[warna]}`}
+                                            />
+                                            <span class="teks-opsi">
+                                                {warna}
+                                            </span>
+                                        </div>
+                                        <span class="angka-opsi">0</span>
+                                    </button>
+                                ))
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </MainLayout>
+</html>
+
+<style>
+    /* Animasi Halus Kartu Galeri */
+    .kartu-motif-test {
+        transition:
+            opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+            transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        opacity: 1;
+        transform: scale(1);
+    }
+    .kartu-hilang {
+        opacity: 0 !important;
+        transform: scale(0.9) !important;
+        pointer-events: none;
+    }
+
+    /* Animasi Tameng Info */
+    .grup-info-tameng:hover .wadah-balon-info {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    /* Dropdown Styles */
+    .custom-select-trigger {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background-color: #1a1a1a;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 4px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .custom-select-trigger:hover {
+        border-color: #c5a059;
+        background-color: #222;
+    }
+    .panah-icon {
+        color: #c5a059;
+        transition: transform 0.3s ease;
+    }
+
+    .custom-options-box {
+        position: absolute;
+        top: 105%;
+        left: 0;
+        width: 100%;
+        background-color: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 4px;
+        z-index: 100;
+        max-height: 250px;
+        overflow-y: auto;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+        padding: 0.4rem;
+    }
+
+    .custom-options-box::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-options-box::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 10px;
+    }
+
+    .baris-opsi {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.7rem 0.8rem;
+        background: transparent;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        color: #999;
+        text-align: left;
+        transition: all 0.2s ease;
+    }
+    .baris-opsi:hover {
+        background-color: #c5a059/10;
+        color: #fff;
+        transform: translateX(4px);
+    }
+    .baris-opsi.aktif {
+        color: #c5a059;
+        background-color: rgba(197, 160, 89, 0.05);
+    }
+
+    .angka-opsi {
+        font-family: monospace;
+        opacity: 0.5;
+        font-size: 0.75rem;
+    }
+    .aktif .angka-opsi {
+        opacity: 1;
+        color: #c5a059;
+    }
+
+    @keyframes fadeInScale {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+</style>
+
+<script>
+    function setupSuperSearchAndFilters() {
+        let state = {
+            search: "",
+            provinsi: "semua",
+            budaya: "semua",
+            simbolik: "semua",
+            warna: [],
+        };
+        let isSidebarActive = false;
+
+        const cards = document.querySelectorAll(".kartu-motif-test");
+        const dashboardTotal = document.getElementById("dashboard-total-motif");
+        const statusText = document.getElementById("teks-status-filter");
+
+        const searchContainer = document.getElementById(
+            "search-filter-container",
+        );
+        const inputPencarian = document.getElementById("input-pencarian-batik");
+        const wrapperToggleBtn = document.getElementById("wrapper-toggle-btn");
+        const btnToggleSidebar = document.getElementById("btn-toggle-sidebar");
+
+        const mainLayoutContainer = document.getElementById(
+            "main-layout-container",
+        );
+        const wrapperGaleri = document.getElementById("wrapper-galeri");
+        const wrapperSidebar = document.getElementById("wrapper-sidebar");
+        const gridArea = document.getElementById("area-galeri-testing");
+
+        // 1. SENSOR HOVER & TYPE
+        function updateToggleVisibility() {
+            if (
+                inputPencarian.value.length > 0 ||
+                document.activeElement === inputPencarian ||
+                searchContainer.matches(":hover") ||
+                isSidebarActive
+            ) {
+                wrapperToggleBtn.classList.remove(
+                    "opacity-0",
+                    "-translate-y-3",
+                    "pointer-events-none",
+                );
+                wrapperToggleBtn.classList.add(
+                    "opacity-100",
+                    "translate-y-0",
+                    "pointer-events-auto",
+                );
+            } else {
+                wrapperToggleBtn.classList.add(
+                    "opacity-0",
+                    "-translate-y-3",
+                    "pointer-events-none",
+                );
+                wrapperToggleBtn.classList.remove(
+                    "opacity-100",
+                    "translate-y-0",
+                    "pointer-events-auto",
+                );
+            }
+        }
+
+        searchContainer.addEventListener("mouseenter", updateToggleVisibility);
+        searchContainer.addEventListener("mouseleave", updateToggleVisibility);
+        inputPencarian.addEventListener("focus", updateToggleVisibility);
+        inputPencarian.addEventListener("blur", updateToggleVisibility);
+        inputPencarian.addEventListener("input", (e) => {
+            state.search = e.target.value.toLowerCase().trim();
+            updateToggleVisibility();
+            runFilter();
+        });
+
+        // ============================================================
+        // 2. KUNCI PERBAIKAN ANIMASI SIDEBAR (MEMANJANGKAN AREA BAWAH)
+        // ============================================================
+        const newBtnToggle = btnToggleSidebar.cloneNode(true);
+        btnToggleSidebar.replaceWith(newBtnToggle);
+
+        newBtnToggle.addEventListener("click", () => {
+            isSidebarActive = !isSidebarActive;
+
+            if (isSidebarActive) {
+                mainLayoutContainer.classList.add("gap-8");
+
+                // PENTING: Kelas 'overflow-hidden' dan 'p-0' dibuang.
+                // Kita berikan 'px-6 pt-6 pb-56' -> pb-56 (padding-bottom 14rem/224px)
+                // untuk melebatkan/memanjangkan ekor sidebar ke bawah layar!
+                wrapperSidebar.classList.remove(
+                    "w-0",
+                    "opacity-0",
+                    "p-0",
+                    "border-0",
+                    "m-0",
+                    "overflow-hidden",
+                );
+                wrapperSidebar.classList.add(
+                    "w-full",
+                    "md:w-1/4",
+                    "opacity-100",
+                    "px-6",
+                    "pt-6",
+                    "pb-56",
+                    "border",
+                );
+
+                wrapperGaleri.classList.remove("w-full");
+                wrapperGaleri.classList.add("md:w-3/4");
+                gridArea.classList.remove("xl:grid-cols-4");
+
+                newBtnToggle.classList.add(
+                    "text-[#ef4444]",
+                    "border-[#ef4444]/40",
+                );
+                document.getElementById("teks-toggle-filter").innerText =
+                    "Tutup Filter Spesifik";
+                document.getElementById("icon-toggle-filter").innerHTML =
+                    '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>';
+            } else {
+                mainLayoutContainer.classList.remove("gap-8");
+
+                // Dikembalikan nutup
+                wrapperSidebar.classList.remove(
+                    "w-full",
+                    "md:w-1/4",
+                    "opacity-100",
+                    "px-6",
+                    "pt-6",
+                    "pb-56",
+                    "border",
+                );
+                wrapperSidebar.classList.add(
+                    "w-0",
+                    "opacity-0",
+                    "p-0",
+                    "border-0",
+                    "m-0",
+                    "overflow-hidden",
+                );
+
+                wrapperGaleri.classList.remove("md:w-3/4");
+                wrapperGaleri.classList.add("w-full");
+                gridArea.classList.add("xl:grid-cols-4");
+
+                newBtnToggle.classList.remove(
+                    "text-[#ef4444]",
+                    "border-[#ef4444]/40",
+                );
+                document.getElementById("teks-toggle-filter").innerText =
+                    "Jelajahi Lebih Spesifik";
+                document.getElementById("icon-toggle-filter").innerHTML =
+                    '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>';
+            }
+            updateToggleVisibility();
+        });
+
+        // 3. DROPDOWN TOGGLE MURNI
+        const triggers = document.querySelectorAll(".custom-select-trigger");
+        function closeAll() {
+            document
+                .querySelectorAll(".custom-options-box")
+                .forEach((box) => box.classList.add("hidden"));
+            document
+                .querySelectorAll(".panah-icon")
+                .forEach((p) => (p.style.transform = "rotate(0deg)"));
+        }
+
+        triggers.forEach((trigger) => {
+            trigger.replaceWith(trigger.cloneNode(true));
+            const newTrigger = document.getElementById(trigger.id);
+
+            newTrigger.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const box = newTrigger.nextElementSibling;
+                const isHidden = box.classList.contains("hidden");
+                closeAll();
+                if (isHidden) {
+                    box.classList.remove("hidden");
+                    newTrigger.querySelector(".panah-icon").style.transform =
+                        "rotate(180deg)";
+                }
+            });
+        });
+
+        document.addEventListener("click", closeAll);
+        document.querySelectorAll(".custom-options-box").forEach((box) => {
+            box.addEventListener("click", (e) => e.stopPropagation());
+        });
+
+        // 4. FUNGSI FILTER UTAMA & MATRIX CROSS-CALCULATION
+        function runFilter() {
+            let count = 0;
+            let liveCounts = {
+                provinsi: {},
+                budaya: {},
+                simbolik: {},
+                warna: {},
+            };
+
+            cards.forEach((card) => {
+                const namaKain = card.getAttribute("data-nama");
+                const p = card.getAttribute("data-provinsi");
+                const b = card.getAttribute("data-budaya");
+                const s = card.getAttribute("data-simbolik");
+                const w = card.getAttribute("data-warna");
+
+                const matchSearch =
+                    state.search === "" || namaKain.includes(state.search);
+                const matchP =
+                    state.provinsi === "semua" || p === state.provinsi;
+                const matchB = state.budaya === "semua" || b === state.budaya;
+                const matchS =
+                    state.simbolik === "semua" || s === state.simbolik;
+                const matchW =
+                    state.warna.length === 0 ||
+                    state.warna.some((color) => w.includes(color));
+
+                const isMatch =
+                    matchSearch && matchP && matchB && matchS && matchW;
+
+                if (isMatch) {
+                    count++;
+                    card.style.display = "block";
+                    setTimeout(() => {
+                        card.classList.remove("kartu-hilang");
+                    }, 10);
+                } else {
+                    card.classList.add("kartu-hilang");
+                    setTimeout(() => {
+                        if (card.classList.contains("kartu-hilang"))
+                            card.style.display = "none";
+                    }, 400);
+                }
+
+                if (matchSearch && matchB && matchS && matchW)
+                    liveCounts.provinsi[p] = (liveCounts.provinsi[p] || 0) + 1;
+                if (matchSearch && matchP && matchS && matchW)
+                    liveCounts.budaya[b] = (liveCounts.budaya[b] || 0) + 1;
+                if (matchSearch && matchP && matchB && matchW)
+                    liveCounts.simbolik[s] = (liveCounts.simbolik[s] || 0) + 1;
+                if (matchSearch && matchP && matchB && matchS) {
+                    document
+                        .querySelectorAll("#opsi-warna .baris-opsi")
+                        .forEach((btn) => {
+                            const t = btn.getAttribute("data-target");
+                            if (t !== "semua" && w.includes(t))
+                                liveCounts.warna[t] =
+                                    (liveCounts.warna[t] || 0) + 1;
+                        });
+                }
+            });
+
+            if (dashboardTotal) dashboardTotal.innerText = count;
+
+            const isFilterActive =
+                state.search !== "" ||
+                state.provinsi !== "semua" ||
+                state.budaya !== "semua" ||
+                state.simbolik !== "semua" ||
+                state.warna.length > 0;
+
+            if (statusText) {
+                if (state.search !== "") {
+                    statusText.innerText = `Menemukan kata kunci: "${state.search}"`;
+                    statusText.classList.add("text-[#c5a059]");
+                } else {
+                    statusText.innerText = isFilterActive
+                        ? "Filter spesifik diterapkan"
+                        : "Menampilkan seluruh database";
+                    statusText.classList.remove("text-[#c5a059]");
+                }
+            }
+
+            ["provinsi", "budaya", "simbolik", "warna"].forEach((kategori) => {
+                const box = document.getElementById(`opsi-${kategori}`);
+                if (!box) return;
+
+                box.querySelectorAll(".baris-opsi").forEach((btn) => {
+                    const target = btn.getAttribute("data-target");
+                    if (target === "semua") return;
+
+                    const num = liveCounts[kategori][target] || 0;
+                    btn.querySelector(".angka-opsi").innerText = num;
+                    btn.style.display = num > 0 ? "flex" : "none";
+
+                    if (kategori === "warna") {
+                        if (state.warna.includes(target))
+                            btn.classList.add("aktif");
+                        else btn.classList.remove("aktif");
+                    } else {
+                        if (state[kategori] === target)
+                            btn.classList.add("aktif");
+                        else btn.classList.remove("aktif");
+                    }
+                });
+            });
+
+            renderAllPills();
+        }
+
+        // 5. RENDER BADGE PILLS KAPSUL
+        function renderAllPills() {
+            ["provinsi", "budaya", "simbolik", "warna"].forEach((kategori) => {
+                const container = document.getElementById(`pills-${kategori}`);
+                if (!container) return;
+                container.innerHTML = "";
+
+                const createPill = (item) => {
+                    const pill = document.createElement("div");
+                    let visualHTML = `<span class="text-[11px] text-gray-200 font-medium">${item}</span>`;
+                    if (kategori === "warna") {
+                        const btnAsli = document.querySelector(
+                            `#opsi-warna [data-target="${item}"]`,
+                        );
+                        const hex = btnAsli?.getAttribute("data-hex") || "#555";
+                        visualHTML = `
+              <div class="w-3 h-3 rounded-full shadow-sm" style="background-color: ${hex}; border: 1px solid rgba(255,255,255,0.1)"></div>
+              <span class="text-[11px] text-gray-200 font-medium truncate max-w-[120px]">${item}</span>
+            `;
+                    }
+
+                    pill.className =
+                        "inline-flex items-center justify-between gap-2.5 pl-3 pr-1.5 py-1.5 bg-[#1e1e1e] border border-gray-700 rounded-full shadow-sm animate-[fadeInScale_0.2s_ease] transition-colors hover:border-gray-500";
+                    pill.innerHTML = `
+            <div class="flex items-center gap-2">${visualHTML}</div>
+            <button type="button" class="btn-hapus-pill flex items-center justify-center w-[18px] h-[18px] rounded-full text-gray-400 hover:bg-red-500/20 hover:text-red-500 transition-colors cursor-pointer" title="Hapus Filter">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+          `;
+
+                    pill.querySelector(".btn-hapus-pill").addEventListener(
+                        "click",
+                        (e) => {
+                            e.stopPropagation();
+                            if (kategori === "warna") {
+                                state.warna = state.warna.filter(
+                                    (i) => i !== item,
+                                );
+                            } else {
+                                state[kategori] = "semua";
+                            }
+                            runFilter();
+                        },
+                    );
+                    container.appendChild(pill);
+                };
+
+                if (kategori === "warna") {
+                    state.warna.forEach((item) => createPill(item));
+                } else {
+                    if (state[kategori] !== "semua")
+                        createPill(state[kategori]);
+                }
+            });
+        }
+
+        document.querySelectorAll(".baris-opsi").forEach((btn) => {
+            btn.replaceWith(btn.cloneNode(true));
+        });
+
+        document.querySelectorAll(".baris-opsi").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const kategori = btn.getAttribute("data-kategori");
+                const target = btn.getAttribute("data-target");
+
+                if (kategori === "warna") {
+                    if (target === "semua") {
+                        state.warna = [];
+                        closeAll();
+                    } else {
+                        if (state.warna.includes(target)) {
+                            state.warna = state.warna.filter(
+                                (i) => i !== target,
+                            );
+                        } else {
+                            if (state.warna.length >= 3) {
+                                alert("Maksimal memilih 3 warna sekaligus!");
+                                return;
+                            }
+                            state.warna.push(target);
+                        }
+                    }
+                } else {
+                    state[kategori] = target;
+                    closeAll();
+                }
+                runFilter();
+            });
+        });
+
+        runFilter();
+    }
+
+    document.addEventListener("DOMContentLoaded", setupSuperSearchAndFilters);
+    document.addEventListener("astro:page-load", setupSuperSearchAndFilters);
+</script>

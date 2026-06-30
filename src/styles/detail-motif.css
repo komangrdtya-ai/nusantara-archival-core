@@ -1,0 +1,120 @@
+/* Custom styles for detail motif component */
+
+/* ========================================================
+   ADAPTASI LIGHT MODE UNTUK HALAMAN DETAIL MOTIF
+   ======================================================== */
+/* Background Halaman & Teks Utama */
+html.light-mode body { background-color: #f5f2ec !important; color: #2d2a26 !important; }
+
+/* Mengubah Teks Putih menjadi Gelap */
+html.light-mode .text-white, html.light-mode .text-gray-200, html.light-mode .text-gray-300 { color: #2d2a26 !important; }
+html.light-mode .text-gray-400, html.light-mode .text-gray-500 { color: #5c554d !important; }
+
+/* Menyesuaikan Background Kartu/Detail */
+html.light-mode .bg-\[\#0e0e0e\]\/80,
+html.light-mode .bg-\[\#0e0e0e\]\/60,
+html.light-mode .bg-\[\#0e0e0e\]\/40,
+html.light-mode .bg-\[\#0e0e0e\],
+html.light-mode .bg-\[\#111\],
+html.light-mode .bg-black,
+html.light-mode .bg-black\/40 {
+    background-color: #ebe4d8 !important;
+}
+
+/* Mengubah background utama halaman detail dari hitam solid ke putih/beige */
+html.light-mode .bg-\[\#050505\] {
+    background-color: transparent !important; /* Biar tembus ke warna body beige */
+}
+
+/* Menyesuaikan Border */
+html.light-mode .border-white\/5, html.light-mode .border-white\/10, html.light-mode .border-white\/20 { border-color: #e6dfd1 !important; }
+
+/* Shadow Lembut (Global) */
+html.light-mode .shadow-sm, html.light-mode .shadow-lg, html.light-mode .shadow-xl, html.light-mode .shadow-2xl,
+html.light-mode .shadow-\[0_0_50px_rgba\(0\,0\,0\,0\.8\)\] {
+    box-shadow: 0 4px 10px -2px rgba(92, 85, 77, 0.05), 0 2px 4px -1px rgba(92, 85, 77, 0.03) !important;
+}
+
+/* -------------------------------------------
+   MUSEUM GALLERY VIBE (Gambar Motif Utama)
+   ------------------------------------------- */
+/* Physical Drop Shadow & Bingkai Passe-Partout */
+html.light-mode .shadow-\[0_0_50px_rgba\(166\,124\,0\,0\.15\)\] {
+    box-shadow: 0 15px 35px -5px rgba(92, 85, 77, 0.15), 0 5px 15px rgba(0, 0, 0, 0.05) !important;
+    border: 6px solid #ebe4d8 !important; /* Efek bingkai foto premium (Krem Medium) */
+}
+
+/* Kembalikan kecerahan gambar asli (Clarity) di Light Mode */
+html.light-mode .gambar-detail-kain,
+html.light-mode .object-cover.opacity-95 {
+    opacity: 1 !important;
+}
+
+/* Penyesuaian Aksen Emas & Warna Kustom lain */
+html.light-mode .text-\[\#c5a059\], html.light-mode .text-\[\#a67c00\] { color: #8f6700 !important; }
+html.light-mode .bg-\[\#a67c00\]\/5 { background-color: rgba(143, 103, 0, 0.05) !important; }
+html.light-mode .border-\[\#a67c00\]\/20, html.light-mode .border-\[\#a67c00\]\/30, html.light-mode .border-\[\#a67c00\]\/50 {
+    border-color: rgba(143, 103, 0, 0.3) !important;
+}
+
+/* Tag Neon menjadi hijau rimba */
+html.light-mode .text-\[\#deff9a\] { color: #065f46 !important; font-weight: 700 !important; }
+
+/* Interaksi Latar Belakang Hover & Border */
+html.light-mode .hover\:bg-white\/10:hover { background-color: #ebe4d8 !important; }
+html.light-mode .group:hover .group-hover\:border-\[\#a67c00\]\/50 {
+    border-color: rgba(143, 103, 0, 0.6) !important;
+}
+
+/* ========================================================
+   EFEK HOVER GLOBAL (Semua Teks Interaktif)
+   ======================================================== */
+/* Menyuntikkan transisi mulus tanpa mengganggu base style/layout */
+a, button, .hover\:text-white, .hover\:text-\[\#a67c00\], .group-hover\:text-white {
+    transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out !important;
+}
+
+/* LIGHT MODE: Hover Kalem (Dark Copper) untuk semua link/teks interaktif */
+html.light-mode a:hover,
+html.light-mode button:hover,
+html.light-mode .hover\:text-white:hover,
+html.light-mode .hover\:text-\[\#a67c00\]:hover,
+html.light-mode .group:hover .group-hover\:text-white { 
+    color: #5c4100 !important; 
+    text-shadow: none !important;
+}
+
+/* DARK MODE: Hover Mewah (Bright Gold Glow) untuk semua link/teks interaktif */
+html:not(.light-mode) a:hover,
+html:not(.light-mode) button:hover,
+html:not(.light-mode) .hover\:text-white:hover,
+html:not(.light-mode) .hover\:text-\[\#a67c00\]:hover,
+html:not(.light-mode) .group:hover .group-hover\:text-white {
+    color: #ffd700 !important;
+    text-shadow: 0 0 12px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 215, 0, 0.2) !important;
+}
+
+/* ========================================================
+   ANIMASI BULATAN WARNA (HOVER)
+   ======================================================== */
+@keyframes circle-pulse {
+    0%, 100% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0px transparent;
+    }
+    50% {
+        transform: scale(1.15);
+        box-shadow: 0 0 20px currentColor;
+        border-color: rgba(255, 255, 255, 0.8);
+    }
+}
+
+.hover-circle-detail {
+    will-change: transform, box-shadow;
+}
+
+.group:hover .hover-circle-detail {
+    animation: circle-pulse 2.5s ease-in-out infinite;
+    position: relative;
+    z-index: 10;
+}

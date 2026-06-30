@@ -1,0 +1,22 @@
+{
+    "dc:identifier": "daun_sirih_melayu",
+    "url_gambar_web": "/assets/motif/sumut/daun_sirih_melayu.png",
+    "dc:title": "Daun Sirih Melayu",
+    "dc:subject": {
+        "Kategori Budaya": "Batik Pesisiran",
+        "Status Simbolik": "Umum / Bebas"
+    },
+    "dc:description": {
+        "Fungsi Tradisional": "Kain kelongsong baju kurung, selendang pelengkap upacara tepuk tepung tawar, dan busana formal.",
+        "Makna Filosofis": "Melambangkan adat ketimuran yang santun, penyambutan tamu dengan tangan terbuka, serta ketulusan menjalin persaudaraan baru khas Melayu Deli.",
+        "Elemen Visual": "Daun sirih tunggal membulat meliuk rapi dengan untaian bunga pinang.",
+        "Warna Dominan": "Kuning Emas (#BB9B2A), Merah Bata (#8D2214), Hijau Botol (#01381F), Putih Bersih (#D9EAEF)",
+        "Fakta Unik": "Setiap perhelatan penting Kesultanan Melayu wajib menyediakan sirih di dalam puan sebagai lambang hukum pembuka adat."
+    },
+    "dc:coverage": "Sumatera Utara, Indonesia",
+    "dc:format": "image/png",
+    "dc:source": "Repositori Komunitas",
+    "dc:rights": "Repositori Komunitas / Penggunaan Bebas",
+    "dc:type": "Image; Physical Object",
+    "dc:language": "id, ms"
+}

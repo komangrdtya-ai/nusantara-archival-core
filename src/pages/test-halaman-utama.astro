@@ -1,0 +1,487 @@
+---
+import Navbar from "../components/shared/Navbar.astro";
+import MenuOverlay from "../components/shared/MenuOverlay.astro";
+// HeroSection di-inject langsung di bawah agar bisa mendukung dual-video
+import RagamMotif from "../components/home/RagamMotif.astro";
+import batikData from "../data/metada_batik.json";
+import "../styles/global.css";
+
+// Mengambil masing-masing 5 motif pertama dari DIY & Jateng agar seimbang pas 10 data
+const previewJogja = batikData["DI Yogyakarta"]?.slice(0, 5) || [];
+const previewJateng = batikData["Jawa Tengah"]?.slice(0, 5) || [];
+
+// Menggabungkan data menjadi satu wadah array teaser katalog
+const kolesiTeaser = [...previewJogja, ...previewJateng];
+---
+
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Light Mode - Halaman Utama</title>
+
+    <script is:inline>
+        // Inisialisasi tema sebelum render agar tidak flash (FOUC)
+        const savedTheme = localStorage.getItem('test-theme') || 'light';
+        if (savedTheme === 'light') {
+            document.documentElement.classList.add('light-mode');
+        } else {
+            document.documentElement.classList.remove('light-mode');
+        }
+    </script>
+
+    <style is:global>
+        /* ========================================================
+           ATURAN MODE TERANG (Hanya aktif jika .light-mode ada)
+           ======================================================== */
+        /* Background Halaman & Teks Utama */
+        html.light-mode body { background-color: #f5f2ec !important; color: #2d2a26 !important; }
+
+        /* Mengubah Teks Putih menjadi Gelap */
+        html.light-mode .text-white, html.light-mode .text-gray-200, html.light-mode .text-gray-300 { color: #2d2a26 !important; }
+        html.light-mode .text-gray-400, html.light-mode .text-gray-500 { color: #5c554d !important; }
+
+        /* Menyesuaikan Background Kartu/Detail */
+        html.light-mode .bg-\[\#0e0e0e\]\/80,
+        html.light-mode .bg-\[\#0e0e0e\]\/60,
+        html.light-mode .bg-\[\#0e0e0e\]\/40,
+        html.light-mode .bg-\[\#0e0e0e\],
+        html.light-mode .bg-\[\#111\],
+        html.light-mode .bg-black,
+        html.light-mode .bg-black\/40 {
+            background-color: #ebe4d8 !important; /* Digelapkan sedikit dari #f5f2ec agar tidak terlalu mencolok */
+        }
+
+        /* Menyesuaikan Border */
+        html.light-mode .border-white\/5, html.light-mode .border-white\/10, html.light-mode .border-white\/20 { border-color: #e6dfd1 !important; }
+
+        /* Shadow Lembut (Global) */
+        html.light-mode .shadow-sm, html.light-mode .shadow-lg, html.light-mode .shadow-xl, html.light-mode .shadow-2xl,
+        html.light-mode .shadow-\[0_0_50px_rgba\(0\,0\,0\,0\.8\)\] {
+            box-shadow: 0 4px 10px -2px rgba(92, 85, 77, 0.05), 0 2px 4px -1px rgba(92, 85, 77, 0.03) !important;
+        }
+
+        /* Penyesuaian Aksen Emas & Warna Kustom lain */
+        html.light-mode .text-\[\#c5a059\], html.light-mode .text-\[\#a67c00\] { color: #8f6700 !important; }
+        html.light-mode .bg-\[\#a67c00\]\/5 { background-color: rgba(143, 103, 0, 0.05) !important; }
+        html.light-mode .border-\[\#a67c00\]\/20, html.light-mode .border-\[\#a67c00\]\/30, html.light-mode .border-\[\#a67c00\]\/50 {
+            border-color: rgba(143, 103, 0, 0.3) !important;
+        }
+        
+        /* Tag Neon menjadi hijau rimba */
+        html.light-mode .text-\[\#deff9a\] { color: #065f46 !important; font-weight: 700 !important; }
+
+        /* Interaksi Latar Belakang Hover & Border */
+        html.light-mode .hover\:bg-white\/10:hover { background-color: #ebe4d8 !important; }
+        html.light-mode .group:hover .group-hover\:border-\[\#a67c00\]\/50 {
+            border-color: rgba(143, 103, 0, 0.6) !important;
+        }
+
+        /* ========================================================
+           EFEK HOVER GLOBAL (Semua Teks Interaktif)
+           ======================================================== */
+        /* Menyuntikkan transisi mulus tanpa mengganggu base style/layout */
+        a, button, .hover\:text-white, .hover\:text-\[\#a67c00\], .group-hover\:text-white {
+            transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out !important;
+        }
+
+        /* LIGHT MODE: Hover Kalem (Dark Copper) untuk semua link/teks interaktif */
+        html.light-mode a:hover,
+        html.light-mode button:hover,
+        html.light-mode .hover\:text-white:hover,
+        html.light-mode .hover\:text-\[\#a67c00\]:hover,
+        html.light-mode .group:hover .group-hover\:text-white { 
+            color: #5c4100 !important; 
+            text-shadow: none !important;
+        }
+
+        /* DARK MODE: Hover Mewah (Bright Gold Glow) untuk semua link/teks interaktif */
+        html:not(.light-mode) a:hover,
+        html:not(.light-mode) button:hover,
+        html:not(.light-mode) .hover\:text-white:hover,
+        html:not(.light-mode) .hover\:text-\[\#a67c00\]:hover,
+        html:not(.light-mode) .group:hover .group-hover\:text-white {
+            color: #ffd700 !important;
+            text-shadow: 0 0 12px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 215, 0, 0.2) !important;
+        }
+
+        /* ========================================================
+           LOGIKA TRANSISI VIDEO DUAL-MODE (Hero Beranda)
+           ======================================================== */
+        .video-dark, .video-light {
+            transition: opacity 1.5s ease-in-out !important;
+        }
+        
+        /* State Default (Light Mode) */
+        html.light-mode .video-dark { opacity: 0 !important; pointer-events: none; }
+        html.light-mode .video-light { opacity: 0.6 !important; /* Diberi toleransi (lebih terang sedikit dari 0.4) agar terlihat bedanya dengan Dark Mode */ }
+
+        /* State Dark Mode */
+        html:not(.light-mode) .video-dark { opacity: 0.4 !important; /* Sama persis dengan orisinal Dark Mode */ }
+        html:not(.light-mode) .video-light { opacity: 0 !important; pointer-events: none; }
+
+        /* ========================================================
+           ADAPTASI SPESIFIK HALAMAN UTAMA (Hero & Katalog Beranda)
+           ======================================================== */
+        
+        /* 1. Menimpa Background Gelap Bawaan */
+        html.light-mode .bg-\[\#0a0a0a\] { background-color: #f5f2ec !important; }
+        html.light-mode .bg-\[\#141414\]\/90 { background-color: rgba(255, 255, 255, 0.95) !important; }
+
+        /* 2. Menimpa Teks Terang Bawaan */
+        html.light-mode .text-\[\#e0e0e0\] { color: #2d2a26 !important; }
+        
+        /* 3. Gradient Overlay Video Hero (Dikembalikan persis seperti desain orisinal Dark Mode) */
+        .v-museum-overlay {
+            background: linear-gradient(
+              to bottom,
+              #0a0a0a 0%,
+              transparent 15%,
+              transparent 75%,
+              #0a0a0a 92%,
+              #0a0a0a 100%
+            ) !important;
+        }
+        
+        /* Hilangkan gradasi hitam atas/bawah khusus di Light Mode */
+        html.light-mode .v-museum-overlay {
+            background: transparent !important;
+        }
+        
+        /* 3b. Teks Hero Persis Dark Mode (Warna orisinal, tidak dipaksa seragam) */
+        html.light-mode .animate-fade-in-text h1 { color: #e0e0e0 !important; text-shadow: none !important; }
+        html.light-mode .animate-fade-in-text span[style*="color: #c5a059"] { color: #c5a059 !important; }
+        html.light-mode .animate-fade-in-text p[style*="rgba(224"] { color: rgba(224, 224, 224, 0.6) !important; }
+
+        /* 3c. Pemisah Blending Bawah (Hero to Gallery) - Dihapus sepenuhnya */
+        .hero-bottom-blend {
+            background: transparent !important;
+        }
+        
+        /* 3d. Teks Navbar Kontras di Light Mode (Adaptive Scroll) */
+        /* Default: Di atas video, kembalikan ke warna asli Dark Mode (Putih & Gold) */
+        html.light-mode .fixed.top-8 .text-white { color: #ffffff !important; transition: color 0.5s ease !important; }
+        html.light-mode .fixed.top-8 .text-\[\#a67c00\] { color: #a67c00 !important; transition: color 0.5s ease !important; }
+        
+        /* Saat di-scroll melewati video, teks putih berubah gelap, teks gold berubah copper */
+        html.light-mode.scrolled-past-hero .fixed.top-8 .text-white {
+            color: #2d2a26 !important; 
+        }
+        html.light-mode.scrolled-past-hero .fixed.top-8 .text-\[\#a67c00\] {
+            color: #8f6700 !important; 
+        }
+
+        /* 4. Menimpa Inline Styles pada Komponen Beranda Asli (Khusus di luar Hero) */
+        /* Teks Curated Exhibition, dll */
+        html.light-mode section:not(.h-screen) span[style*="color: #c5a059;"] {
+            color: #8f6700 !important;
+        }
+        /* Garis Divider Emas */
+        html.light-mode div[style*="background-color: #c5a059;"],
+        html.light-mode div[style*="background-color: #a67c00;"] {
+            background-color: #8f6700 !important;
+        }
+        /* Teks Deskripsi Pudar (rgba) */
+        html.light-mode section:not(.h-screen) p[style*="color: rgba(224, 224, 224, 0.6);"],
+        html.light-mode section:not(.h-screen) span[style*="color: rgba(224, 224, 224, 0.4);"] {
+            color: #5c554d !important;
+        }
+
+        /* 5. Tombol 'Buka Seluruh Arsip Koleksi' */
+        html.light-mode #gallery-teaser a[style*="border: 1px solid rgba(197, 160, 89, 0.4)"] {
+            border-color: rgba(143, 103, 0, 0.4) !important;
+            color: #8f6700 !important;
+        }
+        /* Hover Tombol 'Buka Seluruh Arsip Koleksi' di DARK MODE (Lebih Kalem) */
+        html:not(.light-mode) #gallery-teaser a[style*="border: 1px solid rgba(197, 160, 89, 0.4)"]:hover {
+            background-color: rgba(197, 160, 89, 0.15) !important; /* Latar belakang emas transparan lembut */
+            color: #c5a059 !important; /* Teks tetap emas standar */
+            text-shadow: none !important; /* Matikan pendaran (glow) agar tidak menyilaukan */
+            border-color: #c5a059 !important;
+        }
+        html.light-mode #gallery-teaser a[style*="border: 1px solid rgba(197, 160, 89, 0.4)"]:hover {
+            background-color: #ebe4d8 !important; /* Soft beige hover */
+            color: #5c4100 !important;
+        }
+
+        /* 6. Kontrol Audio Button */
+        html.light-mode #btn-audio-control {
+            color: #2d2a26 !important;
+            border-color: #e6dfd1 !important;
+        }
+        html.light-mode #btn-audio-control:hover {
+            background-color: #ebe4d8 !important;
+            color: #5c4100 !important;
+        }
+        html.light-mode #btn-audio-control svg {
+            stroke: #2d2a26 !important;
+        }
+
+        /* 7. Gradient Pemisah Section Bawah */
+        html.light-mode .bg-gradient-to-b.from-transparent.to-black\/50 {
+            background-image: linear-gradient(to bottom, transparent, rgba(245, 242, 236, 1)) !important;
+            border-top-color: #e6dfd1 !important;
+        }
+
+        /* ========================================================
+           ADAPTASI KOMPONEN KARTU (Ragam Motif)
+           ======================================================== */
+        
+        /* Mengubah Wrapper Hitam menjadi Card Putih Mewah */
+        html.light-mode .museum-deck-wrapper[style*="background-color: rgba(18, 18, 18, 0.4)"] {
+            background-color: #ebe4d8 !important; /* Krem agak gelap sedikit dari background utama #f5f2ec */
+            border-color: #d1c8b3 !important;
+            box-shadow: 0 10px 40px -10px rgba(92, 85, 77, 0.15) !important; /* Soft premium shadow */
+        }
+        
+        /* Mengembalikan kecerahan gambar kain dari opasitas rendah */
+        html.light-mode .img-kain-batik {
+            opacity: 1 !important;
+        }
+        
+        /* Tombol 'Lihat Arsip Lengkap' di dalam Ragam Motif */
+        html.light-mode #motif-link {
+            border-color: rgba(143, 103, 0, 0.4) !important;
+            color: #8f6700 !important;
+        }
+        html.light-mode #motif-link:hover {
+            background-color: #ebe4d8 !important;
+            color: #5c4100 !important;
+        }
+        
+        /* ========================================================
+           ELEMEN TAMBAHAN HALAMAN TESTING (Sidebar & Navbar)
+           ======================================================== */
+        
+        /* Hamburger Menu Icon (Navbar) */
+        /* Default di atas video: selalu putih di kedua mode */
+        html.light-mode #menu-btn span, html:not(.light-mode) #menu-btn span {
+            background-color: #ffffff !important;
+            transition: background-color 0.5s ease !important;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.5) !important; /* Sedikit bayangan agar garis terlihat di atas kain */
+        }
+        
+        /* Jika Light Mode dan di-scroll melewati video, barulah garisnya berubah gelap */
+        html.light-mode.scrolled-past-hero #menu-btn span {
+            background-color: #2d2a26 !important;
+            box-shadow: none !important;
+        }
+        
+        /* Sidebar Overlay / Menu Backdrop */
+        html.light-mode .bg-\[\#050505\]\/95 {
+            background-color: rgba(245, 242, 236, 0.98) !important;
+        }
+        
+        /* Transisi Dasar Menu Item (Berlaku untuk dua mode) */
+        .menu-item {
+            transition: all 0.3s ease-in-out !important;
+            position: relative;
+            display: inline-block; /* Memastikan ::after lebarnya sesuai teks */
+        }
+
+        /* Teks dasar Sidebar di Light Mode */
+        html.light-mode .text-white\/90 {
+            color: #2d2a26 !important;
+        }
+
+        /* Animasi garis bawah mengembang dari tengah (Light Mode) */
+        html.light-mode .menu-item::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: #5c4100;
+            transition: width 0.3s ease-in-out;
+            border-radius: 2px;
+        }
+        html.light-mode .menu-item:hover::after {
+            width: 80%; 
+        }
+
+        /* Hilangkan tanda panah (>) bawaan agar lebih bersih dan rapi di Light Mode */
+        html.light-mode .menu-item::before {
+            display: none !important;
+        }
+
+        /* Tombol Tema */
+        html.light-mode #test-theme-toggle {
+            background-color: #ffffff;
+            border-color: #e6dfd1;
+        }
+        /* Animasi Sorotan Tombol (Glow/Blink) */
+        @keyframes buttonGlowBlink {
+            0% { box-shadow: 0 0 0 rgba(197, 160, 89, 0); background-color: transparent; color: #c5a059; }
+            20% { box-shadow: 0 0 30px rgba(197, 160, 89, 0.8); background-color: rgba(197, 160, 89, 0.2); color: #fff; }
+            40% { box-shadow: 0 0 0 rgba(197, 160, 89, 0); background-color: transparent; color: #c5a059; }
+            60% { box-shadow: 0 0 30px rgba(197, 160, 89, 0.8); background-color: rgba(197, 160, 89, 0.2); color: #fff; }
+            100% { box-shadow: 0 0 0 rgba(197, 160, 89, 0); background-color: transparent; color: #c5a059; }
+        }
+
+        .blink-glow {
+            animation: buttonGlowBlink 2.5s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="bg-[#faf9f6] text-gray-900 antialiased transition-colors duration-300">
+    <Navbar />
+    <MenuOverlay />
+
+    <!-- Tombol Ganti Tema (Dark/Light Mode) -->
+    <button id="test-theme-toggle" class="fixed top-8 right-8 z-[100] flex items-center justify-center w-12 h-12 rounded-full border transition-all duration-500 shadow-md cursor-pointer hover:scale-110 focus:outline-none">
+        <span id="test-theme-icon" class="text-xl leading-none"></span>
+    </button>
+
+    <main class="min-h-screen">
+        <section class="relative w-full h-screen bg-[#0a0a0a] flex items-center justify-center overflow-hidden">
+            <div class="absolute inset-0 w-full h-full z-10 animate-fade-in-video" style="background-color: #000000 !important;">
+                <!-- Video Dark Mode -->
+                <video autoplay loop muted playsinline class="video-dark absolute inset-0 w-full h-full object-cover select-none pointer-events-none">
+                    <source src="/assets/video/intro.mp4" type="video/mp4" />
+                </video>
+                
+                <!-- Video Light Mode (Aset Baru) -->
+                <video autoplay loop muted playsinline class="video-light absolute inset-0 w-full h-full object-cover select-none pointer-events-none">
+                    <source src="/assets/video/intro2.mp4" type="video/mp4" />
+                </video>
+
+                <div class="absolute inset-0 v-museum-overlay transition-colors duration-1000"></div>
+            </div>
+
+            <div class="relative z-20 text-center px-4 max-w-4xl animate-fade-in-text">
+                <span style="color: #c5a059;" class="text-[10px] md:text-xs uppercase tracking-[0.4em] block mb-5 font-bold">Digital Exhibition</span>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-serif text-[#e0e0e0] tracking-wider leading-[1.1]">Jejak Karya Nusantara</h1>
+                <p style="color: rgba(224, 224, 224, 0.8);" class="mt-8 text-xs md:text-sm font-sans font-semibold tracking-[0.25em] uppercase max-w-2xl mx-auto leading-relaxed">Eksplorasi Kedalaman Filosofi dan Artefak Batik Klasik</p>
+            </div>
+
+            <a href="#gallery-teaser" id="scroll-btn" class="v-scroll-indicator opacity-60 hover:opacity-100 transition-opacity duration-500 cursor-pointer animate-float-down flex justify-center absolute bottom-10 z-20 w-full">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mx-auto">
+                    <path d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </a>
+            
+            <!-- Elemen Blending Bawah (Lebih Tinggi & Solid) -->
+            <div class="absolute bottom-0 left-0 w-full h-64 md:h-80 z-10 pointer-events-none hero-bottom-blend"></div>
+        </section>
+
+        <section id="gallery-teaser" class="relative w-full min-h-screen bg-[#0a0a0a] pt-32 pb-24 px-8 md:px-16 z-30">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-16 text-center md:text-left">
+                    <span style="color: #c5a059;" class="text-xs uppercase tracking-widest block mb-2 font-medium">Curated Exhibition</span>
+                    <h2 class="text-3xl md:text-4xl font-serif text-[#e0e0e0] tracking-wide">Koleksi Pilihan</h2>
+                    <div style="width: 3rem; height: 1px; background-color: #c5a059;" class="mt-4 mx-auto md:mx-0"></div>
+                </div>
+
+                <div class="w-full flex justify-center">
+                    <RagamMotif dataMetadata={kolesiTeaser} />
+                </div>
+
+                <div class="mt-20 text-center">
+                    <a href="/koleksi" id="btn-arsip-lengkap" style="border: 1px solid rgba(197, 160, 89, 0.4); color: #c5a059; letter-spacing: 0.25em;" class="inline-block px-10 py-5 text-xs font-sans uppercase bg-transparent hover:bg-[#c5a059] hover:text-black transition-all duration-700 ease-in-out font-medium tracking-widest no-underline">
+                        Buka Seluruh Arsip Koleksi
+                    </a>
+                </div>
+            </div>
+        </section>
+        
+        <audio id="audio-batik-ambient" loop src="/assets/audio/gambelan_hero.mp3"></audio>
+
+        <button id="btn-audio-control" class="fixed bottom-6 right-6 z-50 bg-[#141414]/90 text-white hover:text-[#c5a059] p-3.5 rounded-full border border-white/10 shadow-2xl backdrop-blur-md hover:bg-white hover:scale-110 hover:border-white/20 transition-all duration-300 flex items-center justify-center" title="Kontrol Suara Suasana">
+            <svg id="svg-speaker-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path id="path-speaker-core" d="M11 5L6 9H2v6h4l5 4V5z"></path>
+                <g id="g-wave-lines"></g>
+            </svg>
+        </button>
+
+        <section class="border-t border-white/5 bg-gradient-to-b from-transparent to-black/50"></section>
+    </main>
+
+    <script is:inline>
+        // === LOGIKA TOGGLE TEMA ===
+        const btnToggle = document.getElementById('test-theme-toggle');
+        const iconToggle = document.getElementById('test-theme-icon');
+        const htmlEl = document.documentElement;
+
+        function updateIconUI() {
+            if (htmlEl.classList.contains('light-mode')) {
+                iconToggle.innerText = '🌙'; 
+            } else {
+                iconToggle.innerText = '☀️'; 
+            }
+        }
+        
+        updateIconUI();
+
+        if (btnToggle) {
+            btnToggle.addEventListener('click', () => {
+                htmlEl.classList.toggle('light-mode');
+                const isLight = htmlEl.classList.contains('light-mode');
+                localStorage.setItem('test-theme', isLight ? 'light' : 'dark');
+                updateIconUI();
+            });
+        }
+
+        // === LOGIKA ADAPTIVE SCROLL NAVBAR ===
+        window.addEventListener('scroll', () => {
+            // Tinggi hero video adalah tinggi layar (100vh)
+            const heroHeight = window.innerHeight;
+            // Toleransi (offset) 80px agar transisinya pas
+            if (window.scrollY > heroHeight - 80) {
+                htmlEl.classList.add('scrolled-past-hero');
+            } else {
+                htmlEl.classList.remove('scrolled-past-hero');
+            }
+        });
+
+        // === LOGIKA MENU HAMBURGER & SIDEBAR ===
+        const menuBtn = document.getElementById('menu-btn');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const line1 = document.getElementById('line-1');
+        const line2 = document.getElementById('line-2');
+        const menuLinks = document.querySelectorAll('.js-menu-link');
+
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                menuOverlay.classList.add('opacity-100', 'pointer-events-auto');
+                line1.style.transform = 'rotate(45deg) translate(6px, 6px)';
+                line2.style.transform = 'rotate(-45deg) translate(5px, -5px)';
+            } else {
+                menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                menuOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+                line1.style.transform = 'none';
+                line2.style.transform = 'none';
+            }
+        }
+
+        if (menuBtn) {
+            menuBtn.addEventListener('click', toggleMenu);
+        }
+
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => { 
+                if (isMenuOpen) toggleMenu(); 
+            });
+        });
+    </script>
+
+    <script>
+        import { initAudioHero } from "../scripts/audioHero.js";
+        // import { initBukuGerbang } from "../scripts/bukuGerbang.js"; // Tidak dipakai di index.astro lagi, biarkan off dulu
+
+        function jalankanSistemBeranda() {
+            initAudioHero();
+            // initBukuGerbang();
+        }
+
+        document.addEventListener("DOMContentLoaded", jalankanSistemBeranda);
+    </script>
+</body>
+</html>

@@ -1,0 +1,527 @@
+---
+// src/pages/testing-detail.astro
+// @ts-nocheck
+import MainLayout from "../layouts/MainLayout.astro";
+
+// Ambil Semua File Database di Tempat yang Benar (Paling Atas)
+import batikDataLama from "../data/metada_batik.json";
+import batikSumatra from "../data/metadata_batik_sumatra.json";
+
+// Gabungkan database asli kelompokmu
+const semuaBatikLama = Object.values(batikDataLama).flat();
+const semuaBatikSumatra = Object.values(batikSumatra || {}).flat();
+
+const semuaMotifMaster = [...semuaBatikLama, ...semuaBatikSumatra].filter(
+    (motif) => motif && motif.ID && motif.Nama,
+);
+
+// Ambil data pertama untuk sampel pratinjau di halaman sandbox detail ini
+const motif = semuaMotifMaster[0] || {};
+
+// FUNGSI EKSTRAK WARNA ASLI KAMU
+const ekstrakWarna = (stringWarna) => {
+    if (typeof stringWarna !== "string") return [];
+    const matches = stringWarna.match(/#[0-9a-fA-F]{6}/g);
+    const namaWarna = stringWarna
+        .split(",")
+        .map((w) => w.trim().split(" (")[0]);
+    if (matches) {
+        return matches.map((hex, i) => ({ hex, nama: namaWarna[i] || hex }));
+    }
+    return stringWarna
+        .split(",")
+        .map((w) => ({ hex: "#a67c00", nama: w.trim() }));
+};
+const daftarWarna = ekstrakWarna(motif["Warna Dominan"] || motif.Warna_Dominan);
+
+const elemenArray =
+    typeof motif["Elemen Visual"] === "string"
+        ? motif["Elemen Visual"].split(",").map((e) => e.trim())
+        : motif["Elemen Visual"] || [];
+
+// LOGIKA REKOMENDASI RELATED ITEMS ASLI KAMU
+const hitungSkorKecocokan = (itemPembanding, itemTarget) => {
+    if (itemPembanding.ID === itemTarget.ID) return -1;
+    let skor = 0;
+    if (itemPembanding.Provinsi === itemTarget.Provinsi) skor += 5;
+    if (itemPembanding["Kategori Budaya"] === itemTarget["Kategori Budaya"])
+        skor += 3;
+
+    const warnaPembanding =
+        itemPembanding["Warna Dominan"] || itemPembanding.Warna_Dominan || "";
+    const warnaTarget =
+        itemTarget["Warna Dominan"] || itemTarget.Warna_Dominan || "";
+    if (warnaPembanding && warnaTarget) {
+        const listWarnaPembanding =
+            warnaPembanding.toLowerCase().match(/#[0-9a-fA-F]{6}/g) || [];
+        const listWarnaTarget =
+            warnaTarget.toLowerCase().match(/#[0-9a-fA-F]{6}/g) || [];
+        const warnaSama = listWarnaPembanding.filter((hex) =>
+            listWarnaTarget.includes(hex),
+        );
+        skor += warnaSama.length * 2;
+    }
+    return skor;
+};
+
+const relatedItems = semuaMotifMaster
+    .map((item) => ({ ...item, skor: hitungSkorKecocokan(motif, item) }))
+    .filter((item) => item.skor > 0)
+    .sort((a, b) => b.skor - a.skor)
+    .slice(0, 3);
+---
+
+<MainLayout title={`${motif.Nama} - Jejak Karya Nusantara`}>
+    <style is:global>
+        /* 🌸 RACIKAN MASTER MASTER: NUDE PINK MATTE ULTRA REEDUP KALEM (ANTI-GLARE) 🌸 */
+        :root {
+            --bg-pink-super-kalem: #f0e6e3; /* Pink nude abu-abu semen galeri, adem pol di mata! */
+            --bg-pink-container: #e6d7d3; /* Lapisan pembungkus box sekunder */
+            --bg-pink-subcard: #dbcb8c4; /* Latar item list swatch warna dominan */
+            --teks-rose-pekat: #3b2e2a; /* Warna teks utama & ikon kasta tinggi */
+            --teks-rose-muted: #66544f; /* Teks deskripsi & paragraf */
+
+            /* ✨ DUAL-TONE EMAS ADAPTIF SEJUK */
+            --emas-adaptif: #8a6d63; /* Emas tembaga rose-bronze redup di latar cerah (elegan) */
+            --border-rose-halus: rgba(59, 46, 42, 0.08);
+        }
+
+        html.dark {
+            /* ✨ KEMBALIKAN WARNA EMAS KERATON MENYALA ASLI TIM KELOMPOKMU */
+            --emas-adaptif: #a67c00;
+        }
+
+        * {
+            transition:
+                background-color 0.3s ease,
+                color 0.3s ease,
+                border-color 0.3s ease !important;
+        }
+
+        /* ========================================================
+         ✨ TEMA MODE TERANG ULTRA KALEM (OVERRIDE SINKRONISASI)
+         ======================================================== */
+        .pembungkus-sandbox-induk {
+            background-color: var(--bg-pink-super-kalem) !important;
+            color: var(--teks-rose-pekat) !important;
+        }
+
+        .pembungkus-sandbox-induk h1,
+        .pembungkus-sandbox-induk h3,
+        .pembungkus-sandbox-induk h4 {
+            color: var(--teks-rose-pekat) !important;
+        }
+        .pembungkus-sandbox-induk p {
+            color: var(--teks-rose-muted) !important;
+        }
+
+        /* Sinkronisasi Wadah Card & Box */
+        .btn-kembali-koleksi {
+            background-color: var(--bg-pink-container) !important;
+            color: var(--teks-rose-pekat) !important;
+            border-color: var(--border-rose-halus) !important;
+        }
+        .pembungkus-gambar-master,
+        .card-motif-terkait {
+            background-color: var(--bg-pink-container) !important;
+            border-color: var(--border-rose-halus) !important;
+        }
+        .box-info-kiri {
+            background-color: var(--bg-pink-container) !important;
+            border-color: var(--border-rose-halus) !important;
+        }
+
+        /* 👑 FIX SAKTI: Jinakkan Warna Teks & SVG Icon Panah di Tombol Kembali */
+        .btn-kembali-koleksi svg {
+            color: var(--emas-adaptif) !important;
+        }
+
+        /* Pembajakan Jajaran Emas Utama (Provinsi & Kategori Budaya) */
+        .pembungkus-sandbox-induk .tracking-\[0\.2em\] {
+            color: var(--emas-adaptif) !important;
+        }
+        .pembungkus-sandbox-induk .tracking-\[0\.2em\] a {
+            color: var(--emas-adaptif) !important;
+        }
+        .pembungkus-sandbox-induk .tracking-\[0\.2em\] span.bg-\[\#806000\],
+        .pembungkus-sandbox-induk .tracking-\[0\.2em\] span.bg-\[\#a67c00\] {
+            background-color: var(--emas-adaptif) !important;
+        }
+
+        /* Fakta Unik Quote area */
+        .pembungkus-sandbox-induk .border-\[\#806000\],
+        .pembungkus-sandbox-induk .border-\[\#a67c00\] {
+            border-color: var(--emas-adaptif) !important;
+        }
+        .pembungkus-sandbox-induk .bg-\[\#806000\]\/5,
+        .pembungkus-sandbox-induk .bg-\[\#a67c00\]\/5 {
+            background-color: rgba(138, 109, 99, 0.06) !important;
+        }
+        .pembungkus-sandbox-induk h4.text-\[\#806000\],
+        .pembungkus-sandbox-induk h4.text-\[\#a67c00\] {
+            color: var(--emas-adaptif) !important;
+        }
+
+        /* 👑 FIX SAKTI: Penyelaman Total Warna Box List Swatch Dominan */
+        .box-info-kiri .flex.flex-col.gap-1\.5 a {
+            background-color: rgba(255, 255, 255, 0.4) !important;
+            border-color: var(--border-rose-halus) !important;
+            color: var(--teks-rose-pekat) !important;
+        }
+        .box-info-kiri .flex.flex-col.gap-1\.5 span.capitalize {
+            color: var(--teks-rose-pekat) !important;
+        }
+
+        /* Elemen Visual Utama Badge */
+        .tag-elemen-visual {
+            background-color: var(--bg-pink-container) !important;
+            border-color: var(--border-rose-halus) !important;
+            color: var(--teks-rose-pekat) !important;
+        }
+
+        /* ========================================================
+         🌌 TEMA MODE GELAP ASLI (KEMBALI KE KEMEWAHAN HITAM TIMTIMU)
+         ======================================================== */
+        html.dark .pembungkus-sandbox-induk {
+            background-color: #050505 !important;
+            color: #ffffff !important;
+        }
+        html.dark .pembungkus-sandbox-induk h1,
+        html.dark .pembungkus-sandbox-induk h3,
+        html.dark .pembungkus-sandbox-induk h4 {
+            color: #ffffff !important;
+        }
+        html.dark .pembungkus-sandbox-induk p {
+            color: #a3a3a3 !important;
+        }
+        html.dark .btn-kembali-koleksi {
+            background-color: #0e0e0e !important;
+            color: #a3a3a3 !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+        }
+        html.dark .btn-kembali-koleksi svg {
+            color: #a67c00 !important; /* Balikkan murni ke emas keraton menyala asli filemu */
+        }
+        html.dark .pembungkus-gambar-master,
+        html.dark .card-motif-terkait {
+            background-color: #000000 !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        html.dark .box-info-kiri {
+            background-color: #0e0e0e !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+        }
+
+        /* Balikkan Swatch Warna Dominan Ke Gelap Asli */
+        html.dark .box-info-kiri .flex.flex-col.gap-1\.5 a {
+            background-color: rgba(0, 0, 0, 0.4) !important;
+            border-color: rgba(255, 255, 255, 0.05) !important;
+            color: #d1d5db !important;
+        }
+        html.dark .box-info-kiri .flex.flex-col.gap-1\.5 span.capitalize {
+            color: #d1d5db !important;
+        }
+
+        /* Balikkan Warna Teks & Icon Emas Di Mode Gelap */
+        html.dark .pembungkus-sandbox-induk .tracking-\[0\.2em\] {
+            color: var(--emas-adaptif) !important;
+        }
+        html.dark .pembungkus-sandbox-induk .tracking-\[0\.2em\] a {
+            color: var(--emas-adaptif) !important;
+        }
+        html.dark .pembungkus-sandbox-induk .bg-\[\#806000\]\/5,
+        html.dark .pembungkus-sandbox-induk .bg-\[\#a67c00\]\/5 {
+            background-color: rgba(166, 124, 0, 0.05) !important;
+        }
+
+        /* Elemen Visual Utama Mode Gelap */
+        html.dark .tag-elemen-visual {
+            background-color: #111111 !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            color: #deff9a !important; /* Hijau lime ikonik kelompokmu */
+        }
+    </style>
+
+    <div
+        class="pembungkus-sandbox-induk min-h-screen pt-24 pb-24 px-6 md:px-12 relative overflow-hidden"
+    >
+        <div
+            class="max-w-5xl mx-auto flex justify-end items-center mb-6 border-b border-black/10 dark:border-white/5 pb-4 relative z-50"
+        >
+            <button
+                id="sakelar-testing-bypass"
+                class="px-5 py-2 bg-[#3b2e2a] text-[#eee5e2] dark:bg-neutral-100 dark:text-neutral-900 rounded-full font-sans text-xs font-bold uppercase tracking-wider cursor-pointer shadow-md hover:scale-105 transition-transform"
+            >
+                🌙 Ganti Mode
+            </button>
+        </div>
+
+        <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-[#3b2e2a]/3 to-transparent dark:from-[#a67c00]/10 dark:to-transparent blur-[100px] z-0 pointer-events-none"
+        >
+        </div>
+
+        <div class="max-w-5xl mx-auto relative z-10 space-y-12">
+            <div class="w-full flex justify-start mb-4">
+                <a
+                    href="/koleksi"
+                    class="btn-kembali-koleksi inline-flex items-center gap-2.5 px-4 py-2 rounded-full text-[11px] font-medium tracking-wider uppercase transition-all duration-300 group shadow-sm backdrop-blur-sm no-underline"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-3.5 w-3.5 transform group-hover:-translate-x-1 transition-transform duration-300"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Kembali ke Koleksi
+                </a>
+            </div>
+
+            <div
+                class="flex flex-col md:flex-row items-start gap-8 lg:gap-12 w-full"
+            >
+                <div
+                    class="w-full md:w-[280px] shrink-0 sticky top-24 mx-auto md:mx-0 flex flex-col gap-5"
+                >
+                    <div
+                        class="pembungkus-gambar-master relative w-[280px] h-[280px] rounded-xl overflow-hidden shadow-md dark:shadow-[0_0_50px_rgba(166,124,0,0.15)]"
+                    >
+                        <img
+                            src={motif.Gambar}
+                            alt={motif.Nama}
+                            class="w-full h-full object-cover opacity-95"
+                        />
+                    </div>
+
+                    <div
+                        class="box-info-kiri w-full space-y-4 p-4 rounded-xl backdrop-blur-sm"
+                    >
+                        {
+                            motif["Status Simbolik"] && (
+                                <div class="space-y-0.5">
+                                    <span class="text-[10px] uppercase tracking-widest font-bold block opacity-70">
+                                        Status Simbolik
+                                    </span>
+                                    <a
+                                        href={`/koleksi?simbolik=${encodeURIComponent(motif["Status Simbolik"])}&asal=${motif.ID}`}
+                                        class="inline-block text-sm text-red-700 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 font-serif italic leading-snug underline transition-colors"
+                                    >
+                                        {motif["Status Simbolik"]}
+                                    </a>
+                                </div>
+                            )
+                        }
+
+                        <hr class="border-black/5 dark:border-white/5" />
+
+                        <div>
+                            <span
+                                class="text-[10px] uppercase tracking-widest font-bold block mb-2 opacity-70"
+                            >
+                                Warna Dominan
+                            </span>
+                            <div class="flex flex-col gap-1.5">
+                                {
+                                    daftarWarna.map((warna) => (
+                                        <a
+                                            href={`/koleksi?warna=${encodeURIComponent(warna.nama)}&asal=${motif.ID}`}
+                                            class="flex items-center gap-2.5 px-3 py-1.5 rounded-md text-xs font-mono transition-all group no-underline"
+                                        >
+                                            <span
+                                                class="w-3.5 h-3.5 rounded-full border border-black/10 dark:border-white/20 shrink-0 block transition-transform group-hover:scale-110"
+                                                style={`background-color: ${warna.hex};`}
+                                            />
+                                            <span class="capitalize truncate tracking-wide group-hover:translate-x-0.5 transition-transform">
+                                                {warna.nama}
+                                            </span>
+                                        </a>
+                                    ))
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-1 w-full flex flex-col pt-4 md:pt-0">
+                    <div class="mb-5">
+                        <div
+                            class="tracking-[0.2em] uppercase text-xs mb-2 font-semibold flex flex-wrap items-center gap-2"
+                        >
+                            <span
+                                class="w-4 h-[1px] bg-[#806000] dark:bg-[#a67c00]"
+                            ></span>
+                            <a
+                                href={`/koleksi?provinsi=${encodeURIComponent(motif.Provinsi)}&asal=${motif.ID}`}
+                                class="hover:underline transition-colors no-underline"
+                            >
+                                {motif.Provinsi}
+                            </a>
+                            <span class="opacity-40">|</span>
+                            <a
+                                href={`/koleksi?budaya=${encodeURIComponent(motif["Kategori Budaya"])}&asal=${motif.ID}`}
+                                class="hover:underline transition-colors no-underline"
+                            >
+                                {motif["Kategori Budaya"]}
+                            </a>
+                        </div>
+
+                        <h1
+                            class="text-3xl md:text-4xl font-bold font-['Playfair_Display'] drop-shadow-sm dark:drop-shadow-lg leading-tight"
+                        >
+                            {motif.Nama}
+                        </h1>
+                    </div>
+
+                    {
+                        motif["Fakta Unik"] && (
+                            <div class="bg-[#806000]/5 border-l-4 border-[#806000] dark:bg-[#a67c00]/5 dark:border-[#a67c00] p-5 rounded-r-xl mb-6">
+                                <h4 class="font-bold tracking-widest text-[10px] uppercase mb-1">
+                                    Tahukah Anda?
+                                </h4>
+                                <p class="leading-relaxed text-base">
+                                    {motif["Fakta Unik"]}
+                                </p>
+                            </div>
+                        )
+                    }
+
+                    <div
+                        class="space-y-6 border-t border-black/5 dark:border-white/5 pt-5"
+                    >
+                        <div class="relative">
+                            <h3 class="text-xl font-bold mb-2 tracking-wide">
+                                Makna Filosofis
+                            </h3>
+                            <p
+                                class="leading-relaxed text-base md:text-lg text-justify font-serif italic opacity-95"
+                            >
+                                "{motif["Makna Filosofis"]}"
+                            </p>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 tracking-wide">
+                                Fungsi Tradisional
+                            </h3>
+                            <p class="leading-relaxed text-base text-justify">
+                                {motif["Fungsi Tradisional"]}
+                            </p>
+                        </div>
+
+                        {
+                            elemenArray.length > 0 && (
+                                <div class="pt-1">
+                                    <h3 class="uppercase tracking-widest text-xs font-bold mb-2.5 opacity-60">
+                                        Elemen Visual Utama
+                                    </h3>
+                                    <div class="flex flex-wrap gap-2">
+                                        {elemenArray.map((elemen) => (
+                                            <span class="tag-elemen-visual border px-3.5 py-1.5 rounded-full text-xs capitalize font-medium tracking-wide">
+                                                {elemen}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="border-t border-black/5 dark:border-white/10 pt-10 w-full"
+            >
+                <h3
+                    class="text-xl font-bold tracking-[0.2em] uppercase mb-6 font-['Playfair_Display'] flex items-center gap-3"
+                >
+                    Motif Terkait
+                    <span
+                        class="h-[1px] flex-1 bg-gradient-to-r from-black/10 to-transparent dark:from-white/10 dark:to-transparent"
+                    ></span>
+                </h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full">
+                    {
+                        relatedItems.map((item) => (
+                            <a
+                                href={`/detail/${item.ID}`}
+                                class="group flex flex-col gap-3 no-underline"
+                                style="color: inherit;"
+                            >
+                                <div class="card-motif-terkait w-full aspect-square border rounded-xl overflow-hidden shadow-sm transition-all duration-500 dark:group-hover:border-[#a67c00]/50 dark:group-hover:shadow-[0_0_30px_rgba(166,124,0,0.1)]">
+                                    <img
+                                        src={item.Gambar}
+                                        alt={item.Nama}
+                                        class="w-full h-full object-cover opacity-85 group-hover:opacity-100"
+                                    />
+                                </div>
+                                <h4 class="text-sm font-medium group-hover:text-black dark:group-hover:text-white transition-colors tracking-wide font-sans pl-1">
+                                    {item.Nama}
+                                </h4>
+                            </a>
+                        ))
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</MainLayout>
+
+<script is:inline>
+    function jalankanBypassTema() {
+        const tombolBypass = document.getElementById("sakelar-testing-bypass");
+        if (!tombolBypass) return;
+
+        const tombolAsliProyek =
+            document.getElementById("theme-toggle") ||
+            document.getElementById("toggle-tema") ||
+            document.querySelector('[id*="toggle"]') ||
+            document.querySelector('[id*="theme"]');
+
+        tombolBypass.addEventListener("click", () => {
+            const htmlNode = document.documentElement;
+
+            if (
+                tombolAsliProyek &&
+                typeof tombolAsliProyek.click === "function"
+            ) {
+                tombolAsliProyek.click();
+                setTimeout(() => {
+                    if (htmlNode.classList.contains("dark")) {
+                        tombolBypass.innerHTML = "☀️ Mode Terang";
+                    } else {
+                        tombolBypass.innerHTML = "🌙 Ganti Mode";
+                    }
+                }, 50);
+            } else {
+                if (htmlNode.classList.contains("dark")) {
+                    htmlNode.classList.remove("dark");
+                    tombolBypass.innerHTML = "🌙 Ganti Mode";
+                    localStorage.setItem("theme", "light");
+                } else {
+                    htmlNode.classList.add("dark");
+                    tombolBypass.innerHTML = "☀️ Mode Terang";
+                    localStorage.setItem("theme", "dark");
+                }
+                window.dispatchEvent(new Event("theme-changed"));
+            }
+        });
+
+        if (document.documentElement.classList.contains("dark")) {
+            tombolBypass.innerHTML = "☀️ Mode Terang";
+        } else {
+            tombolBypass.innerHTML = "🌙 Ganti Mode";
+        }
+    }
+
+    jalankanBypassTema();
+    document.addEventListener("DOMContentLoaded", jalankanBypassTema);
+    document.addEventListener("astro:page-load", jalankanBypassTema);
+</script>

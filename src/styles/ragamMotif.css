@@ -1,0 +1,200 @@
+/* src/styles/ragamMotif.css */
+.museum-deck-wrapper {
+    min-height: 480px;
+}
+
+#motif-info-zone {
+    transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+}
+
+.style-bingkai-ragam {
+    mix-blend-mode: screen;
+    transition: transform 0.4s ease-out, filter 0.4s ease-out;
+}
+
+/* Transisi untuk wadah bingkai */
+.internal-card-container {
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s ease;
+}
+
+/* EFEK HOVER BARU (Kesatuan Border + Gambar Membesar) */
+.group\/card:hover .internal-card-container {
+    transform: scale(1.05); /* Membesarkan seluruh bingkai dan gambar sebagai satu kesatuan */
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(197, 160, 89, 0.2); 
+}
+
+/* Zoom on click rather than hover (Hanya gambar dalam yang bereaksi saat diklik) */
+.card-clicked .img-kain-batik {
+    transform: scale(1.1);
+    opacity: 1;
+}
+
+.img-kain-batik {
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease;
+}
+
+.museum-card {
+    transition: transform 1s cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1),
+        z-index 1s step-end;
+    will-change: transform, opacity;
+}
+
+/* Jarak geser tumpukan 1:1 */
+.card-pos-0 {
+    transform: translate(0, 0) scale(1);
+    z-index: 10;
+    opacity: 1;
+}
+
+.card-pos-1 {
+    transform: translate(16px, -16px) scale(0.95);
+    z-index: 9;
+    opacity: 0.8;
+}
+
+.card-pos-2 {
+    transform: translate(32px, -32px) scale(0.9);
+    z-index: 8;
+    opacity: 0.5;
+}
+
+.card-pos-3 {
+    transform: translate(48px, -48px) scale(0.85);
+    z-index: 7;
+    opacity: 0.2;
+}
+
+.card-pos-4 {
+    transform: translate(64px, -64px) scale(0.8);
+    z-index: 6;
+    opacity: 0.05;
+}
+
+.card-pos-5,
+.card-pos-6,
+.card-pos-7,
+.card-pos-8,
+.card-pos-9 {
+    transform: translate(64px, -64px) scale(0.8);
+    z-index: 1;
+    opacity: 0;
+}
+
+.card-slide-down {
+    animation: slideOutAndBack 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Animasi meluncur proporsional kotak */
+@keyframes slideOutAndBack {
+    0% {
+        transform: translate(0, 0) scale(1);
+        z-index: 20;
+        opacity: 1;
+    }
+
+    45% {
+        transform: translate(0, 115%) scale(0.95);
+        z-index: 20;
+        opacity: 0.85;
+    }
+
+    50% {
+        transform: translate(0, 115%) scale(0.8);
+        z-index: 1;
+        opacity: 0.4;
+    }
+
+    100% {
+        transform: translate(64px, -64px) scale(0.8);
+        z-index: 1;
+        opacity: 0;
+    }
+}
+
+/* Animasi Teks Individu (Campur Aduk / Staggered) */
+@keyframes slideInLeftText {
+    0% { opacity: 0; transform: translateX(-30px); }
+    100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInDownText {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.anim-slide-left {
+    animation: slideInLeftText 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.anim-slide-down {
+    animation: slideInDownText 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Kotak Fokus untuk Makna Filosofis */
+.makna-fokus-box {
+    padding: 16px 20px !important;
+    margin-top: 12px !important;
+    border: 1px solid rgba(197, 160, 89, 0.3) !important;
+    background-color: rgba(197, 160, 89, 0.05) !important;
+    border-radius: 6px !important;
+    box-shadow: inset 0 0 20px rgba(197, 160, 89, 0.05) !important;
+    
+    /* State Awal sebelum muncul */
+    opacity: 0;
+    transform: translateY(15px) scale(0.98);
+    transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* State Aktif saat animasi ketik dimulai */
+.makna-fokus-box.muncul {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Tooltip Provinsi Styling */
+.region-tooltip-box {
+    background-color: #121212; /* Default Dark Mode */
+    border: 1px solid rgba(197, 160, 89, 0.4);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.region-tooltip-text {
+    color: #ffffff; /* Default Dark Mode */
+}
+
+/* Override Tooltip untuk Light Mode */
+html.light-mode .region-tooltip-box {
+    background-color: #ebe4d8; /* Mengikuti warna krem kotak makna filosofis */
+    border: 1px solid rgba(197, 160, 89, 0.5);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+html.light-mode .region-tooltip-text {
+    color: #1a1a1a; /* Teks gelap di Light Mode */
+}
+
+/* Pastikan warna emas saat hover tetap tembus di Light Mode (melawan override global) */
+html.light-mode #region-hover-area:hover #motif-region {
+    color: #c5a059 !important;
+}
+
+/* Light Mode Overrides untuk Teks Dasar */
+.ragam-label-redup {
+    color: rgba(224, 224, 224, 0.4);
+}
+html.light-mode .ragam-label-redup {
+    color: rgba(0, 0, 0, 0.6) !important;
+}
+
+html.light-mode #motif-name,
+html.light-mode #motif-region,
+html.light-mode #motif-symbolic {
+    color: #1a1a1a !important;
+}
+
+html.light-mode .makna-fokus-box {
+    background-color: rgba(197, 160, 89, 0.15) !important;
+    border-color: rgba(197, 160, 89, 0.4) !important;
+    box-shadow: none !important;
+}

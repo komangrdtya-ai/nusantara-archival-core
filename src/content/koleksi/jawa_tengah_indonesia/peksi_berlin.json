@@ -1,0 +1,22 @@
+{
+    "dc:identifier": "peksi_berlin",
+    "url_gambar_web": "/assets/motif/jawa-tengah/peksi_berlin.jpeg",
+    "dc:title": "Peksi Berlin",
+    "dc:subject": {
+        "Kategori Budaya": "Seni Kriya Tradisional / Batik Pesisiran",
+        "Status Simbolik": "Motif Klasik Akulturasi"
+    },
+    "dc:description": {
+        "Fungsi Tradisional": "Kain sarung atau busana semi-formal yang sangat populer di kalangan masyarakat perkotaan pesisir utara Jawa pada era kolonial.",
+        "Makna Filosofis": "Melambangkan modernitas masa lalu, keterbukaan budaya masyarakat pesisir terhadap bangsa asing, serta keindahan fauna luar yang diadaptasi oleh cita rasa lokal.",
+        "Elemen Visual": "Penggambaran burung (peksi) dengan anatomi menyerupai burung Eropa, dikelilingi rangkaian bunga bergaya Eropa (buketan) yang dinamis dan berwarna luwes.",
+        "Warna Dominan": "Biru Indigo / Wedelan (#1D1F2E), Merah Soga (#7A3E28), Krem Keemasan (#E1D5C3)",
+        "Fakta Unik": "Nama \"Berlin\" merujuk pada pengaruh lambang negara atau kartu pos Eropa bergambar burung elang/merpati barat yang masuk ke Pekalongan pada abad 19-20 dan ditiru pembatik lokal."
+    },
+    "dc:coverage": "Jawa Tengah, Indonesia",
+    "dc:format": "image/jpeg",
+    "dc:source": "National Museum of World Cultures Foundation, Netherlands",
+    "dc:rights": "CC0 (Public Domain)",
+    "dc:type": "Image; Physical Object",
+    "dc:language": "id, jv"
+}

@@ -1,0 +1,22 @@
+{
+    "dc:identifier": "payung_melayu",
+    "url_gambar_web": "/assets/motif/sumut/payung_melayu.jpg",
+    "dc:title": "Payung Melayu",
+    "dc:subject": {
+        "Kategori Budaya": "Batik Pesisiran",
+        "Status Simbolik": "Umum / Bebas"
+    },
+    "dc:description": {
+        "Fungsi Tradisional": "Busana menyambut tamu agung daerah, seragam panitia upacara budaya, and kemeja formal modern.",
+        "Makna Filosofis": "Melambangkan perlindungan penguasa terhadap rakyatnya, keadilan hukum istana, serta keteduhan batin dalam menjalani kehidupan bernegara.",
+        "Elemen Visual": "Stilasi payung kerajaan terbuka dengan aksen rumbai pesisir Melayu.",
+        "Warna Dominan": "Abu-abu Tua (#4A5155), Merah Delima (#E4356E)",
+        "Fakta Unik": "Payung kuning merupakan simbol kedaulatan sultan Melayu Deli yang mencerminkan kedudukan pemimpin sebagai pengayom rakyat."
+    },
+    "dc:coverage": "Sumatera Utara, Indonesia",
+    "dc:format": "image/jpeg",
+    "dc:source": "Repositori Komunitas",
+    "dc:rights": "Repositori Komunitas / Penggunaan Bebas",
+    "dc:type": "Image; Physical Object",
+    "dc:language": "id, ms"
+}

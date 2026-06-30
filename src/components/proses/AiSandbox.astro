@@ -1,0 +1,294 @@
+---
+// src/components/proses/AiSandbox.astro
+import batikJawaData from "../../data/metada_batik.json";
+import batikSumatraData from "../../data/metadata_batik_sumatra.json";
+
+const dataJawaFlat = Object.values(batikJawaData).flat();
+const dataSumatraFlat = Object.values(batikSumatraData)
+    .flat()
+    .filter((item) => typeof item === "object" && item !== null);
+const semuaDatabaseGabungan = [...dataJawaFlat, ...dataSumatraFlat];
+---
+
+<div
+    id="ai-sandbox-root"
+    data-database-batik={JSON.stringify(semuaDatabaseGabungan)}
+    class="w-full max-w-6xl mx-auto space-y-20"
+>
+    <div class="space-y-10">
+        <div class="text-center">
+            <h2
+                class="text-lg font-serif text-[#c5a059] tracking-widest uppercase mb-2"
+            >
+                The Pipeline
+            </h2>
+            <p class="text-xs text-gray-400 max-w-md mx-auto leading-relaxed">
+                Bagaimana sistem komputer cerdas kami mengekstrak lembaran kain
+                kultural menjadi struktur data kaku berstandar internasional?
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            <div
+                class="bg-[#111111]/80 border border-white/5 rounded-2xl p-6 flex flex-col justify-between group hover:border-[#c5a059]/30 hover:bg-[#141414] transition-all duration-500 hover:-translate-y-2 shadow-xl backdrop-blur-sm"
+            >
+                <div class="space-y-4">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-[#c5a059]/10 border border-[#c5a059]/20 flex items-center justify-center text-[#c5a059] font-mono text-sm group-hover:bg-[#c5a059] group-hover:text-black transition-all duration-500 shadow-inner"
+                    >
+                        01
+                    </div>
+                    <h4
+                        class="text-sm font-semibold tracking-wider text-gray-200 uppercase"
+                    >
+                        Multimodal Vision
+                    </h4>
+                    <p class="text-xs text-gray-400 leading-relaxed font-sans">
+                        Sistem membedah file <code
+                            class="text-[#c5a059] bg-black/40 px-1 py-0.5 rounded"
+                            >image.jpg</code
+                        > menggunakan <span class="text-gray-200"
+                            >Vision Transformer</span
+                        >. AI melacak koordinat geometri canting, kerapatan
+                        garis diagonal, bentuk stilasi fauna/flora, hingga
+                        mengekstrak skema palet warna dominan secara real-time.
+                    </p>
+                </div>
+                <div
+                    class="pt-6 border-t border-white/5 mt-4 flex items-center justify-between text-[10px] font-mono text-gray-500"
+                >
+                    <span>INPUT: IMAGE BUFFER</span>
+                    <span class="text-yellow-500/80 group-hover:animate-pulse"
+                        >● PROCESSING</span
+                    >
+                </div>
+            </div>
+
+            <div
+                class="bg-[#111111]/80 border border-white/5 rounded-2xl p-6 flex flex-col justify-between group hover:border-[#c5a059]/30 hover:bg-[#141414] transition-all duration-500 hover:-translate-y-2 shadow-xl backdrop-blur-sm"
+            >
+                <div class="space-y-4">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-[#c5a059]/10 border border-[#c5a059]/20 flex items-center justify-center text-[#c5a059] font-mono text-sm group-hover:bg-[#c5a059] group-hover:text-black transition-all duration-500 shadow-inner"
+                    >
+                        02
+                    </div>
+                    <h4
+                        class="text-sm font-semibold tracking-wider text-gray-200 uppercase"
+                    >
+                        Knowledge Cross-Check
+                    </h4>
+                    <p class="text-xs text-gray-400 leading-relaxed font-sans">
+                        Garis koordinat visual yang didapat langsung dijodohkan
+                        dengan <span class="text-gray-200"
+                            >Arsip Kebudayaan Global</span
+                        > dan database internal kelompok. AI mencari benang merah
+                        sejarah, status hukum adat larangan, daerah asal, hingga makna
+                        esoteris dari motif tersebut.
+                    </p>
+                </div>
+                <div
+                    class="pt-6 border-t border-white/5 mt-4 flex items-center justify-between text-[10px] font-mono text-gray-500"
+                >
+                    <span>QUERY: TEXT + VECTOR</span>
+                    <span class="text-[#c5a059]/80 font-bold">CROSS MATCH</span>
+                </div>
+            </div>
+
+            <div
+                class="bg-[#111111]/80 border border-white/5 rounded-2xl p-6 flex flex-col justify-between group hover:border-[#c5a059]/30 hover:bg-[#141414] transition-all duration-500 hover:-translate-y-2 shadow-xl backdrop-blur-sm"
+            >
+                <div class="space-y-4">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-[#c5a059]/10 border border-[#c5a059]/20 flex items-center justify-center text-[#c5a059] font-mono text-sm group-hover:bg-[#c5a059] group-hover:text-black transition-all duration-500 shadow-inner"
+                    >
+                        03
+                    </div>
+                    <h4
+                        class="text-sm font-semibold tracking-wider text-gray-200 uppercase"
+                    >
+                        Structured Output
+                    </h4>
+                    <p class="text-xs text-gray-400 leading-relaxed font-sans">
+                        Data narasi sejarah yang panjang dikunci oleh sistem <span
+                            class="text-gray-200">Prompt Engineering</span
+                        > agar keluar secara rapi berbentuk baris kode variabel. Data
+                        siap dipotong menjadi baris data kaku berwujud skema standar
+                        internasional.
+                    </p>
+                </div>
+                <div
+                    class="pt-6 border-t border-white/5 mt-4 flex items-center justify-between text-[10px] font-mono text-gray-500"
+                >
+                    <span>OUTPUT: JSON / CSV</span>
+                    <span class="text-emerald-500 font-bold"
+                        >READY TO EXPORT</span
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="w-16 h-[1px] bg-white/10 mx-auto"></div>
+
+    <div
+        class="bg-[#141414]/40 border border-white/5 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-2xl space-y-4"
+    >
+        <div class="mb-2">
+            <span
+                class="text-[10px] font-mono text-[#c5a059] border border-[#c5a059]/20 px-2 py-0.5 rounded bg-[#c5a059]/5 uppercase tracking-widest"
+                >Interactive Terminal Prototype</span
+            >
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="flex flex-col justify-between space-y-6">
+                <div>
+                    <h3
+                        class="text-xl font-serif text-[#e0e0e0] tracking-wide mb-2"
+                    >
+                        Live Testing Simulator
+                    </h3>
+                    <p class="text-xs text-gray-400 leading-relaxed mb-6">
+                        Silakan uji validitas sistem dengan memasukkan nama
+                        motif dan gambar kain yang terdaftar dalam database
+                        kelompok kami.
+                    </p>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label
+                                class="block text-[11px] uppercase tracking-wider text-[#c5a059] font-medium mb-2"
+                                >Nama Motif Batik</label
+                            >
+                            <input
+                                type="text"
+                                id="sandbox-nama-motif"
+                                placeholder="Contoh: Alas-alasan atau Becak Medan"
+                                class="w-full bg-[#0a0a0a] border border-gray-800 rounded-lg px-4 py-3 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-[#c5a059]/50 transition-colors"
+                            />
+                        </div>
+
+                        <div>
+                            <label
+                                class="block text-[11px] uppercase tracking-wider text-[#c5a059] font-medium mb-2"
+                                >Upload Gambar Motif</label
+                            >
+                            <div
+                                id="drop-zone"
+                                class="border border-dashed border-gray-800 hover:border-[#c5a059]/30 rounded-lg p-6 text-center cursor-pointer bg-[#0a0a0a] transition-all group"
+                            >
+                                <input
+                                    type="file"
+                                    id="sandbox-file-gambar"
+                                    accept="image/*"
+                                    class="hidden"
+                                />
+                                <div
+                                    id="preview-container"
+                                    class="flex flex-col items-center justify-center space-y-2"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.5"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="text-gray-500 group-hover:text-[#c5a059] transition-colors"
+                                        ><rect
+                                            x="3"
+                                            y="3"
+                                            width="18"
+                                            height="18"
+                                            rx="2"
+                                            ry="2"></rect><circle
+                                            cx="8.5"
+                                            cy="8.5"
+                                            r="1.5"></circle><polyline
+                                            points="21 15 16 10 5 21"
+                                        ></polyline></svg
+                                    >
+                                    <p
+                                        id="drop-text"
+                                        class="text-xs text-gray-500 group-hover:text-gray-400 transition-colors"
+                                    >
+                                        Klik atau seret gambar kain ke sini
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button
+                    id="btn-generate-ai"
+                    class="w-full bg-transparent border border-[#c5a059]/40 text-[#c5a059] py-4 rounded-lg text-xs uppercase tracking-widest font-bold hover:bg-[#c5a059] hover:text-black transition-all duration-500 disabled:opacity-30 disabled:pointer-events-none"
+                    disabled
+                >
+                    Mulai Proses Deteksi AI
+                </button>
+            </div>
+
+            <div
+                class="flex flex-col bg-[#070707] border border-gray-800 rounded-xl overflow-hidden shadow-inner min-h-[400px]"
+            >
+                <div
+                    class="bg-[#111] border-b border-gray-800 px-4 py-3 flex items-center justify-between"
+                >
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-[#ef4444]/70"
+                        ></span>
+                        <span class="w-3 h-3 rounded-full bg-[#eab308]/70"
+                        ></span>
+                        <span class="w-3 h-3 rounded-full bg-[#22c55e]/70"
+                        ></span>
+                        <span class="text-[10px] text-gray-500 font-mono pl-2"
+                            >structured-output.json</span
+                        >
+                    </div>
+                    <span
+                        id="status-mesin"
+                        class="text-[10px] font-mono text-gray-600 uppercase tracking-wider"
+                        >IDLE</span
+                    >
+                </div>
+
+                <div
+                    class="p-5 flex-1 font-mono text-xs text-gray-400 overflow-y-auto leading-relaxed max-h-[380px]"
+                >
+                    <pre
+                        id="output-terminal-json"
+                        class="whitespace-pre-wrap text-emerald-500/90 drop-shadow-[0_0_6px_rgba(16,185,129,0.1)]">// Menunggu instruksi input nama motif dan gambar...</pre>
+                </div>
+
+                <div
+                    id="area-export-btn"
+                    class="bg-[#111] border-t border-gray-800 px-4 py-3 flex flex-wrap justify-end gap-3 opacity-0 pointer-events-none transition-all duration-300"
+                >
+                    <button
+                        id="btn-go-to-detail"
+                        class="text-[11px] font-mono bg-[#c5a059] text-black font-bold px-3 py-1.5 rounded hover:bg-white transition-all duration-300 flex items-center gap-1.5"
+                    >
+                        👁️ Lihat Detail Motif
+                    </button>
+                    <button
+                        id="btn-export-csv"
+                        class="text-[11px] font-mono bg-transparent text-gray-400 hover:text-white border border-gray-700 px-3 py-1.5 rounded transition-colors flex items-center gap-1.5"
+                    >
+                        📊 Export CSV
+                    </button>
+                    <button
+                        id="btn-export-json"
+                        class="text-[11px] font-mono bg-[#c5a059]/10 text-[#c5a059] border border-[#c5a059]/20 hover:bg-[#c5a059] hover:text-black px-3 py-1.5 rounded transition-all duration-300 flex items-center gap-1.5"
+                    >
+                        📦 Download JSON
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

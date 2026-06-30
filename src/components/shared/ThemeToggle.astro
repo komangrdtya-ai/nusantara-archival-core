@@ -1,0 +1,77 @@
+---
+// src/components/shared/ThemeToggle.astro
+---
+
+<button
+    id="theme-toggle"
+    class="hover-alive fixed top-8 right-8 z-[100] flex items-center justify-center w-12 h-12 rounded-full border border-white/10 shadow-md cursor-pointer transition-all duration-500 hover:scale-110 focus:outline-none bg-neutral-900/80 backdrop-blur-md"
+    title="Ganti Tema Visual"
+    type="button"
+>
+    <span id="theme-toggle-icon" class="theme-icon origin-center text-xl leading-none transition-transform duration-500 inline-block"></span>
+</button>
+
+<style is:global>
+    /* Animasi Matahari Berputar */
+    @keyframes sun-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    .hover-alive:hover .sun-icon {
+        animation: sun-spin 4s linear infinite;
+    }
+
+    /* Animasi Bulan Bolak-Balik (Mirror Flip) */
+    @keyframes moon-flip {
+        0%, 100% { transform: scaleX(1); }
+        50% { transform: scaleX(-1); }
+    }
+    .hover-alive:hover .moon-icon {
+        animation: moon-flip 1.5s ease-in-out infinite;
+    }
+
+    /* Styling Light Mode untuk Tombol Toggle */
+    html.light-mode #theme-toggle {
+        background-color: rgba(255, 255, 255, 0.7);
+        border-color: #d1c8b4;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+</style>
+
+<script>
+    const htmlEl = document.documentElement;
+
+    function updateIconUI() {
+        const iconToggle = document.getElementById('theme-toggle-icon');
+        if (!iconToggle) return;
+        
+        if (htmlEl.classList.contains('light-mode')) {
+            iconToggle.innerText = '🌙'; 
+            iconToggle.classList.remove('sun-icon');
+            iconToggle.classList.add('moon-icon');
+        } else {
+            iconToggle.innerText = '☀️'; 
+            iconToggle.classList.remove('moon-icon');
+            iconToggle.classList.add('sun-icon');
+        }
+    }
+
+    function sklarTema() {
+        htmlEl.classList.toggle('light-mode');
+        updateIconUI();
+    }
+
+    function inisialisasiTombolTema() {
+        const btnToggle = document.getElementById('theme-toggle');
+        if (!btnToggle) return;
+
+        updateIconUI();
+
+        // Aman dari duplicate listener karena sklarTema sekarang ada di luar scope
+        btnToggle.removeEventListener('click', sklarTema);
+        btnToggle.addEventListener('click', sklarTema);
+    }
+
+    // Jalankan di segala siklus Astro
+    document.addEventListener("astro:page-load", inisialisasiTombolTema);
+</script>

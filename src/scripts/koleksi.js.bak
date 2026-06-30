@@ -1,0 +1,483 @@
+// src/scripts/koleksi.js
+
+// =========================================================================
+// 👑 LOGIKA PELACAK JEJAK HALAMAN ASTRO (ANTI-AMNESIA TOTAL)
+// =========================================================================
+function initKoleksiBatik() {
+    const currentPath = window.location.pathname;
+    const previousPath = sessionStorage.getItem('global_prev_path') || '';
+    const gridArea = document.getElementById('area-galeri-testing');
+
+    if (gridArea) {
+        // Jika user datang murni dari Beranda/Halaman Utama, kita RESET TOTAL semua filter & status sidebar
+        if (previousPath && !previousPath.includes('/detail') && previousPath !== currentPath) {
+            let defaultState = { search: '', provinsi: 'semua', budaya: 'semua', simbolik: 'semua', warna: [], urutan: 'default' };
+            sessionStorage.setItem('koleksi_state', JSON.stringify(defaultState));
+            sessionStorage.setItem('sidebar_active_state', 'false'); // Reset status layout sidebar
+        }
+
+        // Nyalakan otak utama filter
+        setupSuperSearchAndFilters();
+    }
+
+    // Catat jejak halaman saat ini
+    sessionStorage.setItem('global_prev_path', currentPath);
+}
+
+document.addEventListener('DOMContentLoaded', initKoleksiBatik);
+document.addEventListener('astro:page-load', initKoleksiBatik);
+
+
+// =========================================================================
+// FUNGSI OTAK UTAMA PENYARINGAN & INTEGRASI MEMORI
+// =========================================================================
+function setupSuperSearchAndFilters() {
+    let defaultState = { search: '', provinsi: 'semua', budaya: 'semua', simbolik: 'semua', warna: [], urutan: 'default' };
+
+    // Ambil data filter dari memori browser
+    let state = JSON.parse(sessionStorage.getItem('koleksi_state')) || defaultState;
+
+    // 👑 KUNCI EMAS 1: Ambil status buka/tutup layout sidebar terakhir dari memori browser
+    let isSidebarActive = sessionStorage.getItem('sidebar_active_state') === 'true';
+
+    const cards = document.querySelectorAll('.kartu-motif-test');
+    const dashboardTotal = document.getElementById('dashboard-total-motif');
+    const statusText = document.getElementById('teks-status-filter');
+
+    const searchContainer = document.getElementById('search-filter-container');
+    const inputPencarian = document.getElementById('input-pencarian-batik');
+    const wrapperToggleBtn = document.getElementById('wrapper-toggle-btn');
+    const btnToggleSidebar = document.getElementById('btn-toggle-sidebar');
+
+    const mainLayoutContainer = document.getElementById('main-layout-container');
+    const wrapperGaleri = document.getElementById('wrapper-galeri');
+    const wrapperSidebar = document.getElementById('wrapper-sidebar');
+    const gridArea = document.getElementById('area-galeri-testing');
+
+    const selectSort = document.getElementById('sort-abjad');
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const idAsalKain = urlParams.get('asal');
+    const qProvinsi = urlParams.get('provinsi');
+    const qBudaya = urlParams.get('budaya');
+    const qSimbolik = urlParams.get('simbolik');
+    const qWarna = urlParams.get('warna');
+
+    // SINKRONISASI VISUAL ELEMEN UTAMA DENGAN MEMORI STATE
+    if (inputPencarian) inputPencarian.value = state.search;
+    if (selectSort) selectSort.value = state.urutan;
+
+    // SENSOR HOVER & TYPE (Search)
+    function updateToggleVisibility() {
+        if (!inputPencarian) return;
+        if (inputPencarian.value.length > 0 || document.activeElement === inputPencarian || searchContainer.matches(':hover') || isSidebarActive) {
+            wrapperToggleBtn.classList.remove('opacity-0', '-translate-y-3', 'pointer-events-none');
+            wrapperToggleBtn.classList.add('opacity-100', 'translate-y-0', 'pointer-events-auto');
+        } else {
+            wrapperToggleBtn.classList.add('opacity-0', '-translate-y-3', 'pointer-events-none');
+            wrapperToggleBtn.classList.remove('opacity-100', 'translate-y-0', 'pointer-events-auto');
+        }
+    }
+
+    if (searchContainer) {
+        searchContainer.addEventListener('mouseenter', updateToggleVisibility);
+        searchContainer.addEventListener('mouseleave', updateToggleVisibility);
+    }
+
+    if (inputPencarian) {
+        inputPencarian.addEventListener('focus', updateToggleVisibility);
+        inputPencarian.addEventListener('blur', updateToggleVisibility);
+        inputPencarian.addEventListener('input', (e) => {
+            state.search = e.target.value.toLowerCase().trim();
+            sessionStorage.setItem('koleksi_state', JSON.stringify(state));
+            updateToggleVisibility();
+            runFilter();
+        });
+    }
+
+    // =========================================================================
+    // 👑 2. FUNGSI STRUKTUR VISUAL LAYOUT SIDEBAR (MUTAKHIR)
+    // =========================================================================
+    function terapkanLayoutVisualSidebar() {
+        if (!mainLayoutContainer || !wrapperSidebar || !wrapperGaleri || !gridArea || !btnToggleSidebar) return;
+
+        if (isSidebarActive) {
+            // Jika statusnya aktif/terbuka, pasang class layout terbuka
+            mainLayoutContainer.classList.add('gap-8');
+            wrapperSidebar.classList.remove('w-0', 'opacity-0', 'p-0', 'border-0', 'm-0', 'overflow-hidden');
+            wrapperSidebar.classList.add('w-full', 'md:w-1/4', 'opacity-100', 'px-6', 'pt-6', 'pb-56', 'border');
+            wrapperGaleri.classList.remove('w-full');
+            wrapperGaleri.classList.add('md:w-3/4');
+            gridArea.classList.remove('xl:grid-cols-4');
+            btnToggleSidebar.classList.add('text-[#ef4444]', 'border-[#ef4444]/40');
+
+            if (document.getElementById('teks-toggle-filter')) document.getElementById('teks-toggle-filter').innerText = 'Tutup Filter Spesifik';
+            if (document.getElementById('icon-toggle-filter')) document.getElementById('icon-toggle-filter').innerHTML = '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>';
+        } else {
+            // Jika statusnya tertutup, kembalikan layout full-width katalog
+            mainLayoutContainer.classList.remove('gap-8');
+            wrapperSidebar.classList.remove('w-full', 'md:w-1/4', 'opacity-100', 'px-6', 'pt-6', 'pb-56', 'border');
+            wrapperSidebar.classList.add('w-0', 'opacity-0', 'p-0', 'border-0', 'm-0', 'overflow-hidden');
+            wrapperGaleri.classList.remove('md:w-3/4');
+            wrapperGaleri.classList.add('w-full');
+            gridArea.classList.add('xl:grid-cols-4');
+            btnToggleSidebar.classList.remove('text-[#ef4444]', 'border-[#ef4444]/40');
+
+            if (document.getElementById('teks-toggle-filter')) document.getElementById('teks-toggle-filter').innerText = 'Jelajahi Lebih Spesifik';
+            if (document.getElementById('icon-toggle-filter')) document.getElementById('icon-toggle-filter').innerHTML = '<polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>';
+        }
+        updateToggleVisibility();
+    }
+
+    function paksaBukaSidebar() {
+        if (isSidebarActive) return;
+        isSidebarActive = true;
+        sessionStorage.setItem('sidebar_active_state', 'true'); // Amankan status terbuka ke memori
+        terapkanLayoutVisualSidebar();
+    }
+
+    // Eksekusi layout visual pertama kali sesuai ingatan memori browser (Menjaga posisi terakhir)
+    terapkanLayoutVisualSidebar();
+
+    if (btnToggleSidebar) {
+        const newBtnToggle = btnToggleSidebar.cloneNode(true);
+        btnToggleSidebar.replaceWith(newBtnToggle);
+        newBtnToggle.addEventListener('click', () => {
+            isSidebarActive = !isSidebarActive;
+
+            // 👑 KUNCI EMAS 2: Simpan perubahan klik tombol manual user ke memori browser
+            sessionStorage.setItem('sidebar_active_state', isSidebarActive ? 'true' : 'false');
+
+            if (!isSidebarActive) {
+                // Sesuai request: Jika ditutup, otomatis bersihkan isi filternya secara realtime
+                state.provinsi = 'semua';
+                state.budaya = 'semua';
+                state.simbolik = 'semua';
+                state.warna = [];
+                sessionStorage.setItem('koleksi_state', JSON.stringify(state));
+            }
+
+            terapkanLayoutVisualSidebar();
+            runFilter(); // Jalankan ulang filter biar grid langsung menyesuaikan
+        });
+    }
+
+    // DROPDOWN TOGGLE MURNI UNTUK CUSTOM SELECT SIDEBAR
+    const triggers = document.querySelectorAll('.custom-select-trigger');
+    function closeAll() {
+        document.querySelectorAll('.custom-options-box').forEach(box => box.classList.add('hidden'));
+        document.querySelectorAll('.panah-icon').forEach(p => p.style.transform = 'rotate(0deg)');
+    }
+
+    triggers.forEach(trigger => {
+        trigger.replaceWith(trigger.cloneNode(true));
+        const newTrigger = document.getElementById(trigger.id);
+        if (newTrigger) {
+            newTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const box = newTrigger.nextElementSibling;
+                const isHidden = box.classList.contains('hidden');
+                closeAll();
+                if (isHidden) {
+                    box.classList.remove('hidden');
+                    newTrigger.querySelector('.panah-icon').style.transform = 'rotate(180deg)';
+                }
+            });
+        }
+    });
+
+    document.addEventListener('click', closeAll);
+    document.querySelectorAll('.custom-options-box').forEach(box => { box.addEventListener('click', e => e.stopPropagation()); });
+
+    // FUNGSI EKSEKUSI SORTING ABJAD (REAL-TIME & TERPUSAT)
+    function eksekusiSortingAbjad() {
+        if (!gridArea || !state.urutan) return;
+
+        const arrayCards = Array.from(cards);
+
+        if (state.urutan === 'default') {
+            arrayCards.sort((a, b) => a.getAttribute('data-id').localeCompare(b.getAttribute('data-id')));
+        } else {
+            arrayCards.sort((a, b) => {
+                const namaA = (a.getAttribute('data-nama') || '').toLowerCase();
+                const namaB = (b.getAttribute('data-nama') || '').toLowerCase();
+                if (state.urutan === 'az') return namaA.localeCompare(namaB);
+                if (state.urutan === 'za') return namaB.localeCompare(namaA);
+                return 0;
+            });
+        }
+
+        arrayCards.forEach(card => gridArea.appendChild(card));
+    }
+
+    if (selectSort) {
+        selectSort.removeEventListener('change', () => { });
+        selectSort.addEventListener('change', (e) => {
+            state.urutan = e.target.value;
+            sessionStorage.setItem('koleksi_state', JSON.stringify(state));
+            eksekusiSortingAbjad();
+            runFilter();
+        });
+    }
+
+    // LOGIKA PENYARINGAN UTAMA (runFilter)
+    function runFilter() {
+        let count = 0;
+        let liveCounts = { provinsi: {}, budaya: {}, simbolik: {}, warna: {} };
+
+        const sedangSorting = state.urutan === 'az' || state.urutan === 'za';
+
+        if (idAsalKain && !sedangSorting) {
+            const idTarget = idAsalKain.replace('test_', '');
+            const kartuAsal = document.querySelector(`.kartu-motif-test[data-id="${idTarget}"]`);
+            if (kartuAsal && kartuAsal.parentElement) {
+                kartuAsal.parentElement.prepend(kartuAsal);
+            }
+        }
+
+        cards.forEach(card => {
+            const namaKain = card.getAttribute('data-nama');
+            const p = card.getAttribute('data-provinsi');
+            const b = card.getAttribute('data-budaya');
+            const s = card.getAttribute('data-simbolik');
+            const w = card.getAttribute('data-warna');
+            const idKainSekarang = card.getAttribute('data-id') || card.id;
+
+            const matchSearch = state.search === '' ||
+                (namaKain && namaKain.includes(state.search)) ||
+                (p && p.toLowerCase().includes(state.search)) ||
+                (w && w.toLowerCase().includes(state.search));
+
+            const matchP = state.provinsi === 'semua' || p === state.provinsi;
+            const matchB = state.budaya === 'semua' || b === state.budaya;
+            const matchS = state.simbolik === 'semua' || s === state.simbolik;
+            // 👑 FIX NYATA ANTI-BOCOR KATA UTUH (Exact Match via Regex Boundary)
+            // 👑 FIX SEMPURNA: Mengunci kata utuh dari awal sampai akhir string filter
+            const matchW = state.warna.length === 0 || state.warna.some(color => {
+                if (!w) return false;
+
+                // Kita buat regex yang sensitif terhadap kata utuh.
+                // Jika mencari "Cokelat", dia akan menolak "Cokelat Soga Tua" karena ada kata lanjutannya.
+                // ^ artinya awal kata, $ artinya akhir kata (setelah dipotong kode hex-nya)
+                return w.toLowerCase().split(',').some(warnaRaw => {
+                    // Ambil hanya nama warnanya saja, buang kode kurung (#HEX) di belakangnya
+                    const namaWarnaSaja = warnaRaw.split('(')[0].trim();
+
+                    // Cocokkan secara utuh 100% sama dengan pilihan filter user
+                    return namaWarnaSaja === color.toLowerCase();
+                });
+            });
+
+            const isMatch = matchSearch && matchP && matchB && matchS && matchW;
+
+            if (isMatch) {
+                count++;
+                card.style.display = 'block';
+                setTimeout(() => { card.classList.remove('kartu-missing', 'kartu-hilang'); }, 10);
+
+                // 👑 FIX VISUAL PRESISI: Hanya tampilkan titik warna yang spesifik dipilih di filter!
+                const dots = card.querySelectorAll('.swatch-titik-warna');
+                if (state.warna.length > 0) {
+                    dots.forEach(dot => {
+                        const dotName = dot.getAttribute('data-warna-nama');
+                        if (state.warna.some(c => c.toLowerCase() === dotName)) {
+                            dot.style.display = 'block';
+                        } else {
+                            dot.style.display = 'none'; // Sembunyikan warna yang tidak dipilih agar spesifik
+                        }
+                    });
+                } else {
+                    // Jika tidak ada filter warna yang aktif, kembalikan semua titik warna
+                    dots.forEach(dot => dot.style.display = 'block');
+                }
+
+                card.style.cursor = 'pointer';
+                card.onclick = (e) => {
+                    if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.btn-kembali-cepat')) return;
+                    if (idKainSekarang) {
+                        // Gunakan trik klik anchor agar ditangkap oleh router ViewTransitions Astro
+                        const a = document.createElement('a');
+                        a.href = `/detail/${idKainSekarang}`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    }
+                };
+
+                if (idAsalKain && idKainSekarang === idAsalKain.replace('test_', '')) {
+                    if (!card.querySelector('.btn-kembali-cepat')) {
+                        const btnKembali = document.createElement('div');
+                        btnKembali.className = "btn-kembali-cepat absolute top-2 right-2 z-30 bg-[#a67c00] text-black text-[10px] font-extrabold px-3 py-1.5 rounded-full shadow-lg border border-black/10 hover:bg-white hover:scale-105 transition-all duration-300 cursor-pointer";
+                        btnKembali.innerHTML = `<span>← Kembali ke Detail (Clear Filter)</span>`;
+                        btnKembali.onclick = (e) => {
+                            e.stopPropagation();
+                            // 👑 FIX: Bersihkan memori filter saat kembali!
+                            let defaultState = { search: '', provinsi: 'semua', budaya: 'semua', simbolik: 'semua', warna: [], urutan: 'default' };
+                            sessionStorage.setItem('koleksi_state', JSON.stringify(defaultState));
+                            sessionStorage.setItem('sidebar_active_state', 'false');
+
+                            const a = document.createElement('a');
+                            if (idAsalKain.startsWith('test_')) {
+                                a.href = '/test'; // Kembali ke halaman test.astro
+                            } else {
+                                a.href = `/detail/${idAsalKain}`;
+                            }
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                        };
+                        card.classList.add('relative');
+                        card.appendChild(btnKembali);
+                    }
+                }
+
+                // LOGIKA SINKRONISASI & GLOWING TITIK WARNA
+                const titikWarnas = card.querySelectorAll('.swatch-titik-warna');
+                if (state.warna.length === 0) {
+                    titikWarnas.forEach(titik => {
+                        titik.classList.remove('swatch-aktif', 'swatch-redup');
+                        titik.style = `background-color: ${titik.style.backgroundColor}; display: block;`;
+                    });
+                } else {
+                    titikWarnas.forEach(titik => {
+                        const namaTitik = titik.getAttribute('data-warna-nama') || '';
+                        // 👑 FIX PRESISI MUTLAK: Harus sama persis, bukan sekadar "includes"
+                        const isColorMatch = state.warna.some(w => namaTitik === w.toLowerCase());
+
+                        titik.style = `background-color: ${titik.style.backgroundColor}`;
+
+                        if (isColorMatch) {
+                            titik.classList.add('swatch-aktif');
+                            titik.classList.remove('swatch-redup');
+                            titik.style.display = 'block';
+                        } else {
+                            titik.classList.add('swatch-redup');
+                            titik.classList.remove('swatch-aktif');
+                            titik.style.display = 'none'; // Lenyapkan dari layar agar tidak merusak presisi
+                        }
+                    });
+                }
+            } else {
+                card.classList.add('kartu-hilang');
+                setTimeout(() => { if (card.classList.contains('kartu-hilang')) card.style.display = 'none'; }, 400);
+            }
+
+            if (matchSearch && matchB && matchS && matchW) liveCounts.provinsi[p] = (liveCounts.provinsi[p] || 0) + 1;
+            if (matchSearch && matchP && matchS && matchW) liveCounts.budaya[b] = (liveCounts.budaya[b] || 0) + 1;
+            if (matchSearch && matchP && matchB && matchW) liveCounts.simbolik[s] = (liveCounts.simbolik[s] || 0) + 1;
+            // 👑 FIX SEMPURNA: Hitungan angka di sidebar ikut akurat 100%
+            if (matchSearch && matchP && matchB && matchS) {
+                document.querySelectorAll('#opsi-warna .baris-opsi').forEach(btn => {
+                    const t = btn.getAttribute('data-target'); // Misal: "Merah" atau "Cokelat Soga Tua"
+                    if (t !== 'semua' && w) {
+                        const isTargetMatch = w.toLowerCase().split(',').some(warnaRaw => {
+                            const namaWarnaSaja = warnaRaw.split('(')[0].trim();
+                            return namaWarnaSaja === t.toLowerCase();
+                        });
+
+                        if (isTargetMatch) {
+                            liveCounts.warna[t] = (liveCounts.warna[t] || 0) + 1;
+                        }
+                    }
+                });
+            }
+        });
+
+        if (dashboardTotal) dashboardTotal.innerText = count;
+        const isFilterActive = state.search !== '' || state.provinsi !== 'semua' || state.budaya !== 'semua' || state.simbolik !== 'semua' || state.warna.length > 0;
+
+        if (statusText) {
+            if (state.search !== '') {
+                statusText.innerText = `Menemukan kata kunci: "${state.search}"`; statusText.classList.add('text-[#c5a059]');
+            } else {
+                statusText.innerText = isFilterActive ? "Filter spesifik diterapkan" : "Menampilkan seluruh database"; statusText.classList.remove('text-[#c5a059]');
+            }
+        }
+
+        ['provinsi', 'budaya', 'simbolik', 'warna'].forEach(kategori => {
+            const box = document.getElementById(`opsi-${kategori}`);
+            if (!box) return;
+            box.querySelectorAll('.baris-opsi').forEach(btn => {
+                const target = btn.getAttribute('data-target');
+                if (target === 'semua') return;
+                const num = liveCounts[kategori][target] || 0;
+                const labelAngka = btn.querySelector('.angka-opsi');
+                if (labelAngka) labelAngka.innerText = num;
+                btn.style.display = num > 0 ? 'flex' : 'none';
+                if (kategori === 'warna') { if (state.warna.includes(target)) btn.classList.add('aktif'); else btn.classList.remove('aktif'); }
+                else { if (state[kategori] === target) btn.classList.add('aktif'); else btn.classList.remove('aktif'); }
+            });
+        });
+
+        renderAllPills();
+    }
+
+    // RENDER PILLS
+    function renderAllPills() {
+        ['provinsi', 'budaya', 'simbolik', 'warna'].forEach(kategori => {
+            const container = document.getElementById(`pills-${kategori}`);
+            if (!container) return;
+            container.innerHTML = "";
+            const createPill = (item) => {
+                const pill = document.createElement('div');
+                let visualHTML = `<span class="text-[11px] text-gray-200 font-medium">${item}</span>`;
+                if (kategori === 'warna') {
+                    const btnAsli = document.querySelector(`#opsi-warna [data-target="${item}"]`);
+                    const hex = btnAsli?.getAttribute('data-hex') || '#555';
+                    visualHTML = `<div class="w-3 h-3 rounded-full shadow-sm" style="background-color: ${hex}; border: 1px solid rgba(255,255,255,0.1)"></div><span class="text-[11px] text-gray-200 font-medium truncate max-w-[120px]">${item}</span>`;
+                }
+                pill.className = "inline-flex items-center justify-between gap-2.5 pl-3 pr-1.5 py-1.5 bg-[#1e1e1e] border border-gray-700 rounded-full shadow-sm animate-[fadeInScale_0.2s_ease] transition-colors hover:border-gray-500";
+                pill.innerHTML = `<div class="flex items-center gap-2">${visualHTML}</div><button type="button" class="btn-hapus-pill flex items-center justify-center w-[18px] h-[18px] rounded-full text-gray-400 hover:bg-red-500/20 hover:text-red-500 transition-colors cursor-pointer" title="Hapus Filter"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>`;
+                pill.querySelector('.btn-hapus-pill').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (kategori === 'warna') { state.warna = state.warna.filter(i => i !== item); } else { state[kategori] = 'semua'; }
+                    sessionStorage.setItem('koleksi_state', JSON.stringify(state));
+                    runFilter();
+                });
+                container.appendChild(pill);
+            };
+            if (kategori === 'warna') { state.warna.forEach(item => createPill(item)); }
+            else { if (state[kategori] !== 'semua') createPill(state[kategori]); }
+        });
+    }
+
+    // EVENT BINDING OPSI SIDEBAR FILTER
+    document.querySelectorAll('.baris-opsi').forEach(btn => { btn.replaceWith(btn.cloneNode(true)); });
+    document.querySelectorAll('.baris-opsi').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const kategori = btn.getAttribute('data-kategori');
+            const target = btn.getAttribute('data-target');
+            if (kategori === 'warna') {
+                if (target === 'semua') { state.warna = []; closeAll(); }
+                else {
+                    if (state.warna.includes(target)) { state.warna = state.warna.filter(i => i !== target); }
+                    else { if (state.warna.length >= 3) { alert("Maksimal memilih 3 warna sekaligus!"); return; } state.warna.push(target); }
+                }
+            } else {
+                state[kategori] = target; closeAll();
+            }
+
+            sessionStorage.setItem('koleksi_state', JSON.stringify(state));
+            runFilter();
+        });
+    });
+
+    // LOGIKA FILTER DARI URL QUERY (STATE OVERRIDE)
+    let adaQueryEksternal = false;
+    if (qProvinsi) { state.provinsi = qProvinsi; adaQueryEksternal = true; }
+    if (qBudaya) { state.budaya = qBudaya; adaQueryEksternal = true; }
+    if (qSimbolik) { state.simbolik = qSimbolik; adaQueryEksternal = true; }
+    if (qWarna) {
+        if (!state.warna.includes(qWarna)) state.warna.push(qWarna);
+        adaQueryEksternal = true;
+    }
+
+    if (adaQueryEksternal) {
+        sessionStorage.setItem('koleksi_state', JSON.stringify(state));
+        paksaBukaSidebar();
+    }
+
+    // EKSEKUSI AWAL SETELAH HALAMAN DIMUAT
+    eksekusiSortingAbjad();
+    runFilter();
+}

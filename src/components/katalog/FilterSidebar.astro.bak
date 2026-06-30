@@ -1,0 +1,185 @@
+---
+// src/components/katalog/FilterSidebar.astro
+const { provinsiCounts, budayaCounts, simbolikCounts, pemetaWarna } =
+    Astro.props;
+---
+
+<div
+    id="wrapper-sidebar"
+    class="w-0 opacity-0 overflow-hidden border-0 p-0 m-0 bg-[#121212] border-[#c5a059]/10 rounded-xs md:sticky md:top-28 flex flex-col gap-8 shadow-xl transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+>
+    <div class="relative filter-group shrink-0 w-full">
+        <label
+            class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3"
+            >Wilayah</label
+        >
+        <div id="pills-provinsi" class="flex flex-wrap gap-2 mb-3 empty:hidden">
+        </div>
+        <button id="btn-select-provinsi" class="custom-select-trigger">
+            <span class="text-gray-400">Pilih Wilayah</span>
+            <svg
+                class="panah-icon"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"><path d="m6 9 6 6 6-6"></path></svg
+            >
+        </button>
+        <div id="opsi-provinsi" class="custom-options-box hidden">
+            <button
+                class="baris-opsi"
+                data-kategori="provinsi"
+                data-target="semua"
+            >
+                <span class="teks-opsi text-[#c5a059]">Bersihkan Wilayah</span>
+            </button>
+            {
+                Object.keys(provinsiCounts).map((name) => (
+                    <button
+                        class="baris-opsi"
+                        data-kategori="provinsi"
+                        data-target={name}
+                    >
+                        <span class="teks-opsi">{name}</span>
+                        <span class="angka-opsi">{provinsiCounts[name]}</span>
+                    </button>
+                ))
+            }
+        </div>
+    </div>
+
+    <div class="relative filter-group shrink-0 w-full">
+        <label
+            class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3"
+            >Kategori Budaya</label
+        >
+        <div id="pills-budaya" class="flex flex-wrap gap-2 mb-3 empty:hidden">
+        </div>
+        <button id="btn-select-budaya" class="custom-select-trigger">
+            <span class="text-gray-400">Pilih Kategori</span>
+            <svg
+                class="panah-icon"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"><path d="m6 9 6 6 6-6"></path></svg
+            >
+        </button>
+        <div id="opsi-budaya" class="custom-options-box hidden">
+            <button
+                class="baris-opsi"
+                data-kategori="budaya"
+                data-target="semua"
+            >
+                <span class="teks-opsi text-[#c5a059]">Bersihkan Kategori</span>
+            </button>
+            {
+                Object.keys(budayaCounts).map((name) => (
+                    <button
+                        class="baris-opsi"
+                        data-kategori="budaya"
+                        data-target={name}
+                    >
+                        <span class="teks-opsi">{name}</span>
+                        <span class="angka-opsi">{budayaCounts[name]}</span>
+                    </button>
+                ))
+            }
+        </div>
+    </div>
+
+    <div class="relative filter-group shrink-0 w-full">
+        <label
+            class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3"
+            >Status Simbolik</label
+        >
+        <div id="pills-simbolik" class="flex flex-wrap gap-2 mb-3 empty:hidden">
+        </div>
+        <button id="btn-select-simbolik" class="custom-select-trigger">
+            <span class="text-gray-400">Pilih Status</span>
+            <svg
+                class="panah-icon"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"><path d="m6 9 6 6 6-6"></path></svg
+            >
+        </button>
+        <div id="opsi-simbolik" class="custom-options-box hidden">
+            <button
+                class="baris-opsi"
+                data-kategori="simbolik"
+                data-target="semua"
+            >
+                <span class="teks-opsi text-[#c5a059]">Bersihkan Status</span>
+            </button>
+            {
+                Object.keys(simbolikCounts).map((name) => (
+                    <button
+                        class="baris-opsi"
+                        data-kategori="simbolik"
+                        data-target={name}
+                    >
+                        <span class="teks-opsi">{name}</span>
+                        <span class="angka-opsi">{simbolikCounts[name]}</span>
+                    </button>
+                ))
+            }
+        </div>
+    </div>
+
+    <div class="relative filter-group shrink-0 w-full">
+        <label
+            class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3"
+            >Palet Warna</label
+        >
+        <div id="pills-warna" class="flex flex-wrap gap-2 mb-3 empty:hidden">
+        </div>
+        <button id="btn-select-warna" class="custom-select-trigger">
+            <span class="text-gray-400">Pilih Warna</span>
+            <svg
+                class="panah-icon"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="3"><path d="m6 9 6 6 6-6"></path></svg
+            >
+        </button>
+        <div id="opsi-warna" class="custom-options-box hidden">
+            <button
+                class="baris-opsi"
+                data-kategori="warna"
+                data-target="semua"
+            >
+                <span class="teks-opsi text-[#c5a059]">Bersihkan Warna</span>
+            </button>
+            {
+                Object.keys(pemetaWarna).map((warna) => (
+                    <button
+                        class="baris-opsi"
+                        data-kategori="warna"
+                        data-target={warna}
+                        data-hex={pemetaWarna[warna]}
+                    >
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-3.5 h-3.5 rounded-full border border-white/10"
+                                style={`background-color: ${pemetaWarna[warna]}`}
+                            />
+                            <span class="teks-opsi">{warna}</span>
+                        </div>
+                        <span class="angka-opsi">0</span>
+                    </button>
+                ))
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,69 @@
+/* src/styles/galeriMotif.css */
+
+.galeri-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    /* Animasi halus saat grid menyusut/melebar memberikan ruang bagi sidebar */
+    transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.kartu-galeri {
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    background-color: rgba(20, 20, 20, 0.6);
+    border: 1px solid rgba(197, 160, 89, 0.1);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+        border-color 0.4s ease,
+        opacity 0.4s ease;
+}
+
+.kartu-galeri:hover {
+    transform: translateY(-6px);
+    border-color: rgba(197, 160, 89, 0.4);
+}
+
+.wadah-gambar-asli {
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #080808;
+}
+
+.gambar-batik-asli {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    opacity: 0.85;
+    transition: opacity 0.3s ease;
+}
+
+.kartu-galeri:hover .gambar-batik-asli {
+    opacity: 1;
+}
+
+.info-kartu-galeri {
+    padding: 1.25rem;
+    border-top: 1px solid rgba(197, 160, 89, 0.05);
+}
+
+.provinsi-tag {
+    color: #c5a059;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.nama-motif-galeri {
+    font-family: Georgia, serif;
+    color: #e0e0e0;
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.4;
+}

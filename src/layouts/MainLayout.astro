@@ -1,0 +1,55 @@
+---
+// src/layouts/MainLayout.astro
+import { ClientRouter } from "astro:transitions";
+import Navbar from "../components/shared/Navbar.astro";
+import MenuOverlay from "../components/shared/MenuOverlay.astro";
+import Footer from "../components/shared/Footer.astro";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="id" class="light-mode">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL === '/' ? '' : import.meta.env.BASE_URL}/favicon.svg`} />
+    <title>{title} | Nusantara Archival</title>
+    <ClientRouter />
+
+    <script is:inline define:vars={{ base: import.meta.env.BASE_URL }}>
+      window.BASE_URL = base === '/' ? '' : base;
+    </script>
+
+    <script is:inline>
+      // Meneruskan state tema saat bernavigasi tanpa me-refresh halaman (Soft Navigation)
+      // Jika di-refresh paksa (F5), ini tidak terpicu dan tag <html class="light-mode"> bawaan akan kembali memaksakan Light Mode.
+      document.addEventListener("astro:before-swap", (e) => {
+        const isLight = document.documentElement.classList.contains("light-mode");
+        if (isLight) {
+          e.newDocument.documentElement.classList.add("light-mode");
+        } else {
+          e.newDocument.documentElement.classList.remove("light-mode");
+        }
+      });
+    </script>
+  </head>
+
+  <body
+    class="bg-[#0a0a0a] text-[#e0e0e0] antialiased transition-colors duration-500 ease-in-out"
+  >
+    <Navbar />
+    <MenuOverlay />
+
+    <main class="min-h-screen">
+      <slot />
+    </main>
+
+    <Footer />
+  </body>
+</html>

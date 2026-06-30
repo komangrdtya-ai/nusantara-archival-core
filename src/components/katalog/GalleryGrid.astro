@@ -1,0 +1,180 @@
+---
+// src/components/katalog/TestGalleryGrid.astro
+export interface Props {
+    sampelMotif: any[];
+    totalSemua: number;
+}
+const { sampelMotif, totalSemua } = Astro.props;
+
+// Ekstrak bersih karena data dublin_core sudah punya format (#HEX)
+function ekstrakWarnaTitik(stringWarna: string) {
+    if (!stringWarna) return [];
+    const bagian = stringWarna.split(",");
+    const hasilWarna: { nama: string; hex: string }[] = [];
+
+    bagian.forEach((b) => {
+        const namaBersih = b.trim();
+        if (!namaBersih) return;
+
+        const matchNama = namaBersih.match(/^([^(]+)/);
+        const matchHex = namaBersih.match(/\((#[a-fA-F0-9]{6})\)/);
+
+        if (matchNama && matchHex) {
+            hasilWarna.push({ nama: matchNama[1].trim(), hex: matchHex[1] });
+        }
+    });
+    return hasilWarna;
+}
+---
+
+<div
+    class="w-full transition-all duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col gap-6"
+>
+    <div
+        class="w-full bg-[#111] border border-gray-900 rounded-xs px-6 py-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow-xl relative transition-all duration-500"
+    >
+        <div class="flex items-center gap-3">
+            <div
+                class="w-2.5 h-2.5 rounded-full bg-[#c5a059] shadow-[0_0_10px_#c5a059]"
+            >
+            </div>
+            <h3
+                class="text-base tracking-wide text-gray-200 flex items-center flex-wrap gap-1.5"
+            >
+                Ditemukan: <span
+                    id="dashboard-total-motif"
+                    class="text-[#c5a059] font-serif text-2xl font-bold px-1"
+                    >{totalSemua}</span
+                > Motif Batik
+                <div class="relative inline-block grup-info-tameng ml-1">
+                    <button
+                        type="button"
+                        class="w-5 h-5 rounded-full bg-gray-800 border border-gray-700 flex items-center justify-center text-xs text-gray-400 hover:bg-[#c5a059]/20 hover:text-[#c5a059] hover:border-[#c5a059]/40 transition-colors cursor-help font-mono font-bold z-10 relative"
+                        >i</button
+                    >
+                    <div
+                        class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-72 p-4 bg-[#161616] border border-[#c5a059]/30 rounded-lg shadow-2xl opacity-0 pointer-events-none transition-all duration-300 transform translate-y-3 wadah-balon-info group-hover:opacity-100 z-[60]"
+                    >
+                        <div class="flex flex-col gap-2">
+                            <span
+                                class="text-xs font-bold text-[#c5a059] tracking-wider uppercase font-sans"
+                                >💡 Informasi Pencarian</span
+                            >
+                            <p
+                                class="text-[11px] text-gray-300 leading-relaxed font-sans normal-case text-left"
+                            >
+                                Total hasil murni menghitung <b
+                                    >jumlah fisik lembar kain</b
+                                > di layar.
+                            </p>
+                        </div>
+                        <div
+                            class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-[#c5a059]/30"
+                        >
+                        </div>
+                    </div>
+                </div>
+            </h3>
+        </div>
+
+        <div
+            class="flex flex-col sm:flex-row sm:items-center gap-4 md:text-right"
+        >
+            <p
+                id="teks-status-filter"
+                class="text-xs text-gray-500 italic transition-opacity duration-300 self-center"
+            >
+                Menampilkan seluruh database
+            </p>
+
+            <div
+                class="flex items-center gap-2 bg-[#161616] border border-gray-800 px-3 py-1.5 rounded-xs"
+            >
+                <label
+                    for="sort-abjad"
+                    class="text-[11px] uppercase tracking-wider text-gray-400 font-medium"
+                    >Urutkan:</label
+                >
+                <select
+                    id="sort-abjad"
+                    class="bg-transparent text-xs text-gray-200 font-sans focus:outline-none cursor-pointer pr-2 font-medium text-[#c5a059]"
+                >
+                    <option value="default" class="bg-[#111] text-gray-300"
+                        >Bawaan Sistem</option
+                    >
+                    <option value="az" class="bg-[#111] text-gray-300"
+                        >Nama: A ke Z ↑</option
+                    >
+                    <option value="za" class="bg-[#111] text-gray-300"
+                        >Nama: Z ke A ↓</option
+                >
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div
+        id="area-galeri-testing"
+        class="columns-1 sm:columns-2 lg:columns-3 xl:columns-3 gap-6 w-full transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] relative"
+    >
+        {
+            sampelMotif.map((motif: any, index: number) => (
+                <div
+                    class={`kartu-motif-test animate-fade-up-motif relative bg-[#111] border border-gray-900 rounded-xs overflow-hidden flex flex-col mb-6 break-inside-avoid`}
+                    style={`animation-delay: ${index * 75}ms; ${index >= 9 ? "display: none;" : ""}`}
+                    data-id={motif['dc:identifier']}
+                    data-nama={motif['dc:title'] ? motif['dc:title'].toLowerCase() : ""}
+                    data-provinsi={motif['dc:coverage']}
+                    data-budaya={motif['dc:subject'] ? motif['dc:subject']['Kategori Budaya'] : ""}
+                    data-simbolik={motif['dc:subject'] ? (motif['dc:subject']['Status Simbolik'] || "Umum / Bebas") : "Umum / Bebas"}
+                    data-warna={motif['dc:description'] ? (motif['dc:description']['Warna Dominan'] || "") : ""}
+                    data-format={motif['dc:format'] || ""}
+                    data-source={motif['dc:source'] || ""}
+                    data-rights={motif['dc:rights'] || ""}
+                    data-language={motif['dc:language'] || ""}
+                >
+                    <div class="w-full flex items-center justify-center overflow-hidden shrink-0 relative">
+                        <img
+                            src={motif.url_gambar_web ? `${import.meta.env.BASE_URL}${motif.url_gambar_web}` : `${import.meta.env.BASE_URL}/assets/motif/default.jpg`}
+                            alt={motif['dc:title']}
+                            class="w-full h-auto object-cover transition-all duration-500 ease-out rounded-xs"
+                            loading="lazy"
+                            decoding="async"
+                            transition:name={`img-${motif['dc:identifier'].replace(/[^a-zA-Z0-9-]/g, '')}`}
+                        />
+                    </div>
+
+                    <div class="p-5 flex flex-col flex-grow justify-between bg-[#111]">
+                        <div>
+                            <span class="text-[10px] text-[#c5a059] uppercase tracking-[0.2em] block mb-2 font-semibold">
+                                {motif['dc:coverage']}
+                            </span>
+                            <h4 
+                                class="text-base text-gray-200 font-serif leading-tight"
+                                transition:name={`title-${motif['dc:identifier'].replace(/[^a-zA-Z0-9-]/g, '')}`}
+                            >
+                                {motif['dc:title']}
+                            </h4>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            {ekstrakWarnaTitik(
+                                motif['dc:description'] ? motif['dc:description']["Warna Dominan"] : ""
+                            ).map((w) => (
+                                <div
+                                    class="swatch-titik-warna hover-circle-alive w-6 h-6 rounded-full border-[1.5px] border-white/20 shadow-sm transition-all duration-300 ease-out"
+                                    data-warna-nama={w.nama.toLowerCase()}
+                                    style={`background-color: ${w.hex};`}
+                                    title={w.nama}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            ))
+        }
+    </div>
+
+    <!-- Container untuk Pagination -->
+    <div id="pagination-container" class="w-full flex justify-center items-center gap-2 mt-12 mb-8 transition-opacity duration-300"></div>
+</div>

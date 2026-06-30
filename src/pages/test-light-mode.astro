@@ -1,0 +1,306 @@
+---
+import Navbar from "../components/shared/Navbar.astro";
+import MenuOverlay from "../components/shared/MenuOverlay.astro";
+import DetailMotif from "../components/katalog/DetailMotif.astro";
+import "../styles/global.css";
+
+const dummyMotif = {
+    "ID": "parang_rusak",
+    "Nama": "Parang Rusak",
+    "Provinsi": "Daerah Istimewa Yogyakarta",
+    "Kategori Budaya": "Keraton / Klasik",
+    "Fungsi Tradisional": "Pakaian Kebesaran Raja",
+    "Status Simbolik": "Sangat Sakral (Larangan)",
+    "Warna Dominan": "Coklat Soga (#6b4423), Putih (#f5f5dc)",
+    "Elemen Visual": "Garis diagonal, Lidah api, Mlinjon",
+    "Makna Filosofis": "Motif Parang Rusak melambangkan kekuatan, keberanian, dan semangat pantang menyerah seperti ombak lautan yang menghantam karang. Pola diagonal miring mencerminkan garis keturunan yang tidak terputus dan kewibawaan seorang pemimpin yang senantiasa memperbaiki diri.",
+    "Fakta Unik": "Motif ini konon diciptakan oleh Panembahan Senopati, pendiri Kesultanan Mataram, saat bertapa di pantai selatan Jawa.",
+    "Gambar": "https://images.unsplash.com/photo-1602816982998-c689977823f9?auto=format&fit=crop&q=80&w=800"
+};
+
+const dummyRelated = [
+    {
+        "ID": "kawung",
+        "Nama": "Kawung",
+        "Provinsi": "Jawa Tengah",
+        "Gambar": "https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?auto=format&fit=crop&q=80&w=400",
+        "Kategori Budaya": "Keraton"
+    },
+    {
+        "ID": "megamendung",
+        "Nama": "Megamendung",
+        "Provinsi": "Jawa Barat",
+        "Gambar": "https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?auto=format&fit=crop&q=80&w=400",
+        "Kategori Budaya": "Pesisiran"
+    },
+    {
+        "ID": "truntum",
+        "Nama": "Truntum",
+        "Provinsi": "Jawa Tengah",
+        "Gambar": "https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?auto=format&fit=crop&q=80&w=400",
+        "Kategori Budaya": "Klasik"
+    }
+];
+---
+
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Light Mode Adaptation - Detail</title>
+
+    <script is:inline>
+        // Inisialisasi tema sebelum render agar tidak flash (FOUC)
+        const savedTheme = localStorage.getItem('test-theme') || 'light';
+        if (savedTheme === 'light') {
+            document.documentElement.classList.add('light-mode');
+        } else {
+            document.documentElement.classList.remove('light-mode');
+        }
+    </script>
+
+    <style is:global>
+        /* ========================================================
+           ATURAN MODE TERANG (Hanya aktif jika .light-mode ada)
+           ======================================================== */
+        /* Background Halaman & Teks Utama */
+        html.light-mode body { background-color: #f5f2ec !important; color: #2d2a26 !important; }
+
+        /* Mengubah Teks Putih menjadi Gelap */
+        html.light-mode .text-white, html.light-mode .text-gray-200, html.light-mode .text-gray-300 { color: #2d2a26 !important; }
+        html.light-mode .text-gray-400, html.light-mode .text-gray-500 { color: #5c554d !important; }
+
+        /* Menyesuaikan Background Kartu/Detail */
+        html.light-mode .bg-\[\#0e0e0e\]\/80,
+        html.light-mode .bg-\[\#0e0e0e\]\/60,
+        html.light-mode .bg-\[\#0e0e0e\]\/40,
+        html.light-mode .bg-\[\#0e0e0e\],
+        html.light-mode .bg-\[\#111\],
+        html.light-mode .bg-black,
+        html.light-mode .bg-black\/40 {
+            background-color: #ffffff !important;
+        }
+
+        /* Menyesuaikan Border */
+        html.light-mode .border-white\/5, html.light-mode .border-white\/10, html.light-mode .border-white\/20 { border-color: #e6dfd1 !important; }
+
+        /* Shadow Lembut (Global) */
+        html.light-mode .shadow-sm, html.light-mode .shadow-lg, html.light-mode .shadow-xl, html.light-mode .shadow-2xl,
+        html.light-mode .shadow-\[0_0_50px_rgba\(0\,0\,0\,0\.8\)\] {
+            box-shadow: 0 4px 10px -2px rgba(92, 85, 77, 0.05), 0 2px 4px -1px rgba(92, 85, 77, 0.03) !important;
+        }
+
+        /* -------------------------------------------
+           MUSEUM GALLERY VIBE (Gambar Motif Utama)
+           ------------------------------------------- */
+        /* Physical Drop Shadow & Bingkai Passe-Partout */
+        html.light-mode .shadow-\[0_0_50px_rgba\(166\,124\,0\,0\.15\)\] {
+            box-shadow: 0 15px 35px -5px rgba(92, 85, 77, 0.15), 0 5px 15px rgba(0, 0, 0, 0.05) !important;
+            border: 6px solid #ffffff !important; /* Efek bingkai foto premium */
+        }
+        
+        /* Kembalikan kecerahan gambar asli (Clarity) di Light Mode */
+        html.light-mode .gambar-detail-kain {
+            opacity: 1 !important;
+        }
+
+        /* Penyesuaian Aksen Emas & Warna Kustom lain */
+        html.light-mode .text-\[\#c5a059\], html.light-mode .text-\[\#a67c00\] { color: #8f6700 !important; }
+        html.light-mode .bg-\[\#a67c00\]\/5 { background-color: rgba(143, 103, 0, 0.05) !important; }
+        html.light-mode .border-\[\#a67c00\]\/20, html.light-mode .border-\[\#a67c00\]\/30, html.light-mode .border-\[\#a67c00\]\/50 {
+            border-color: rgba(143, 103, 0, 0.3) !important;
+        }
+        
+        /* Tag Neon menjadi hijau rimba */
+        html.light-mode .text-\[\#deff9a\] { color: #065f46 !important; font-weight: 700 !important; }
+
+        /* Interaksi Latar Belakang Hover & Border */
+        html.light-mode .hover\:bg-white\/10:hover { background-color: #ebe4d8 !important; }
+        html.light-mode .group:hover .group-hover\:border-\[\#a67c00\]\/50 {
+            border-color: rgba(143, 103, 0, 0.6) !important;
+        }
+
+        /* ========================================================
+           EFEK HOVER GLOBAL (Semua Teks Interaktif)
+           ======================================================== */
+        /* Menyuntikkan transisi mulus tanpa mengganggu base style/layout */
+        a, button, .hover\:text-white, .hover\:text-\[\#a67c00\], .group-hover\:text-white {
+            transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out !important;
+        }
+
+        /* LIGHT MODE: Hover Kalem (Dark Copper) untuk semua link/teks interaktif */
+        html.light-mode a:hover,
+        html.light-mode button:hover,
+        html.light-mode .hover\:text-white:hover,
+        html.light-mode .hover\:text-\[\#a67c00\]:hover,
+        html.light-mode .group:hover .group-hover\:text-white { 
+            color: #5c4100 !important; 
+            text-shadow: none !important;
+        }
+
+        /* DARK MODE: Hover Mewah (Bright Gold Glow) untuk semua link/teks interaktif */
+        html:not(.light-mode) a:hover,
+        html:not(.light-mode) button:hover,
+        html:not(.light-mode) .hover\:text-white:hover,
+        html:not(.light-mode) .hover\:text-\[\#a67c00\]:hover,
+        html:not(.light-mode) .group:hover .group-hover\:text-white {
+            color: #ffd700 !important;
+            text-shadow: 0 0 12px rgba(255, 215, 0, 0.4), 0 0 20px rgba(255, 215, 0, 0.2) !important;
+        }
+
+        /* ========================================================
+           ELEMEN TAMBAHAN HALAMAN TESTING
+           ======================================================== */
+        
+        /* Hamburger Menu Icon (Navbar) */
+        html.light-mode #menu-btn span {
+            background-color: #5c4100 !important; /* Cokelat tembaga gelap */
+        }
+        html:not(.light-mode) #menu-btn span {
+            background-color: #ffffff !important; /* Putih terang di dark mode */
+        }
+        
+        /* Sidebar Overlay / Menu Backdrop */
+        html.light-mode .bg-\[\#050505\]\/95 {
+            background-color: rgba(245, 242, 236, 0.98) !important;
+        }
+        
+        /* Transisi Dasar Menu Item (Berlaku untuk dua mode) */
+        .menu-item {
+            transition: all 0.3s ease-in-out !important;
+            position: relative;
+            display: inline-block; /* Memastikan ::after lebarnya sesuai teks */
+        }
+
+        /* Teks dasar Sidebar di Light Mode */
+        html.light-mode .text-white\/90 {
+            color: #2d2a26 !important;
+        }
+
+        /* Animasi garis bawah mengembang dari tengah (Light Mode) */
+        html.light-mode .menu-item::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: #5c4100;
+            transition: width 0.3s ease-in-out;
+            border-radius: 2px;
+        }
+        html.light-mode .menu-item:hover::after {
+            width: 80%; 
+        }
+
+        /* Hilangkan tanda panah (>) bawaan agar lebih bersih dan rapi di Light Mode */
+        html.light-mode .menu-item::before {
+            display: none !important;
+        }
+
+
+
+        /* Tombol Tema */
+        html.light-mode #test-theme-toggle {
+            background-color: #ffffff;
+            border-color: #e6dfd1;
+        }
+        html:not(.light-mode) #test-theme-toggle {
+            background-color: #111111;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body class="antialiased transition-colors duration-500 overflow-x-hidden">
+    <!-- Navbar 100% Transparan & Sidebar Hamburger -->
+    <div class="relative z-50">
+        <Navbar />
+        <MenuOverlay />
+    </div>
+
+    <!-- Tombol Ganti Tema (Dark/Light Mode) -->
+    <button id="test-theme-toggle" class="fixed top-8 right-8 z-[100] flex items-center justify-center w-12 h-12 rounded-full border transition-all duration-500 shadow-md cursor-pointer hover:scale-110 focus:outline-none">
+        <span id="test-theme-icon" class="text-xl leading-none"></span>
+    </button>
+
+    <main class="min-h-screen pt-24 pb-32">
+        <div class="max-w-4xl mx-auto px-6 mb-16 text-center">
+            <span class="text-sm font-bold tracking-widest uppercase text-[#997300] mb-3 block">Testing Environment</span>
+            <h1 class="text-3xl md:text-5xl font-serif font-bold text-gray-900 mb-6">
+                Simulasi Light Mode: Detail Motif
+            </h1>
+            <p class="text-gray-600 leading-relaxed max-w-2xl mx-auto">
+                Menguji coba render <strong>DetailMotif.astro</strong> dengan data *dummy* lengkap. CSS *override* diaplikasikan untuk mengubah komponen *hardcoded dark* ini menjadi mode terang yang elegan tanpa menyentuh kode aslinya.
+            </p>
+        </div>
+
+        <!-- Komponen Detail Motif Asli -->
+        <DetailMotif motif={dummyMotif} relatedItems={dummyRelated} />
+    </main>
+
+    <script is:inline>
+        // === LOGIKA TOGGLE TEMA ===
+        const btnToggle = document.getElementById('test-theme-toggle');
+        const iconToggle = document.getElementById('test-theme-icon');
+        const htmlEl = document.documentElement;
+
+        function updateIconUI() {
+            if (htmlEl.classList.contains('light-mode')) {
+                iconToggle.innerText = '🌙'; // Munculkan ikon bulan karena saat ini Light Mode
+            } else {
+                iconToggle.innerText = '☀️'; // Munculkan ikon matahari karena saat ini Dark Mode
+            }
+        }
+        
+        // Panggil fungsi render ikon saat halaman dimuat
+        updateIconUI();
+
+        // Event listener saat tombol diklik
+        if (btnToggle) {
+            btnToggle.addEventListener('click', () => {
+                htmlEl.classList.toggle('light-mode');
+                const isLight = htmlEl.classList.contains('light-mode');
+                localStorage.setItem('test-theme', isLight ? 'light' : 'dark');
+                updateIconUI();
+            });
+        }
+
+        // === LOGIKA MENU HAMBURGER & SIDEBAR ===
+        const menuBtn = document.getElementById('menu-btn');
+        const menuOverlay = document.getElementById('menu-overlay');
+        const line1 = document.getElementById('line-1');
+        const line2 = document.getElementById('line-2');
+        const menuLinks = document.querySelectorAll('.js-menu-link');
+
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                menuOverlay.classList.add('opacity-100', 'pointer-events-auto');
+                line1.style.transform = 'rotate(45deg) translate(6px, 6px)';
+                line2.style.transform = 'rotate(-45deg) translate(5px, -5px)';
+            } else {
+                menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+                menuOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+                line1.style.transform = 'none';
+                line2.style.transform = 'none';
+            }
+        }
+
+        if (menuBtn) {
+            menuBtn.addEventListener('click', toggleMenu);
+        }
+
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => { 
+                if (isMenuOpen) toggleMenu(); 
+            });
+        });
+    </script>
+</body>
+</html>

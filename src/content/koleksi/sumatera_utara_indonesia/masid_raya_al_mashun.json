@@ -1,0 +1,22 @@
+{
+    "dc:identifier": "masid_raya_al_mashun",
+    "url_gambar_web": "/assets/motif/sumut/masjid_raya_al_mashun.jpg",
+    "dc:title": "Masjid Raya Al-Ma'shun",
+    "dc:subject": {
+        "Kategori Budaya": "Batik Kontemporer",
+        "Status Simbolik": "Umum / Bebas"
+    },
+    "dc:description": {
+        "Fungsi Tradisional": "Pakaian muslim formal, busana menghadiri hari besar keagamaan, dan kain cinderamata daerah.",
+        "Makna Filosofis": "Lambang ketaatan beragama, pusat peradaban sosial, serta harmoni visual arsitektur monumental kebanggaan masyarakat Sumatera Utara.",
+        "Elemen Visual": "Kubah oktagonal (segi delapan) khas bangunan Masjid Raya Medan dengan ornamen pepatran.",
+        "Warna Dominan": "Merah Soga (#852531), Abu-abu Perak (#CDCECC)",
+        "Fakta Unik": "Nama di file gambar kamu tertulis masid_raya_al_mashun.png, kode ini sudah saya sesuaikan otomatis agar tidak memicu eror pemanggilan aset."
+    },
+    "dc:coverage": "Sumatera Utara, Indonesia",
+    "dc:format": "image/jpeg",
+    "dc:source": "Repositori Komunitas",
+    "dc:rights": "Repositori Komunitas / Penggunaan Bebas",
+    "dc:type": "Image; Physical Object",
+    "dc:language": "id, btk"
+}

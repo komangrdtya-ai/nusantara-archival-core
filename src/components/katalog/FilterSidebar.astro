@@ -1,0 +1,339 @@
+---
+// src/components/katalog/TestFilterSidebar.astro
+// Cache-bust: 1
+const { 
+    provinsiCounts, 
+    budayaCounts, 
+    simbolikCounts, 
+    pemetaWarna,
+    formatCounts,
+    rightsCounts,
+    languageCounts,
+    sourceCounts
+} = Astro.props;
+---
+
+<div
+    id="wrapper-sidebar"
+    class="w-full md:w-1/4 px-6 pt-6 border border-[#c5a059]/10 bg-[#121212] rounded-xs md:sticky md:top-28 shadow-xl transition-all duration-[1200ms] ease-[cubic-bezier(0.25,1,0.5,1)]"
+>
+    <!-- TOMBOL TOGGLE SIDEBAR UTAMA -->
+    <button id="btn-toggle-sidebar" type="button" class="w-full flex items-center justify-between py-2 border-y border-gray-800 text-gray-500 hover:text-[#c5a059] transition-colors cursor-pointer group mb-6">
+        <span class="text-[10px] uppercase tracking-[0.2em] font-bold" id="teks-toggle-filter">Filter Arsip Spesifik</span>
+        <span id="icon-toggle-filter" class="text-xl font-mono leading-none transition-transform duration-300 group-hover:rotate-90">-</span>
+    </button>
+
+    <div id="sidebar-content-accordion" class="w-full grid" style="grid-template-rows: 1fr; opacity: 1; transition: grid-template-rows 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;">
+        <div class="overflow-hidden flex flex-col gap-8 w-full pb-56">
+    <!-- 1. Wilayah (Coverage) -->
+    <div class="relative filter-group shrink-0 w-full">
+        <label
+            class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3"
+            >Wilayah (Coverage)</label
+        >
+        <div id="pills-provinsi" class="flex flex-wrap gap-2 mb-3 empty:hidden">
+        </div>
+        <button id="btn-select-provinsi" class="custom-select-trigger">
+            <span class="text-gray-400">Pilih Wilayah</span>
+            <svg
+                class="panah-icon"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="4"><path d="m6 9 6 6 6-6"></path></svg
+            >
+        </button>
+        <div id="opsi-provinsi" class="custom-options-box hidden">
+            <button
+                class="baris-opsi"
+                data-kategori="provinsi"
+                data-target="semua"
+            >
+                <span class="teks-opsi text-[#c5a059]">Bersihkan Wilayah</span>
+            </button>
+            {
+                Object.keys(provinsiCounts).map((name) => (
+                    <button
+                        class="baris-opsi"
+                        data-kategori="provinsi"
+                        data-target={name}
+                    >
+                        <span class="teks-opsi">{name}</span>
+                        <span class="angka-opsi">{provinsiCounts[name]}</span>
+                    </button>
+                ))
+            }
+        </div>
+    </div>
+
+    <!-- 2. Kategori Budaya -->
+    <div class="relative filter-group shrink-0 w-full">
+        <label
+            class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3"
+            >Kategori Budaya</label
+        >
+        <div id="pills-budaya" class="flex flex-wrap gap-2 mb-3 empty:hidden">
+        </div>
+        <button id="btn-select-budaya" class="custom-select-trigger">
+            <span class="text-gray-400">Pilih Kategori</span>
+            <svg
+                class="panah-icon"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="4"><path d="m6 9 6 6 6-6"></path></svg
+            >
+        </button>
+        <div id="opsi-budaya" class="custom-options-box hidden">
+            <button
+                class="baris-opsi"
+                data-kategori="budaya"
+                data-target="semua"
+            >
+                <span class="teks-opsi text-[#c5a059]">Bersihkan Kategori</span>
+            </button>
+            {
+                Object.keys(budayaCounts).map((name) => (
+                    <button
+                        class="baris-opsi"
+                        data-kategori="budaya"
+                        data-target={name}
+                    >
+                        <span class="teks-opsi">{name}</span>
+                        <span class="angka-opsi">{budayaCounts[name]}</span>
+                    </button>
+                ))
+            }
+        </div>
+    </div>
+
+    <!-- 3. Status Simbolik -->
+    <div class="relative filter-group shrink-0 w-full">
+        <label
+            class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3"
+            >Status Simbolik</label
+        >
+        <div id="pills-simbolik" class="flex flex-wrap gap-2 mb-3 empty:hidden">
+        </div>
+        <button id="btn-select-simbolik" class="custom-select-trigger">
+            <span class="text-gray-400">Pilih Status</span>
+            <svg
+                class="panah-icon"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="4"><path d="m6 9 6 6 6-6"></path></svg
+            >
+        </button>
+        <div id="opsi-simbolik" class="custom-options-box hidden">
+            <button
+                class="baris-opsi"
+                data-kategori="simbolik"
+                data-target="semua"
+            >
+                <span class="teks-opsi text-[#c5a059]">Bersihkan Status</span>
+            </button>
+            {
+                Object.keys(simbolikCounts).map((name) => (
+                    <button
+                        class="baris-opsi"
+                        data-kategori="simbolik"
+                        data-target={name}
+                    >
+                        <span class="teks-opsi">{name}</span>
+                        <span class="angka-opsi">{simbolikCounts[name]}</span>
+                    </button>
+                ))
+            }
+        </div>
+    </div>
+
+    <!-- 4. Warna Dominan -->
+    <div class="relative filter-group shrink-0 w-full">
+        <label
+            class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3"
+            >Warna Dominan</label
+        >
+        <div id="pills-warna" class="flex flex-wrap gap-2 mb-3 empty:hidden">
+        </div>
+        <button id="btn-select-warna" class="custom-select-trigger">
+            <span class="text-gray-400">Pilih Warna (Maks 6)</span>
+            <svg
+                class="panah-icon"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="4"><path d="m6 9 6 6 6-6"></path></svg
+            >
+        </button>
+        <div id="opsi-warna" class="custom-options-box hidden">
+            <button
+                class="baris-opsi col-span-full"
+                data-kategori="warna"
+                data-target="semua"
+            >
+                <span class="teks-opsi text-[#c5a059]">Bersihkan Warna</span>
+            </button>
+            <div class="grid grid-cols-3 gap-1 mt-2">
+                {
+                    Object.keys(pemetaWarna).map((name) => (
+                        <button
+                            class="baris-opsi !px-3 !py-2 hover:bg-white/5 rounded-xs flex items-center justify-between"
+                            data-kategori="warna"
+                            data-target={name}
+                            data-hex={pemetaWarna[name]}
+                            title={name}
+                        >
+                            <div class="flex items-center">
+                                <div
+                                    class="w-4 h-4 rounded-full shrink-0 shadow-sm border border-white/20"
+                                    style={`background-color: ${pemetaWarna[name]}`}
+                                />
+                            </div>
+                            <span class="angka-opsi">0</span>
+                        </button>
+                    ))
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- TOMBOL TOGGLE ARSIP TEKNIS -->
+    <button id="btn-toggle-arsip-teknis" type="button" class="w-full flex items-center justify-between py-2 border-y border-gray-800 text-gray-500 hover:text-[#c5a059] transition-colors cursor-pointer group mt-2 mb-2">
+        <span class="text-[10px] uppercase tracking-[0.2em] font-bold">Filter Arsip Teknis</span>
+        <span id="icon-arsip-teknis" class="text-xl font-mono leading-none transition-transform duration-300 group-hover:rotate-90">+</span>
+    </button>
+
+    <!-- WADAH ARSIP TEKNIS -->
+    <div id="wadah-arsip-teknis" class="w-full grid" style="grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;">
+        <div class="overflow-hidden flex flex-col gap-6 w-full">
+
+    <!-- 5. Format -->
+    <div class="relative filter-group shrink-0 w-full">
+        <label class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3">Format File</label>
+        <div id="pills-format" class="flex flex-wrap gap-2 mb-3 empty:hidden"></div>
+        <button id="btn-select-format" class="custom-select-trigger">
+            <span class="text-gray-400">Pilih Format</span>
+            <svg class="panah-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><path d="m6 9 6 6 6-6"></path></svg>
+        </button>
+        <div id="opsi-format" class="custom-options-box hidden">
+            <button class="baris-opsi" data-kategori="format" data-target="semua">
+                <span class="teks-opsi text-[#c5a059]">Bersihkan Format</span>
+            </button>
+            {Object.keys(formatCounts).map(name => (
+                <button class="baris-opsi" data-kategori="format" data-target={name}>
+                    <span class="teks-opsi font-mono text-[10px]">{name}</span>
+                    <span class="angka-opsi">{formatCounts[name]}</span>
+                </button>
+            ))}
+        </div>
+    </div>
+
+    <!-- 6. Rights (Lisensi) -->
+    <div class="relative filter-group shrink-0 w-full">
+        <label class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3">Rights (Lisensi)</label>
+        <div id="pills-rights" class="flex flex-wrap gap-2 mb-3 empty:hidden"></div>
+        <button id="btn-select-rights" class="custom-select-trigger">
+            <span class="text-gray-400">Pilih Lisensi</span>
+            <svg class="panah-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><path d="m6 9 6 6 6-6"></path></svg>
+        </button>
+        <div id="opsi-rights" class="custom-options-box hidden">
+            <button class="baris-opsi" data-kategori="rights" data-target="semua">
+                <span class="teks-opsi text-[#c5a059]">Bersihkan Lisensi</span>
+            </button>
+            {Object.keys(rightsCounts).map(name => (
+                <button class="baris-opsi" data-kategori="rights" data-target={name}>
+                    <span class="teks-opsi text-[11px]">{name}</span>
+                    <span class="angka-opsi">{rightsCounts[name]}</span>
+                </button>
+            ))}
+        </div>
+    </div>
+
+    <!-- 7. Language (Bahasa) -->
+    <div class="relative filter-group shrink-0 w-full">
+        <label class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3">Language (Bahasa)</label>
+        <div id="pills-language" class="flex flex-wrap gap-2 mb-3 empty:hidden"></div>
+        <button id="btn-select-language" class="custom-select-trigger">
+            <span class="text-gray-400">Pilih Bahasa</span>
+            <svg class="panah-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><path d="m6 9 6 6 6-6"></path></svg>
+        </button>
+        <div id="opsi-language" class="custom-options-box hidden">
+            <button class="baris-opsi" data-kategori="language" data-target="semua">
+                <span class="teks-opsi text-[#c5a059]">Bersihkan Bahasa</span>
+            </button>
+            {Object.keys(languageCounts).map(name => (
+                <button class="baris-opsi" data-kategori="language" data-target={name}>
+                    <span class="teks-opsi uppercase text-[10px] font-bold">{name}</span>
+                    <span class="angka-opsi">{languageCounts[name]}</span>
+                </button>
+            ))}
+        </div>
+    </div>
+
+    <!-- 8. Source (Institusi) -->
+    <div class="relative filter-group shrink-0 w-full">
+        <label class="text-[#c5a059] text-[11px] uppercase tracking-[0.2em] font-bold block mb-3">Source (Institusi)</label>
+        <div id="pills-source" class="flex flex-wrap gap-2 mb-3 empty:hidden"></div>
+        <button id="btn-select-source" class="custom-select-trigger">
+            <span class="text-gray-400">Pilih Institusi</span>
+            <svg class="panah-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4"><path d="m6 9 6 6 6-6"></path></svg>
+        </button>
+        <div id="opsi-source" class="custom-options-box hidden">
+            <button class="baris-opsi" data-kategori="source" data-target="semua">
+                <span class="teks-opsi text-[#c5a059]">Bersihkan Institusi</span>
+            </button>
+            {Object.keys(sourceCounts).map(name => (
+                <button class="baris-opsi" data-kategori="source" data-target={name}>
+                    <span class="teks-opsi text-[11px] line-clamp-2" title={name}>{name}</span>
+                    <span class="angka-opsi">{sourceCounts[name]}</span>
+                </button>
+            ))}
+        </div>
+    </div>
+
+    </div>
+    </div>
+    </div>
+</div>
+
+<style is:global>
+    /* Animasi Staggered Waterfall untuk Filter Sidebar dan Arsip Teknis */
+    #sidebar-content-accordion > div > .filter-group,
+    #wadah-arsip-teknis > div > .filter-group {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    
+    #sidebar-content-accordion.is-active > div > .filter-group,
+    #wadah-arsip-teknis.is-active > div > .filter-group {
+        opacity: 1;
+        transform: none;
+    }
+
+    /* Stagger untuk Sidebar Utama */
+    #sidebar-content-accordion.is-active > div > .filter-group:nth-child(1) { transition-delay: 100ms; }
+    #sidebar-content-accordion.is-active > div > .filter-group:nth-child(2) { transition-delay: 175ms; }
+    #sidebar-content-accordion.is-active > div > .filter-group:nth-child(3) { transition-delay: 250ms; }
+    #sidebar-content-accordion.is-active > div > .filter-group:nth-child(4) { transition-delay: 325ms; }
+    #sidebar-content-accordion.is-active > div > .filter-group:nth-child(5) { transition-delay: 400ms; }
+    #sidebar-content-accordion.is-active > div > .filter-group:nth-child(6) { transition-delay: 475ms; }
+    #sidebar-content-accordion.is-active > div > .filter-group:nth-child(7) { transition-delay: 550ms; }
+    #sidebar-content-accordion.is-active > div > .filter-group:nth-child(8) { transition-delay: 625ms; }
+    #sidebar-content-accordion.is-active > div > .filter-group:nth-child(9) { transition-delay: 700ms; }
+
+    /* Stagger untuk Arsip Teknis */
+    #wadah-arsip-teknis.is-active > div > .filter-group:nth-child(1) { transition-delay: 50ms; }
+    #wadah-arsip-teknis.is-active > div > .filter-group:nth-child(2) { transition-delay: 125ms; }
+    #wadah-arsip-teknis.is-active > div > .filter-group:nth-child(3) { transition-delay: 200ms; }
+    #wadah-arsip-teknis.is-active > div > .filter-group:nth-child(4) { transition-delay: 275ms; }
+</style>
