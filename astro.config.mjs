@@ -5,8 +5,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://raditiphone1612-hash.github.io',
-  base: '/nusantara-archival',
+  site: 'https://komangrdtya-ai.github.io',
+  base: '/nusantara-archival-core',
   devToolbar: {
     enabled: false
   },
