@@ -1,12 +1,12 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-
+import vercel from '@astrojs/vercel'; // Robot Vercel
 import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://komangrdtya-ai.github.io',
-  base: '/nusantara-archival-core',
+  output: 'server', // Wajib 'server' karena kamu pakai prerender = false
+  adapter: vercel(), // Menghubungkan langsung ke server Vercel
   devToolbar: {
     enabled: false
   },
